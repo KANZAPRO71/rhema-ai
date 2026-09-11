@@ -1,0 +1,21 @@
+================================================================================
+RHEMA AI v1.0.0 — WHAT'S NEW (Play Console → Release notes)
+Google Play limit: 500 karakter per bahasa
+Verifikasi: ID 478/500 ✓ · EN 435/500 ✓
+================================================================================
+
+--- 🇮🇩 Bahasa Indonesia (id-ID) — paste di translation ---
+
+• Rilis Perdana Rhema AI: Pendamping ibadah & asisten persiapan khotbah pintar.
+• Fitur Suara Full Duplex: Mengobrol langsung secara natural dengan asisten AI berbasis Gemini 3.1 Flash Live Preview.
+• Sistem BYOK Aman: Gunakan API Key Gemini gratis Anda sendiri, dienkripsi 100% lokal di perangkat.
+• Dukungan Multibahasa Otomatis: Sinkronisasi instan Alkitab Terjemahan Baru (TB) untuk Indonesia dan King James Version (KJV) untuk pengguna global berdasarkan wilayah perangkat.
+
+--- 🌍 English (en-US) — DEFAULT release notes ---
+
+• Initial Release of Rhema AI: Your intelligent devotional & sermon preparation companion.
+• Full Duplex Voice: Natural, fluid two-way audio conversations powered by Gemini 3.1 Flash Live Preview.
+• Secure BYOK Support: Use your own free Gemini API Key, encrypted 100% locally on your device.
+• Automated Bilingual Logic: Seamlessly switches between Indonesian (TB Version) and Global English (KJV Version) based on your system locale.
+
+================================================================================

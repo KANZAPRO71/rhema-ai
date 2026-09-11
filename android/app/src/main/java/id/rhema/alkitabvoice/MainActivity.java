@@ -9,7 +9,9 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(MicPermissionPlugin.class);
         registerPlugin(GeminiLivePlugin.class);
+        registerPlugin(SecureKeyPlugin.class);
+        registerPlugin(LocalePlugin.class);
         super.onCreate(savedInstanceState);
-        WebView.setWebContentsDebuggingEnabled(true);
+        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
     }
 }

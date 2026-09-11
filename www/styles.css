@@ -314,6 +314,27 @@ body {
   font-family: inherit;
 }
 
+.settings-key-row {
+  grid-column: 1 / -1;
+}
+
+.settings-byok-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.byok-delete-btn[disabled] {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.byok-key-status {
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .settings-actions {
   display: flex;
   gap: 6px;

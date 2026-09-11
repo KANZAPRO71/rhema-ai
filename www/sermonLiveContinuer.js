@@ -1,6 +1,7 @@
 /**
  * Auto-lanjut khotbah multi-turn saat Gemini Live turnComplete (batas ~2–3 menit audio/turn).
  */
+import { isIndonesiaProfile } from "./localeProfile.js";
 import { isSermonModeActive, isTheologianPersonaActive } from "./sermonPrompts.js";
 
 const SERMON_ACTIVE_KEY = "rhema-sermon-active";
@@ -61,9 +62,28 @@ function getSermonStartMs() {
 function buildContinuationPrompt(segment, targetMinutes, elapsedMinutes) {
   const remaining = Math.max(1, Math.round(targetMinutes - elapsedMinutes));
   const exposition = isTheologianPersonaActive();
-  const tag = exposition ? "EKSPOSISI" : "KHOTBAH";
   const closeAt = Math.max(6, Math.ceil(targetMinutes / 2.5));
 
+  if (!isIndonesiaProfile()) {
+    const tag = exposition ? "EXPOSITION" : "SERMON";
+    if (segment >= closeAt || elapsedMinutes >= targetMinutes - 1) {
+      return `[CONTINUE ${tag} — CLOSING]
+Continue without repeating the opening or points already covered.
+Finish: ${exposition ? "theological implications & pastoral application" : "practical application"}, closing prayer, and blessing (say "Amen").
+~${remaining} minutes left. Close warmly.`;
+    }
+    if (segment <= 2) {
+      return `[CONTINUE ${tag} — PART ${segment}]
+Continue from the next point. Do not repeat greeting or Scripture already read.
+${exposition ? "Continue keyword analysis, passage context, or next exposition section." : "Continue the next sermon point with explanation and real-life examples."}
+Target: ${targetMinutes} min (~${Math.round(elapsedMinutes)} min elapsed).`;
+    }
+    return `[CONTINUE ${tag} — PART ${segment}]
+Continue without repeating. Move to ${exposition ? "cross-references, theology, or pastoral application" : "illustration, application, or closing prayer"} as appropriate.
+Target: ${targetMinutes} min (~${Math.round(elapsedMinutes)} min elapsed). Speak fully.`;
+  }
+
+  const tag = exposition ? "EKSPOSISI" : "KHOTBAH";
   if (segment >= closeAt || elapsedMinutes >= targetMinutes - 1) {
     return `[LANJUT ${tag} — PENUTUP]
 Lanjutkan tanpa mengulang pembukaan atau poin yang sudah disampaikan.

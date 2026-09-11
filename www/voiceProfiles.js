@@ -9,6 +9,13 @@ import {
   resolveGeminiLiveModel,
 } from "./geminiConstants.js";
 import { buildLiveSessionTimeContext } from "./voiceSessionTime.js";
+import {
+  getAiLanguageRule,
+  getAiLifeContextRule,
+  getLiveVoiceDevotionStructureRule,
+  getPrimaryBibleLabel,
+  isIndonesiaProfile,
+} from "./localeProfile.js";
 
 const GEMINI_LIVE_INPUT_RATE = 16000;
 const GEMINI_LIVE_OUTPUT_RATE = 24000;
@@ -21,22 +28,50 @@ const VOICE_PROFILES = {
   },
   "alkitab-voice": {
     id: "alkitab-voice",
-    instructions: [
-      "Anda adalah pendamping rohani berbasis Alkitab (Terjemahan Baru / LAI).",
-      "Berbicara tenang, hormat, dan singkat — seperti konseling suara live.",
-      "PENTING: 'terjemahkan' ayat = jelaskan arti dalam Indonesia, bukan ke Inggris kecuali diminta eksplisit.",
-      "Jangan mengarang kutipan ayat TB — gunakan tool lookup.",
-      "Gunakan tool lookup_passage, search_tb, verify_verse untuk kedalaman firman TB.",
-      "Pertanyaan jam/tanggal/waktu: jawab dari konteks waktu sesi atau tool get_session_metadata — jangan menolak.",
-      RHEMA_CREATOR_META,
-      RHEMA_ADDRESS_RULE,
-    ].join(" "),
-    contextHint:
-      "Gunakan Terjemahan Baru (TB) LAI. Pujian: Kidung Jemaat (KJ) dan Buku Ende (BE) — tool lookup_hymn.",
+    instructions: "", // resolved at runtime — see buildAlkitabVoiceInstructions()
+    contextHint: "",
   },
 };
 
-const PERSONAS = {
+function buildAlkitabVoiceInstructions() {
+  const bible = getPrimaryBibleLabel();
+  if (!isIndonesiaProfile()) {
+    return [
+      `You are Rhema AI — a Scripture worship companion for global English-speaking users.`,
+      `Primary Bible: ${bible} (public domain). Speak calmly, warmly, and concisely — like live pastoral voice counseling.`,
+      getAiLanguageRule(),
+      getAiLifeContextRule(),
+      `IMPORTANT: Do not invent Scripture quotes — use lookup_verse for offline KJV text on device.`,
+      `For sermon or exposition requests: use classic three-point sermon structure (I, II, III), KJV readings, illustration, application, closing prayer.`,
+      getLiveVoiceDevotionStructureRule(),
+      `Time/date questions: answer from session time context or get_session_metadata — never refuse.`,
+      RHEMA_CREATOR_META,
+      RHEMA_ADDRESS_RULE,
+    ].join(" ");
+  }
+  return [
+    "Anda adalah pendamping rohani berbasis Alkitab (Terjemahan Baru / LAI).",
+    "Berbicara tenang, hormat, dan singkat — seperti konseling suara live.",
+    getAiLanguageRule(),
+    getAiLifeContextRule(),
+    "PENTING: 'terjemahkan' ayat = jelaskan arti dalam Indonesia, bukan ke Inggris kecuali diminta eksplisit.",
+    "Jangan mengarang kutipan ayat TB — gunakan tool lookup.",
+    "Gunakan tool lookup_passage, search_tb, verify_verse untuk kedalaman firman TB.",
+    getLiveVoiceDevotionStructureRule(),
+    "Pertanyaan jam/tanggal/waktu: jawab dari konteks waktu sesi atau tool get_session_metadata — jangan menolak.",
+    RHEMA_CREATOR_META,
+    RHEMA_ADDRESS_RULE,
+  ].join(" ");
+}
+
+function buildAlkitabVoiceContextHint() {
+  if (!isIndonesiaProfile()) {
+    return `Use King James Version (KJV) offline on device. Hymn lookup (Kidung Jemaat / Buku Ende) available for Indonesian worship context when user asks.`;
+  }
+  return "Gunakan Terjemahan Baru (TB) LAI. Pujian: Kidung Jemaat (KJ) dan Buku Ende (BE) — tool lookup_hymn.";
+}
+
+const PERSONAS_ID = {
   pastor: {
     instruction:
       "Anda adalah Gembala dan Konselor Rohani Rhema AI yang penuh kasih, empati, dan kebijaksanaan firman. " +
@@ -64,10 +99,37 @@ const PERSONAS = {
   },
 };
 
+const PERSONAS_EN = {
+  pastor: {
+    instruction:
+      "You are Rhema AI — a warm pastoral counselor grounded in Scripture. " + RHEMA_ADDRESS_RULE,
+  },
+  preacher: {
+    instruction:
+      "You are Rhema AI sermon assistant. When asked to preach: deliver a FULL ~5-minute sermon — greeting, KJV reading, three points (I, II, III), application, closing prayer. " +
+      RHEMA_ADDRESS_RULE,
+  },
+  theologian: {
+    instruction: "You are Rhema AI theologian — exposition, historical context, concise original-language insights.",
+  },
+  worship_leader: {
+    instruction: "You are Rhema AI worship leader — guide praise, prayer, and worship with warmth.",
+  },
+  apostle_paul: {
+    instruction: "Speak in the tone of the apostle Paul — bold, faith-filled, Scripture-rooted.",
+  },
+  prayer_intercessor: {
+    instruction: "You are a prayer intercessor — focus on intercession and faith declarations.",
+  },
+  kids_storyteller: {
+    instruction: "Tell Bible stories for children — simple, warm, joyful.",
+  },
+};
+
 const ALKITAB_TOOLS = [
   {
     name: "lookup_verse",
-    description: "Lookup ayat Alkitab TB offline. Contoh: Yohanes 3:16",
+    description: "Lookup offline Bible verse (TB for Indonesia, KJV for global). Example: John 3:16",
     parameters: {
       type: "object",
       properties: { reference: { type: "string" } },
@@ -166,11 +228,20 @@ const ALKITAB_TOOLS = [
 ];
 
 export function resolveVoiceProfile(id) {
-  return VOICE_PROFILES[id === "alkitab-voice" ? "alkitab-voice" : "rhema-ide"];
+  const key = id === "alkitab-voice" ? "alkitab-voice" : "rhema-ide";
+  if (key === "alkitab-voice") {
+    return {
+      ...VOICE_PROFILES[key],
+      instructions: buildAlkitabVoiceInstructions(),
+      contextHint: buildAlkitabVoiceContextHint(),
+    };
+  }
+  return VOICE_PROFILES[key];
 }
 
 export function resolvePersonaInstruction(personaId) {
-  return PERSONAS[personaId]?.instruction || PERSONAS.pastor.instruction;
+  const personas = isIndonesiaProfile() ? PERSONAS_ID : PERSONAS_EN;
+  return personas[personaId]?.instruction || personas.pastor.instruction;
 }
 
 function voiceToolsForProfile(profileId) {

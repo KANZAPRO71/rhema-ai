@@ -7,20 +7,14 @@ import { resetViewportScroll } from "./mobileScroll.js";
 import { ensureNativeMicPermission } from "./nativeMicPermission.js";
 import { consumeByokOnboardingBack, isByokOnboardingOpen } from "./byokOnboarding.js";
 import { consumeRegionOnboardingBack, isRegionOnboardingOpen } from "./regionOnboarding.js";
+import { getScreenTitles } from "./uiStrings.js";
 
 const STACK_SCREENS = new Set(["chat", "cloud"]);
 const OVERLAY_SCREENS = new Set(["akun"]);
 
-const TITLES = {
-  home: "Alkitab AI Voice",
-  alkitab: "Alkitab",
-  renungan: "Renungan",
-  doa: "Doa",
-  voice: "Rhema AI",
-  akun: "Akun",
-  chat: "Rhema Agent",
-  cloud: "Cloud Agents",
-};
+function screenTitle(name) {
+  return getScreenTitles()[name] || name;
+}
 
 const WORSHIP_SCREENS = new Set(["home", "alkitab", "renungan", "doa", "voice"]);
 
@@ -153,7 +147,7 @@ export function initAppShell(transport, hooks = {}) {
     akunBtn?.classList.toggle("hidden", hideNav);
     syncBackButton();
 
-    if (titleEl) titleEl.textContent = TITLES[name] || name;
+    if (titleEl) titleEl.textContent = screenTitle(name);
 
     setProfileForScreen(name);
 
@@ -339,6 +333,10 @@ export function initAppShell(transport, hooks = {}) {
 
   go(resolveBootScreen());
   syncBackButton();
+
+  document.addEventListener("rhema-locale-ui-applied", () => {
+    if (titleEl && currentScreen) titleEl.textContent = screenTitle(currentScreen);
+  });
 
   registerScreenNavigator(go);
   /** @type {typeof go} */

@@ -47,6 +47,13 @@ export function getLiveSessionTimeSnapshot(now = new Date()) {
 /** @param {Date} [now] */
 export function buildLiveSessionTimeContext(now = new Date()) {
   const snap = getLiveSessionTimeSnapshot(now);
+  if (!isIndonesiaProfile()) {
+    return (
+      `SESSION TIME CONTEXT (user device, REQUIRED): ${snap.localTimeNow} (${snap.timezone}, ${snap.dayPart}). ` +
+      "If asked what time or date it is: answer briefly and accurately from this context. " +
+      "NEVER refuse — use this context or get_session_metadata."
+    );
+  }
   return (
     `KONTEKS WAKTU SESI (perangkat pengguna, WAJIB): ${snap.localTimeNow} (${snap.timezone}, ${snap.dayPart}). ` +
     "Jika ditanya jam berapa / pukul berapa / tanggal hari ini / hari apa sekarang: jawab singkat dan akurat dari konteks ini. " +

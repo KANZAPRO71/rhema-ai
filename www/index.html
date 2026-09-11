@@ -142,8 +142,8 @@
         <div class="rhema-launch-cross"></div>
       </div>
       <h1 class="rhema-launch-title" id="rhema-launch-title">rhema ai</h1>
-      <p class="rhema-launch-sub">Pendamping ibadah · Suara live</p>
-      <span class="rhema-launch-tag">Rhema Dawn</span>
+      <p class="rhema-launch-sub" data-i18n="splash.sub">Pendamping ibadah · Suara live</p>
+      <span class="rhema-launch-tag" data-i18n="splash.tag">Rhema Dawn</span>
     </div>
   </div>
   <div id="app" class="app-mobile">
@@ -157,7 +157,7 @@
     </div>
 
     <header class="mobile-header">
-      <button id="btn-mobile-back" type="button" class="mobile-back hidden" aria-label="Kembali">←</button>
+      <button id="btn-mobile-back" type="button" class="mobile-back hidden" data-i18n-aria="back" aria-label="Kembali">←</button>
       <div class="mobile-header-center">
         <span class="mobile-logo mobile-logo-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.75A2.25 2.25 0 0 1 7.25 3.5H19.5v17H7.25A2.25 2.25 0 0 1 5 18.25V5.75Z"/><path d="M9.5 7.5h6M9.5 11h6M9.5 14.5h4"/></svg>
@@ -166,7 +166,7 @@
       </div>
       <div class="header-actions-right">
         <button id="btn-header-ambient" type="button" class="header-ambient-btn" title="Musik ambient" aria-label="Musik ambient"><span class="ambient-icon">🎶</span></button>
-        <button id="btn-header-refresh" type="button" class="header-refresh-btn" title="Refresh halaman ini" aria-label="Refresh">Refresh</button>
+        <button id="btn-header-refresh" type="button" class="header-refresh-btn" title="Refresh halaman ini" data-i18n="refresh" aria-label="Refresh">Refresh</button>
         <button id="btn-header-akun" type="button" class="header-akun-btn" aria-label="Akun &amp; pengaturan">
           <svg class="header-akun-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20.5a6.5 6.5 0 0 1 13 0"/></svg>
         </button>
@@ -175,13 +175,13 @@
 
     <main class="mobile-main">
       <!-- BERANDA -->
-      <section id="screen-home" class="mobile-screen active" data-title="Beranda">
+      <section id="screen-home" class="mobile-screen active" data-title="Beranda" data-title-key="screen.home">
         <div class="mobile-scroll">
           <div class="beranda-hero">
             <div class="beranda-hero-main">
               <span class="beranda-hero-icon" aria-hidden="true">✨</span>
               <div class="beranda-hero-text">
-                <p class="beranda-kicker">Rhema AI Voice</p>
+                <p class="beranda-kicker" data-i18n="hero.kicker">Rhema AI Voice</p>
                 <h2 class="beranda-hero-title" id="home-greeting">Selamat datang</h2>
                 <p class="beranda-hero-sub">Pendamping ibadah · TB LAI</p>
               </div>
@@ -189,16 +189,31 @@
             <div class="beranda-summary">
               <span class="beranda-chip beranda-chip--live beranda-chip--voice-tag">
                 <span class="badge-dot live"></span>
-                Ngobrol langsung · suara live dua arah
+                <span data-i18n="hero.chip.voice">Ngobrol langsung · suara live dua arah</span>
               </span>
               <span class="beranda-chip beranda-chip--embed hidden" id="hero-embed-badge">Semantic TB</span>
             </div>
           </div>
 
+          <div class="beranda-pillars" aria-label="Three worship paths">
+            <div class="beranda-pillar">
+              <strong data-i18n="pillar.read">Baca</strong>
+              <span data-i18n="pillar.read.desc">Alkitab TB &amp; kidung offline</span>
+            </div>
+            <div class="beranda-pillar">
+              <strong data-i18n="pillar.speak">Bicara</strong>
+              <span data-i18n="pillar.speak.desc">Suara live full duplex</span>
+            </div>
+            <div class="beranda-pillar">
+              <strong data-i18n="pillar.pray">Berdoa</strong>
+              <span data-i18n="pillar.pray.desc">Renungan &amp; doa terpandu</span>
+            </div>
+          </div>
+
           <button type="button" id="byok-home-banner" class="byok-home-banner hidden" aria-hidden="true">
             <span class="byok-home-banner-kicker">Bring Your Own Key</span>
-            <span class="byok-home-banner-title">Aktifkan suara &amp; AI</span>
-            <span class="byok-home-banner-sub">Tempel Gemini API key gratis dari Google AI Studio</span>
+            <span class="byok-home-banner-title" data-i18n="byok.banner.title">Aktifkan suara &amp; AI</span>
+            <span class="byok-home-banner-sub" data-i18n="byok.banner.sub">Tempel Gemini API key gratis dari Google AI Studio</span>
           </button>
 
           <button type="button" id="home-streak-mini" class="home-streak-mini bento-tile-streak" aria-label="Streak firman — buka Renungan">
@@ -213,8 +228,8 @@
               <div class="beranda-section-hero-main">
                 <span class="beranda-section-icon" aria-hidden="true">✝</span>
                 <div>
-                  <h3 class="beranda-section-title">Firman Hari Ini</h3>
-                  <p class="beranda-section-sub">Ayat harian &amp; suara live Rhema Intelligence</p>
+                  <h3 class="beranda-section-title" data-i18n="firman.title">Firman Hari Ini</h3>
+                  <p class="beranda-section-sub" data-i18n="firman.sub">Ayat harian &amp; suara live Rhema Intelligence</p>
                 </div>
               </div>
               <div class="beranda-section-chips">
@@ -255,8 +270,8 @@
               <div class="beranda-section-hero-main">
                 <span class="beranda-section-icon" aria-hidden="true">🤖</span>
                 <div>
-                  <h3 class="beranda-section-title">Eksplorasi AI</h3>
-                  <p class="beranda-section-sub">Inovasi firman — khotbah, silsilah &amp; lebih</p>
+                  <h3 class="beranda-section-title" data-i18n="explore.title">Eksplorasi AI</h3>
+                  <p class="beranda-section-sub" data-i18n="explore.sub">Inovasi firman — khotbah, silsilah &amp; lebih</p>
                 </div>
               </div>
               <div class="beranda-section-chips">
@@ -431,7 +446,7 @@
       </section>
 
       <!-- ALKITAB -->
-      <section id="screen-alkitab" class="mobile-screen" data-title="Alkitab">
+      <section id="screen-alkitab" class="mobile-screen" data-title="Alkitab" data-title-key="screen.bible">
         <div class="mobile-scroll">
           <!-- 1. Baca dan Cari Firman -->
           <div id="alkitab-section-read" class="alkitab-section alkitab-section--read">
@@ -600,7 +615,7 @@
       </section>
 
       <!-- RENUNGAN — fokus harian di atas, program & eksplorasi di bawah -->
-      <section id="screen-renungan" class="mobile-screen" data-title="Renungan &amp; Ibadah">
+      <section id="screen-renungan" class="mobile-screen" data-title="Renungan &amp; Ibadah" data-title-key="screen.devotionFull">
         <div class="mobile-scroll">
           <!-- === FOKUS: RENUNGAN HARIAN === -->
           <div class="renungan-daily-focus">
@@ -738,7 +753,7 @@
       </section>
 
       <!-- DOA -->
-      <section id="screen-doa" class="mobile-screen" data-title="Doa">
+      <section id="screen-doa" class="mobile-screen" data-title="Doa" data-title-key="screen.prayer">
         <div class="mobile-scroll">
           <div class="screen-intro-row">
             <div class="screen-intro">
@@ -799,7 +814,7 @@
       </section>
 
       <!-- AI VOICE — Apple Intelligence -->
-      <section id="screen-voice" class="mobile-screen voice-screen-intelligence" data-title="Rhema AI">
+      <section id="screen-voice" class="mobile-screen voice-screen-intelligence" data-title="Rhema AI" data-title-key="app.title">
         <div class="voice-layout-modern">
           <!-- Voice Orb Header Section (Sleek, Centered, Sacred) -->
           <div class="voice-intelligence-center">
@@ -924,7 +939,7 @@
       </section>
 
       <!-- AKUN (overlay — dari header kanan atas) -->
-      <section id="screen-akun" class="mobile-screen mobile-overlay" data-title="Akun">
+      <section id="screen-akun" class="mobile-screen mobile-overlay" data-title="Akun" data-title-key="screen.account">
         <div class="mobile-scroll">
           <section class="mobile-section a11y-section" aria-labelledby="a11y-label">
             <h2 id="a11y-label" class="section-label">Ukuran teks</h2>
@@ -962,10 +977,10 @@
               <span>☁</span><span>Cloud Agents</span><span class="chev">›</span>
             </button>
             <button type="button" id="btn-open-settings" class="menu-item">
-              <span>⚙</span><span>Pengaturan &amp; API Key</span><span class="chev">›</span>
+              <span>⚙</span><span data-i18n="account.settings">Pengaturan &amp; API Key</span><span class="chev">›</span>
             </button>
           </div>
-          <p class="mobile-note center">BYOK Gemini · TB LAI offline · S2S live</p>
+          <p class="mobile-note center" data-i18n="account.byokFooter">BYOK Gemini · TB LAI offline · S2S live</p>
           <div class="settings-wrap mobile-settings">
             <button id="btn-settings" type="button" class="hidden" aria-hidden="true">⚙</button>
           </div>
@@ -1012,20 +1027,20 @@
       </section>
     </main>
 
-    <nav class="bottom-nav bottom-nav-sacred" aria-label="Navigasi utama">
+    <nav class="bottom-nav bottom-nav-sacred" data-i18n-aria="nav.main" aria-label="Navigasi utama">
       <button type="button" class="nav-item active" data-screen="home" aria-current="page" onclick="window.__rhemaNavBootstrap?.('home')">
         <span class="nav-icon-wrap" aria-hidden="true">
           <svg class="nav-svg nav-svg-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10.75 12 4.25l7.5 6.5V19.5A1.5 1.5 0 0 1 18 21H15v-5.25H9V21H6a1.5 1.5 0 0 1-1.5-1.5v-8.75Z"/></svg>
           <svg class="nav-svg nav-svg-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.88 3.75 10.13v8.62A2.25 2.25 0 0 0 6 21h4.5v-6h3v6H18a2.25 2.25 0 0 0 2.25-2.25v-8.62L12 2.88Z"/></svg>
         </span>
-        <span class="nav-label">Beranda</span>
+        <span class="nav-label" data-i18n="nav.home">Beranda</span>
       </button>
       <button type="button" class="nav-item" data-screen="alkitab" onclick="window.__rhemaNavBootstrap?.('alkitab')">
         <span class="nav-icon-wrap" aria-hidden="true">
           <svg class="nav-svg nav-svg-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.75A2.25 2.25 0 0 1 7.25 3.5H19.5v17H7.25A2.25 2.25 0 0 1 5 18.25V5.75Z"/><path d="M7.25 3.5A2.25 2.25 0 0 0 5 5.75v12.5a2.25 2.25 0 0 0 2.25 2.25"/><path d="M9.5 7.5h6M9.5 11h6M9.5 14.5h4"/></svg>
           <svg class="nav-svg nav-svg-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M7.25 2.25A3.25 3.25 0 0 0 4 5.5v13A3.25 3.25 0 0 0 7.25 21.75H20.25V2.25H7.25Z"/><path d="M9.25 7.5h6v1.5h-6V7.5Zm0 3.75h6v1.5h-6v-1.5Zm0 3.75h4.5v1.5h-4.5v-1.5Z" fill="#fff" opacity=".92"/></svg>
         </span>
-        <span class="nav-label">Alkitab</span>
+        <span class="nav-label" data-i18n="nav.bible">Alkitab</span>
       </button>
       <button type="button" class="nav-item nav-item-voice" data-screen="voice" aria-label="Rhema AI — sentuh buka halaman, tahan 1 detik untuk live">
         <span class="nav-icon-wrap nav-fab sacred-nav-orb" aria-hidden="true">
@@ -1040,14 +1055,14 @@
           <svg class="nav-svg nav-svg-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v2.2M12 18.8V21M5.5 5.5l1.55 1.55M16.95 16.95 18.5 18.5M3 12h2.2M18.8 12H21M5.5 18.5l1.55-1.55M16.95 7.05 18.5 5.5"/><circle cx="12" cy="12" r="3.75"/></svg>
           <svg class="nav-svg nav-svg-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a1 1 0 0 1 1 1v1.44a1 1 0 1 1-2 0V3a1 1 0 0 1 1-1Zm0 17.56a1 1 0 0 1 1 1V22a1 1 0 1 1-2 0v-1.44a1 1 0 0 1 1-1ZM4.22 4.22a1 1 0 0 1 1.42 0l1.02 1.02a1 1 0 1 1-1.42 1.42L4.22 5.64a1 1 0 0 1 0-1.42Zm13.14 13.14a1 1 0 0 1 1.42 0l1.02 1.02a1 1 0 0 1-1.42 1.42l-1.02-1.02a1 1 0 0 1 0-1.42ZM2 12a1 1 0 0 1 1-1h1.44a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm17.56 0a1 1 0 0 1 1-1H22a1 1 0 1 1 0 2h-1.44a1 1 0 0 1-1-1ZM6.34 17.66a1 1 0 0 1 0-1.42l1.02-1.02a1 1 0 1 1 1.42 1.42l-1.02 1.02a1 1 0 0 1-1.42 0Zm10.3-10.3a1 1 0 0 1 0-1.42l1.02-1.02a1 1 0 0 1 1.42 1.42l-1.02 1.02a1 1 0 0 1-1.42 0ZM12 8.25A3.75 3.75 0 1 0 12 15.75 3.75 3.75 0 0 0 12 8.25Z"/></svg>
         </span>
-        <span class="nav-label">Renungan</span>
+        <span class="nav-label" data-i18n="nav.devotion">Renungan</span>
       </button>
       <button type="button" class="nav-item" data-screen="doa" onclick="window.__rhemaNavBootstrap?.('doa')">
         <span class="nav-icon-wrap" aria-hidden="true">
           <svg class="nav-svg nav-svg-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7.5V5.5a2 2 0 0 1 4 0v2"/><path d="M12 7.5V5.5a2 2 0 0 1 4 0v2"/><path d="M8 7.5C6.5 9.8 5.75 12.4 5.75 15a6.25 6.25 0 0 0 12.5 0c0-2.6-.75-5.2-2.25-7.5"/><path d="M12 7.5V19"/></svg>
           <svg class="nav-svg nav-svg-filled" viewBox="0 0 24 24" fill="currentColor"><path d="M9.75 3.25A1.25 1.25 0 0 0 8.5 4.5V7h-.25C6.8 7 5.6 8.05 5.35 9.45c-.5 2.85-.15 5.85 1.35 8.35 1.1 1.85 2.85 2.95 4.8 2.95h.5c1.95 0 3.7-1.1 4.8-2.95 1.5-2.5 1.85-5.5 1.35-8.35-.25-1.4-1.45-2.45-2.9-2.45h-.25V4.5a1.25 1.25 0 0 0-2.5 0V7h-2V4.5a1.25 1.25 0 0 0-1.25-1.25Z"/></svg>
         </span>
-        <span class="nav-label">Doa</span>
+        <span class="nav-label" data-i18n="nav.prayer">Doa</span>
       </button>
     </nav>
   </div>
@@ -1074,6 +1089,6 @@
   <script src="/rhema-build.js?v=20260911-byok"></script>
   <script src="/preview-bootstrap.js?v=20260911-byok"></script>
   <script src="/navBootstrap.js?v=20260911-byok"></script>
-  <script src="/main.js?v=20260911-play" type="module"></script>
+  <script src="/main.js?v=20260911-i18n" type="module"></script>
 </body>
 </html>

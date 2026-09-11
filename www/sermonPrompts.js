@@ -6,6 +6,7 @@ import { RHEMA_ADDRESS_RULE_SHORT } from "./rhemaAddressRule.js";
 import { markSermonStarted } from "./sermonLiveContinuer.js";
 import { buildSermonKnowledgePrompt, renderSermonKnowledgePanel } from "./sermonBibleContext.js";
 import { saveLastSermonMeta } from "./sermonExport.js";
+import { isIndonesiaProfile } from "./localeProfile.js";
 
 const PERSONA_KEY = "rhema-persona-id";
 
@@ -52,8 +53,8 @@ export function isSermonModeActive() {
 /** @param {string} passage */
 export function sermonTitleFromPassage(passage) {
   const p = (passage || "").trim();
-  if (!p) return "Firman Tuhan";
-  return `Khotbah dari ${p}`;
+  if (!p) return isIndonesiaProfile() ? "Firman Tuhan" : "God's Word";
+  return isIndonesiaProfile() ? `Khotbah dari ${p}` : `Sermon from ${p}`;
 }
 
 /**
@@ -64,9 +65,31 @@ export function buildSermonVoicePrompt(opts) {
   const minutes = Math.min(15, Math.max(5, Number(opts.minutes) || 5));
   const passage = (opts.passage || "").trim();
   if (!passage) {
-    throw new Error("Ayat khotbah wajib diisi");
+    throw new Error(isIndonesiaProfile() ? "Ayat khotbah wajib diisi" : "Sermon passage is required");
   }
   const title = (opts.title || sermonTitleFromPassage(passage)).trim();
+
+  if (!isIndonesiaProfile()) {
+    return `[SERMON MODE — TARGET ${minutes} MINUTES]
+${RHEMA_ADDRESS_RULE_SHORT}
+Deliver a complete sermon in natural, warm everyday English — pastoral tone with humility.
+REQUIRED: speak long enough (~${minutes} minutes). Do not stop after the opening alone.
+IMPORTANT: Long sermons continue automatically across turns — do not repeat the opening when you receive "CONTINUE SERMON".
+
+Theme: "${title}"
+Main reading: ${passage} (King James Version)
+
+Required structure (brief pauses between sections):
+1. Opening greeting
+2. Scripture reading — read the passage clearly from KJV
+3. Brief context of the passage
+4. Three sermon points (I, II, III) — each with explanation and real-life application
+5. A relevant illustration or short story
+6. Practical application for family, work, and daily faith
+7. Closing prayer & blessing (say "Amen")
+
+Use accurate KJV wording. You are not replacing a real pastor; preach with humility.`;
+  }
 
   return `[MODE KHOTBAH FIRMAN — TARGET ${minutes} MENIT]
 ${RHEMA_ADDRESS_RULE_SHORT}
@@ -96,8 +119,22 @@ Gunakan ayat TB yang akurat. Jangan menggantikan pendeta sungguhan; sampaikan fi
 export function buildExpositionVoicePrompt(opts) {
   const minutes = Math.min(15, Math.max(10, Number(opts.minutes) || 15));
   const passage = (opts.passage || "").trim();
-  if (!passage) throw new Error("Ayat eksposisi wajib diisi");
-  const title = (opts.title || `Eksposisi ${passage}`).trim();
+  if (!passage) throw new Error(isIndonesiaProfile() ? "Ayat eksposisi wajib diisi" : "Exposition passage is required");
+  const title = (opts.title || (isIndonesiaProfile() ? `Eksposisi ${passage}` : `Exposition: ${passage}`)).trim();
+
+  if (!isIndonesiaProfile()) {
+    return `[SCRIPTURE EXPOSITION — TARGET ${minutes} MINUTES]
+${RHEMA_ADDRESS_RULE_SHORT}
+Deliver a deep Bible exposition in clear, humble English — teacher/theologian tone.
+REQUIRED: ~${minutes} minutes. Use lookup_lexicon, lookup_tafsir, lookup_passage for depth.
+IMPORTANT: Long exposition continues automatically — do not repeat the opening on "CONTINUE EXPOSITION".
+
+Theme: "${title}"
+Main reading: ${passage} (King James Version)
+
+Structure: opening → historical context → KJV reading → keyword analysis → exposition (I, II, III) → theology & pastoral application → closing prayer (Amen).
+Do not invent verse text. verify_verse before reading. Not a substitute for ordained ministry.`;
+  }
 
   return `[MODE EKSPOSISI FIRMAN — TARGET ${minutes} MENIT]
 ${RHEMA_ADDRESS_RULE_SHORT}
@@ -127,6 +164,23 @@ Jangan mengarang teks ayat. verify_verse sebelum bacakan. Bukan pengganti pendet
  */
 export function buildSermonInteractivePrompt(minutes = 5) {
   const m = Math.min(15, Math.max(5, Number(minutes) || 5));
+  if (!isIndonesiaProfile()) {
+    return `[INTERACTIVE SERMON — TARGET ${m} MINUTES]
+${RHEMA_ADDRESS_RULE_SHORT}
+
+STEP 1 — ASK (say now):
+With a warm pastoral tone, ask only this short question:
+"Peace be with you. Which Scripture passage would you like a sermon from? For example Psalm 23 or John 3:16."
+Then STOP and listen. Do not start the sermon yet.
+
+STEP 2 — WAIT:
+Wait until the user gives a clear Bible reference. If unclear, ask once more briefly.
+
+STEP 3 — SERMON (after reference given):
+Deliver a full ~${m}-minute sermon from the user's passage.
+Structure: opening → KJV reading → context → 3 points (I, II, III) → illustration → application → closing prayer (Amen).
+Do not rush under 4 minutes. Continue automatically on "CONTINUE SERMON" without repeating the opening.`;
+  }
   return `[MODE KHOTBAH INTERAKTIF — TARGET ${m} MENIT]
 ${RHEMA_ADDRESS_RULE_SHORT}
 

@@ -29,12 +29,17 @@ export function detectDeviceSignals() {
   return { timezone, locale };
 }
 
-/** @param {{ timezone?: string, locale?: string }} [signals] */
+/** @param {{ timezone?: string, locale?: string, suggestGlobal?: boolean }} [signals] */
 export function suggestRegion(signals = detectDeviceSignals()) {
+  if (typeof signals.suggestGlobal === "boolean") {
+    return signals.suggestGlobal ? "global" : "indonesia";
+  }
   let score = 0;
   const loc = (signals.locale || "").toLowerCase();
-  if (loc.startsWith("id")) score += 2;
-  if (INDONESIA_TIMEZONES.has(signals.timezone || "")) score += 2;
+  if (loc.startsWith("id") || loc.startsWith("in")) score += 2;
+  const tz = signals.timezone || "";
+  if (INDONESIA_TIMEZONES.has(tz)) score += 2;
+  if (/jakarta|makassar|jayapura|pontianak/i.test(tz)) score += 2;
   return score >= 2 ? "indonesia" : "global";
 }
 
@@ -105,6 +110,36 @@ export function getSuggestedProfile() {
 
 export function isIndonesiaProfile() {
   return getEffectiveProfile().region === "indonesia";
+}
+
+/** Bahasa UI efektif: region tersimpan, atau deteksi locale HP sebelum onboarding. */
+export function getEffectiveUiLang() {
+  if (isLocaleProfileConfigured()) {
+    return isIndonesiaProfile() ? "id" : "en";
+  }
+  const loc = (detectDeviceSignals().locale || "").toLowerCase();
+  return loc.startsWith("id") ? "id" : "en";
+}
+
+/** Saran region dari timezone + locale perangkat (setara deteksi Kotlin/JS di boot). */
+export function getBootRegionSuggestion() {
+  const signals = detectDeviceSignals();
+  const region = suggestRegion(signals);
+  return { region, signals, lang: getEffectiveUiLang() };
+}
+
+/** Struktur respons suara live — devotion / renungan (Pilar 2: Otak AI). */
+export function getLiveVoiceDevotionStructureRule() {
+  if (!isIndonesiaProfile()) {
+    return (
+      "Default live voice devotion structure: warm Greeting → KJV Scripture reading → " +
+      "Reflection → Pastoral Prayer. End prayer with: In Jesus' name, Amen."
+    );
+  }
+  return (
+    "Struktur renungan suara default: Sapaan hangat → Pembacaan ayat TB → " +
+    "Refleksi teologis → Doa syafaat/karismatik. Akhiri doa: Dalam nama Tuhan Yesus, Amen."
+  );
 }
 
 /** @returns {BibleVersionPreference} */

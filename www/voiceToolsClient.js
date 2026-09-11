@@ -6,12 +6,14 @@ import {
   getLexiconForReference,
   getStrongsEntry,
   getTafsirForRef,
+  lookupKjvVerse,
   lookupPassage,
   lookupVerse,
   parseVerseReference,
   searchTb,
   verifyVerse,
 } from "./alkitabClient.js";
+import { isIndonesiaProfile } from "./localeProfile.js";
 import { loadHymn } from "./laguData.js";
 import { getLiveSessionTimeSnapshot } from "./voiceSessionTime.js";
 
@@ -34,12 +36,15 @@ export async function executeVoiceTool(req, sessionMeta) {
     }
     case "lookup_verse": {
       const reference = String(args.reference ?? "").trim();
-      const result = await lookupVerse(reference);
+      const result = isIndonesiaProfile()
+        ? await lookupVerse(reference)
+        : await lookupKjvVerse(reference);
       if (result.found) return result;
       return {
         ...result,
-        message:
-          "Ayat tidak ditemukan di TB offline perangkat. Jangan panggil lookup_verse berulang untuk referensi yang sama — lanjutkan dengan TB yang Anda kenal atau minta referensi lain.",
+        message: isIndonesiaProfile()
+          ? "Ayat tidak ditemukan di TB offline perangkat. Jangan panggil lookup_verse berulang — lanjutkan dengan referensi lain."
+          : "Verse not found in offline KJV on device. Do not retry lookup_verse for the same reference — continue or ask for another reference.",
       };
     }
     case "lookup_passage":

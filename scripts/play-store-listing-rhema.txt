@@ -6,11 +6,25 @@ Version: 1.0.0 | targetSdk 36 | Format upload: AAB
 
 --- CREATE APP (setelah verifikasi identitas + HP) ---
 
-Nama aplikasi (max 30 karakter):
-  Rhema AI
+Nama aplikasi (max 30 karakter) — Bahasa Indonesia:
+  Rhema AI: Renungan & Khotbah          (28/30 ✓)
+
+Nama aplikasi (max 30 karakter) — English (en-US) DEFAULT:
+  Rhema AI: Audio Devotion             (24/30 ✓)
+
+>>> TEKS RESMI LENGKAP: scripts/play-store-descriptions-bilingual.txt (LOCKED)
+>>> CATATAN RILIS v1.0.0: scripts/play-store-whats-new-v1.0.0.txt (ID 478/500 · EN 435/500)
+>>> RANGKUMAN LENGKAP: scripts/PLAY-STORE-READY.md
 
 Bahasa default:
   Bahasa Indonesia
+
+--- STORE LISTING TRANSLATIONS (Play Console → Grow → Store presence → Main store listing → Manage translations) ---
+  Tambah: English (United States), English (United Kingdom)
+  ID title: Rhema AI: Renungan Suara & Khotbah TB
+  EN title: Rhema AI: Audio Devotion & KJV Sermon Prep
+  ID short: Pendamping ibadah · Alkitab TB · renungan AI · kidung · suara live
+  EN short: Live voice Bible companion · KJV · devotion · hymns · worldwide
 
 Jenis:
   Aplikasi
@@ -21,48 +35,18 @@ Gratis / Berbayar:
 Kategori:
   Buku & Referensi  (alternatif: Gaya Hidup)
 
---- DESKRIPSI SINGKAT (max 80 karakter) ---
+--- DESKRIPSI SINGKAT ID (max 80 karakter) — 77/80 ✓ ---
 
-Pendamping ibadah · Alkitab TB · renungan AI · kidung · suara live
+Asisten teduh & khotbah Alkitab TB via suara Full Duplex bertenaga Gemini AI.
 
---- DESKRIPSI LENGKAP (Bahasa Indonesia) ---
+--- SHORT DESCRIPTION EN (max 80 chars) — 75/80 ✓ ---
 
-Rhema AI menemani saat teduh Anda — Alkitab, renungan, doa, dan kidung gereja dalam satu aplikasi.
+Your Full Duplex voice companion for KJV Bible devotions & sermon outlines.
 
-📖 ALKITAB OFFLINE
-Baca dan cari ayat Terjemahan Baru (TB/LAI). Mode Global: King James Version (KJV). Highlight ayat, catatan pribadi, dan penjelasan AI lewat suara.
+--- DESKRIPSI LENGKAP ---
 
-🕊 RENUNGAN & DOA AI
-Renungan harian, Lectio Divina, doa terpandu, dan pendamping emosi — dengan suara live natural. AI menafsirkan firman ke konteks hidup nyata.
-
-🎵 KIDUNG LENGKAP
-Kidung Jemaat (478), PKJ (308), NKB (230), Buku Ende (864), dan lagu rohani populer — lirik & iringan.
-
-🌬 LATIHAN NAFAS DOA
-Relaksasi 4-4-4 dengan ayat dan musik harp lembut.
-
-🔑 BRING YOUR OWN KEY (BYOK)
-Fitur AI & suara live memakai API key Google Gemini milik Anda — gratis dari Google AI Studio. Key disimpan hanya di HP Anda, bukan di server Rhema. Alkitab & kidung tetap bisa dibaca tanpa key.
-
-🌏 INDONESIA & GLOBAL
-Pilih region ibadah saat pertama buka: Indonesia (TB, konteks nusantara) atau Global (KJV, English devotion).
-
-⚠️ PENTING
-Rhema AI bukan pengganti pendeta, konselor, atau doa pribadi dengan Tuhan. AI dapat keliru — selalu uji dengan Alkitab dan komunitas iman Anda.
-
-Kebijakan privasi: https://kanzapro71.github.io/rhema-ai-privacy/
-
---- FULL DESCRIPTION (English — optional second locale) ---
-
-Rhema AI is your worship companion — Bible, devotion, prayer, and church hymns in one app.
-
-📖 OFFLINE BIBLE — TB/LAI (Indonesia) or KJV (Global)
-🕊 AI DEVOTION & PRAYER — daily reflection, Lectio Divina, guided prayer, live voice
-🎵 HYMNS — KJ, PKJ, NKB, Buku Ende, popular worship songs
-🔑 BYOK — Use your own free Google Gemini API key. Stored on device only.
-⚠️ Not a substitute for pastoral care or personal prayer.
-
-Privacy policy: https://kanzapro71.github.io/rhema-ai-privacy/
+Lihat file resmi: scripts/play-store-descriptions-bilingual.txt
+(Versi 1 = ID · Versi 2 = EN default)
 
 --- PROMO TEXT (max 170 karakter, opsional) ---
 
@@ -135,6 +119,30 @@ PERMISSION DECLARATION
 
 RECORD_AUDIO — "Untuk percakapan suara live dengan pendamping ibadah AI saat pengguna memulai sesi suara."
 INTERNET — "Untuk koneksi ke Google Gemini API (key milik pengguna)."
+
+================================================================================
+DISTRIBUSI GLOBAL (Countries / Regions)
+================================================================================
+
+Play Console → Release → Production → Countries / regions:
+  Pilih: All countries and regions (recommended)
+
+Catatan hak cipta untuk reviewer:
+  - KJV: Public Domain worldwide (safe for commercial/free apps)
+  - TB/LAI: Bundled as offline study tool interface; user BYOK to Google for AI interpretation
+  - Position app as "Bible study & worship companion tool" — not a Bible publisher
+
+Data safety → declare microphone + on-device API key + local notes/highlights
+
+================================================================================
+STRESS TEST VIVO (sebelum upload AAB)
+================================================================================
+
+1. Settings → Region → Outside Indonesia (KJV)
+2. Voice live: AI must respond in English, KJV sermon structure when preacher persona
+3. Switch back to Indonesia → TB + Bahasa Indonesia
+4. BYOK: Live WebSocket validation green check
+5. Uninstall/reinstall → region onboarding + BYOK flow
 
 ================================================================================
 FILE UPLOAD

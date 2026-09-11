@@ -1,6 +1,13 @@
 /** Konstanta Gemini — model AI tunggal BYOK (browser / Capacitor). */
 
 import { getBundledGoogleKey } from "./bundledProviderKeys.js";
+import { validateGoogleKeyLiveWebSocket } from "./byokLiveValidate.js";
+import {
+  isSecureKeyStorageAvailable,
+  migrateLegacyKeyToSecure,
+  secureRemoveItem,
+  secureSetItem,
+} from "./secureKeyStorage.js";
 
 /** Model generate gambar — Gemini 3.1 Flash Image (Nano Banana 2). */
 export const GEMINI_IMAGE_MODEL = "gemini-3.1-flash-image";
@@ -26,6 +33,10 @@ export const RHEMA_VOICE_LOCKED = {
 };
 
 let lastGoodGeminiModel;
+
+/** Cache in-memory — sumber kebenaran di Android setelah migrasi dari localStorage. */
+let memoryKeyCache = null;
+let secureKeyBootstrapped = false;
 
 export function noteGeminiModelSuccess(modelId) {
   lastGoodGeminiModel = GEMINI_MODEL;
@@ -56,7 +67,24 @@ export function geminiLiveWsUrl(apiKey) {
 export const GOOGLE_KEY_STORAGE = "rhema-google-key";
 export const GOOGLE_KEY_FLAG = "rhema-ai-google-key-configured";
 
+/** Muat key dari EncryptedSharedPreferences (Android) sebelum BYOK/voice init. */
+export async function initGoogleKeySecureStorage() {
+  if (secureKeyBootstrapped) return;
+  secureKeyBootstrapped = true;
+  if (!isSecureKeyStorageAvailable()) return;
+  const migrated = await migrateLegacyKeyToSecure(GOOGLE_KEY_STORAGE);
+  if (migrated) {
+    memoryKeyCache = migrated;
+    try {
+      localStorage.setItem(GOOGLE_KEY_FLAG, "1");
+    } catch {
+      /* ignore */
+    }
+  }
+}
+
 export function getStoredGoogleKey() {
+  if (memoryKeyCache) return memoryKeyCache;
   const stored = (localStorage.getItem(GOOGLE_KEY_STORAGE) || "").trim();
   if (stored) return stored;
   return getBundledGoogleKey();
@@ -64,12 +92,26 @@ export function getStoredGoogleKey() {
 
 export function setStoredGoogleKey(key) {
   const t = String(key || "").trim();
+  memoryKeyCache = t || null;
   if (t) {
-    localStorage.setItem(GOOGLE_KEY_STORAGE, t);
+    if (isSecureKeyStorageAvailable()) {
+      void secureSetItem(GOOGLE_KEY_STORAGE, t);
+      try {
+        localStorage.removeItem(GOOGLE_KEY_STORAGE);
+      } catch {
+        /* ignore */
+      }
+    } else {
+      localStorage.setItem(GOOGLE_KEY_STORAGE, t);
+    }
     localStorage.setItem(GOOGLE_KEY_FLAG, "1");
   } else {
+    memoryKeyCache = null;
     localStorage.removeItem(GOOGLE_KEY_STORAGE);
     localStorage.removeItem(GOOGLE_KEY_FLAG);
+    if (isSecureKeyStorageAvailable()) {
+      void secureRemoveItem(GOOGLE_KEY_STORAGE);
+    }
   }
 }
 
@@ -77,26 +119,76 @@ export function googleKeyConfigured() {
   return Boolean(getStoredGoogleKey()) || localStorage.getItem(GOOGLE_KEY_FLAG) === "1";
 }
 
-/** Cek cepat apakah key valid sebelum buka Gemini Live WS. */
+/**
+ * Validasi BYOK untuk Gemini Live: REST list models + handshake WebSocket Live API.
+ * Koneksi langsung HP → wss://generativelanguage.googleapis.com (tanpa server Rhema).
+ */
 export async function validateGoogleKeyForVoice() {
   const key = getStoredGoogleKey();
   if (!key) {
-    return { ok: false, error: "Gemini API key belum diset. Buka Akun → ⚙ Pengaturan & API Key → Simpan." };
+    return { ok: false, error: "no_key" };
   }
   try {
-    const res = await fetch(
+    const listRes = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`,
     );
-    if (res.ok) return { ok: true };
-    const data = await res.json().catch(() => ({}));
-    const msg = data?.error?.message || `HTTP ${res.status}`;
+    if (!listRes.ok) {
+      const data = await listRes.json().catch(() => ({}));
+      const msg = data?.error?.message || `HTTP ${listRes.status}`;
+      return { ok: false, error: msg, status: listRes.status, kind: "invalid" };
+    }
+
+    const liveCheck = await validateGoogleKeyLiveWebSocket(key);
+    if (liveCheck.ok) {
+      try {
+        localStorage.setItem("rhema-google-key-validated-at", String(Date.now()));
+        localStorage.setItem("rhema-google-key-live-validated", "1");
+      } catch {
+        /* ignore */
+      }
+      return { ok: true, mode: "live_ws" };
+    }
     return {
       ok: false,
-      error: /API key|PERMISSION|authentication/i.test(msg)
-        ? "API key tidak valid — buka Pengaturan & API Key, isi key baru, lalu Simpan."
-        : msg,
+      error: liveCheck.error,
+      status: liveCheck.status,
+      kind: liveCheck.kind || "live_not_enabled",
     };
   } catch (err) {
-    return { ok: false, error: err instanceof Error ? err.message : String(err) };
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : String(err),
+      kind: "network",
+    };
   }
+}
+
+export function clearStoredGoogleKey() {
+  setStoredGoogleKey("");
+  try {
+    localStorage.removeItem("rhema-google-key-validated-at");
+    localStorage.removeItem("rhema-google-key-live-validated");
+  } catch {
+    /* ignore */
+  }
+}
+
+/** @returns {{ configured: boolean, validatedAt: number|null, liveValidated: boolean, label: string }} */
+export function getGoogleKeyStatusMeta() {
+  const configured = googleKeyConfigured();
+  let validatedAt = null;
+  let liveValidated = false;
+  try {
+    const raw = localStorage.getItem("rhema-google-key-validated-at");
+    if (raw) validatedAt = Number(raw) || null;
+    liveValidated = localStorage.getItem("rhema-google-key-live-validated") === "1";
+  } catch {
+    /* ignore */
+  }
+  return {
+    configured,
+    validatedAt,
+    liveValidated,
+    label: configured ? (liveValidated ? "live_active" : "active") : "missing",
+  };
 }

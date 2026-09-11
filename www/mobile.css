@@ -9042,6 +9042,40 @@ body.byok-onboard-open {
   margin-bottom: 6px;
 }
 
+.byok-key-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.byok-key-row .byok-key-input,
+.byok-key-row input[type="password"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.byok-paste-btn {
+  flex-shrink: 0;
+  min-width: 46px;
+  border-radius: 14px;
+  border: 1px solid var(--apple-separator);
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.byok-paste-btn:active {
+  transform: scale(0.97);
+}
+
+.byok-security-trust {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--apple-label-secondary);
+}
+
 .byok-key-input {
   width: 100%;
   box-sizing: border-box;
@@ -9207,6 +9241,35 @@ body.byok-onboard-open {
 
 .region-onboard-footer {
   margin-top: 8px;
+}
+
+.beranda-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 14px 0 6px;
+}
+
+.beranda-pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: rgba(255, 252, 247, 0.92);
+  border: 1px solid rgba(196, 146, 58, 0.18);
+  text-align: center;
+}
+
+.beranda-pillar strong {
+  font-size: 0.92rem;
+  color: #2a6a86;
+}
+
+.beranda-pillar span {
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: #6e6558;
 }
 
 

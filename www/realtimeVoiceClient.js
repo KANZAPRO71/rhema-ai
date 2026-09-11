@@ -10,6 +10,7 @@ import { unlockNativeElementAudio, isCapacitorNative, playPcmBase64Native, reset
 import { ensureNativeMicPermission } from "./nativeMicPermission.js";
 import { getStoredGoogleKey } from "./geminiConstants.js";
 import { buildSessionConfigResponse } from "./voiceProfiles.js";
+import { getUiLocale, isIndonesiaProfile } from "./localeProfile.js";
 import { handleVoiceLocalCommand } from "./voiceLocalCommands.js";
 
 const DEFAULT_INPUT_RATE = 24000;
@@ -111,7 +112,11 @@ function initDirectGeminiVoice(transport) {
       if (event.type === "voiceModuleSpeak" && event.text) {
         haltNativePlayback();
         if (profile === "alkitab-voice") {
-          speakIndonesianText(String(event.text), { stopAmbientOnEnd: false });
+          if (isIndonesiaProfile()) {
+            speakIndonesianText(String(event.text), { stopAmbientOnEnd: false });
+          } else {
+            speakModuleReply(String(event.text), getUiLocale());
+          }
         } else {
           speakModuleReply(String(event.text), navigator.language || "id-ID");
         }
@@ -502,7 +507,11 @@ function initProxyVoice(transport) {
       case "voiceModuleSpeak":
         if (m.text && (transport.voiceProfile || "") === "alkitab-voice") {
           haltNativePlayback();
-          speakIndonesianText(String(m.text), { stopAmbientOnEnd: false });
+          if (isIndonesiaProfile()) {
+            speakIndonesianText(String(m.text), { stopAmbientOnEnd: false });
+          } else {
+            speakModuleReply(String(m.text), getUiLocale());
+          }
         } else if (m.text) {
           scheduleModuleSpeechFallback(m.text);
         }

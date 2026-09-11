@@ -18,7 +18,9 @@ import { unlockNativeElementAudio } from "./nativeAudioPlayback.js";
 import { applyBundledProviderKeys } from "./bundledProviderKeys.js";
 import { warmupNativeMicPermission } from "./nativeMicPermission.js";
 import { initByokOnboarding } from "./byokOnboarding.js";
-import { initRegionOnboarding, shouldAutoOpenRegionOnboarding } from "./regionOnboarding.js";
+import { initGoogleKeySecureStorage } from "./geminiConstants.js";
+import { initRegionOnboarding } from "./regionOnboarding.js";
+import { initLocaleUi } from "./localeUi.js";
 
 applyBundledProviderKeys();
 if (typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()) {
@@ -203,7 +205,19 @@ function initHeaderRefresh(getCurrentScreen) {
 
 
 
-function boot() {
+async function boot() {
+  try {
+    await initGoogleKeySecureStorage();
+  } catch (err) {
+    console.warn("[rhema-ai] initGoogleKeySecureStorage error:", err);
+  }
+
+  try {
+    initLocaleUi();
+  } catch (err) {
+    console.warn("[rhema-ai] initLocaleUi error:", err);
+  }
+
   void initNativeShell();
   initServerSettings();
 
@@ -286,7 +300,7 @@ function boot() {
 
   try {
     initByokOnboarding(transport, {
-      deferAutoOpen: shouldAutoOpenRegionOnboarding(),
+      deferAutoOpen: true,
     });
   } catch (err) {
     console.warn("[rhema-ai] initByokOnboarding error:", err);

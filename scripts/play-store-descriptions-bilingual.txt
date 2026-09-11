@@ -1,0 +1,86 @@
+================================================================================
+RHEMA AI — MAIN STORE LISTING (RESMI · LOCKED)
+Package: id.rhema.alkitabvoice · Version: 1.0.0
+Verifikasi karakter: ID title 28/30 · EN title 24/30 · ID short 77/80 · EN short 75/80
+================================================================================
+
+CARA TERAPKAN DI PLAY CONSOLE (setelah verifikasi KTP):
+1. Main Store Listing → Default language: English (United States)
+2. Isi kolom default dengan VERSI 2 (English) di bawah
+3. Manage translations → Add Indonesian (id-ID) → paste VERSI 1
+4. Countries: All countries and regions
+5. Privacy policy: https://kanzapro71.github.io/rhema-ai-privacy/
+
+================================================================================
+🇮🇩 VERSI 1 — BAHASA INDONESIA (id-ID translation)
+================================================================================
+
+--- JUDUL APLIKASI (max 30 karakter) — 28 karakter ✓ ---
+
+Rhema AI: Renungan & Khotbah
+
+--- DESKRIPSI SINGKAT (max 80 karakter) — 77 karakter ✓ ---
+
+Asisten teduh & khotbah Alkitab TB via suara Full Duplex bertenaga Gemini AI.
+
+--- DESKRIPSI LENGKAP (max 4.000 karakter) ---
+
+Rasakan Firman yang Hidup Bersama Rhema AI.
+
+Rhema AI bukan sekadar aplikasi Alkitab biasa. Ini adalah pendamping ibadah dan asisten teologis pribadi Anda yang dirancang khusus untuk jemaat, pelayan, dan pemimpin komsel di Indonesia. Ditenagai oleh model AI Gemini 3.1 Flash Live Preview tercanggih, Rhema AI menghadirkan interaksi audio dua arah yang alami (Full Duplex) untuk menemani saat teduh dan persiapan pelayanan Anda.
+
+Mengapa Memilih Rhema AI?
+
+Renungan Suara Interaktif: Dengarkan renungan harian terstruktur mulai dari sapaan hangat, pembacaan ayat Alkitab Terjemahan Baru (TB), refleksi mendalam, hingga tuntunan doa penutup.
+
+Asisten Persiapan Khotbah: Bingung menyusun bahan komsel atau materi khotbah? Diskusikan topik atau ayat pilihan Anda lewat suara. Rhema AI akan membantu menyusun draf kerangka khotbah yang solid dalam hitungan menit.
+
+Fitur Tanpa Hambatan (BYOK): Aplikasi ini 100% gratis digunakan menggunakan API Key Gemini Anda sendiri. Seluruh data kunci dan percakapan dienkripsi dengan aman secara lokal di HP Anda tanpa melibatkan server luar.
+
+Bersiaplah untuk memperdalam pertumbuhan rohani Anda. Unduh Rhema AI sekarang dan rasakan pengalaman bersaat teduh yang interaktif!
+
+Kebijakan privasi: https://kanzapro71.github.io/rhema-ai-privacy/
+
+⚠️ Rhema AI bukan pengganti pendeta, konselor, atau doa pribadi dengan Tuhan.
+
+================================================================================
+🌍 VERSI 2 — ENGLISH (en-US default · global)
+================================================================================
+
+--- APP TITLE (max 30 characters) — 24 characters ✓ ---
+
+Rhema AI: Audio Devotion
+
+--- SHORT DESCRIPTION (max 80 characters) — 75 characters ✓ ---
+
+Your Full Duplex voice companion for KJV Bible devotions & sermon outlines.
+
+--- FULL DESCRIPTION (max 4.000 characters) ---
+
+Experience a Living Devotional Companion with Rhema AI.
+
+Rhema AI is a next-generation spiritual assistant designed to transform your daily worship and sermon preparation. Powered by the cutting-edge Gemini 3.1 Flash Live Preview model, Rhema AI offers an immersive, natural, two-way (Full Duplex) audio experience, making your quiet times and study sessions feel deeply engaging.
+
+Key Features:
+
+Interactive Audio Devotions: Engage in a complete voice-guided quiet time. Rhema AI reads King James Version (KJV) scriptures, delivers contextual reflections, and concludes with a pastoral prayer.
+
+Sermon & Bible Study Assistant: Instantly generate rich, structured sermon drafts, outlines, or small group materials from any topic or verse simply by talking to the AI.
+
+Privacy First & BYOK Support: Rhema AI operates on a Bring Your Own Key (BYOK) framework. Your free Gemini API Key is encrypted locally via Android Keystore—ensuring maximum security with zero external server transmission.
+
+Elevate your daily spiritual discipline. Download Rhema AI today and change the way you interact with the Word.
+
+Privacy policy: https://kanzapro71.github.io/rhema-ai-privacy/
+
+⚠️ Rhema AI is not a substitute for pastoral care, professional counseling, or personal prayer with God.
+
+================================================================================
+PROMO TEXT (opsional · max 170 karakter)
+================================================================================
+
+EN: Talk to your Bible. Full-duplex Gemini Live voice, offline KJV, sermon prep — BYOK, your key, your privacy.
+
+ID: Saat teduh interaktif dengan Alkitab TB, khotbah suara AI, dan ribuan kidung — BYOK, key Anda, privasi di HP.
+
+================================================================================

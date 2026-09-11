@@ -18,6 +18,7 @@ import {
   nativeGeminiWsDisconnect,
   nativeGeminiWsSend,
 } from "./nativeGeminiWs.js";
+import { formatVoiceError } from "./byokUx.js";
 
 const INPUT_RATE = 16000;
 const OUTPUT_RATE = 24000;
@@ -400,7 +401,11 @@ export function createGeminiLiveSession(options) {
           clearSetupWatchdog();
           useNativeWs = false;
           voiceLog("native ws error", message);
-          options.emit({ type: "voiceStatus", status: "error", detail: message || "WebSocket Gemini gagal" });
+          options.emit({
+            type: "voiceStatus",
+            status: "error",
+            detail: formatVoiceError(message || "WebSocket Gemini gagal"),
+          });
         },
         onClose: (code, reason) => {
           void nativeGeminiWsDisconnect().catch(() => {});
@@ -725,7 +730,11 @@ export function createGeminiLiveSession(options) {
     if (msg.error?.message) {
       connecting = false;
       clearSetupWatchdog();
-      options.emit({ type: "voiceStatus", status: "error", detail: msg.error.message });
+      options.emit({
+        type: "voiceStatus",
+        status: "error",
+        detail: formatVoiceError(msg.error.message),
+      });
       return;
     }
     if (msg.toolCall) {
@@ -859,7 +868,11 @@ export function createGeminiLiveSession(options) {
     if (config.error) {
       connecting = false;
       stopMic();
-      options.emit({ type: "voiceStatus", status: "error", detail: config.error });
+      options.emit({
+        type: "voiceStatus",
+        status: "error",
+        detail: formatVoiceError(config.error),
+      });
       return;
     }
 

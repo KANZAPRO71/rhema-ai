@@ -31,95 +31,139 @@
     </div>
 
     <section data-lang="id" class="active">
-      <h1>Kebijakan Privasi Rhema AI</h1>
-      <p class="meta">Terakhir diperbarui: 11 September 2026 · id.rhema.alkitabvoice</p>
+      <h1>Kebijakan Privasi – Rhema AI</h1>
+      <p class="meta">Terakhir diperbarui: 11 September 2026 · <code>id.rhema.alkitabvoice</code></p>
 
       <div class="card">
-        <p><strong>Ringkasan:</strong> Rhema AI adalah pendamping ibadah di perangkat Anda. Kami <strong>tidak</strong> menjalankan server yang menyimpan renungan, doa, atau API key Anda. Fitur AI memakai <strong>Google Gemini</strong> dengan <strong>API key milik Anda sendiri</strong> (BYOK).</p>
+        <p>Rhema AI (“Kami”) berkomitmen melindungi privasi Anda. Kebijakan ini menjelaskan bagaimana informasi dikelola saat Anda menggunakan aplikasi pendamping ibadah kami yang berbasis <strong>Bring Your Own Key (BYOK)</strong> dan model <strong>Gemini 3.1 Flash Live Preview</strong>.</p>
       </div>
 
-      <h2>1. Pengendali data</h2>
-      <p>Aplikasi Rhema AI (<code>id.rhema.alkitabvoice</code>). Pertanyaan privasi: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
-
-      <h2>2. Data yang diproses</h2>
+      <h2>1. Sistem Bring Your Own Key (BYOK) &amp; Keamanan API Key</h2>
+      <p>Aplikasi kami beroperasi sepenuhnya dengan sistem BYOK — Anda membawa API Key Google Gemini milik sendiri.</p>
       <ul>
-        <li><strong>API key Google Gemini</strong> — disimpan hanya di perangkat (local storage). Tidak dikirim ke server Rhema.</li>
-        <li><strong>Audio mikrofon</strong> — diproses untuk percakapan suara live; dikirim ke Google sesuai key Anda.</li>
-        <li><strong>Teks &amp; gambar</strong> — prompt renungan, chat, atau analisis foto dikirim ke Google Gemini saat fitur AI dipakai.</li>
-        <li><strong>Preferensi lokal</strong> — region ibadah, suara AI, highlight ayat, catatan, jurnal doa (local storage).</li>
-        <li><strong>Alkitab &amp; kidung offline</strong> — teks bundled di app; tidak dikirim ke server Rhema.</li>
+        <li><strong>Penyimpanan lokal terenkripsi:</strong> API Key yang Anda masukkan disimpan dengan aman di perangkat Anda. Di Android, kami menggunakan <strong>EncryptedSharedPreferences</strong> dan <strong>Android Keystore</strong>.</li>
+        <li><strong>Tidak ada transmisi ke server Kami:</strong> Kami <strong>tidak</strong> menjalankan server perantara. API Key Anda <strong>tidak pernah</strong> dikirim, disimpan, atau dibagikan ke server milik Rhema AI.</li>
+        <li><strong>Kontrol penuh:</strong> Anda dapat menghapus atau mengganti API Key kapan saja melalui menu <strong>Pengaturan</strong> di dalam aplikasi.</li>
+        <li><strong>Validasi Live API:</strong> Saat Anda menyimpan key, aplikasi melakukan uji koneksi WebSocket langsung ke Google untuk memastikan key mendukung Gemini Live — tanpa melalui server Rhema.</li>
       </ul>
 
-      <h2>3. Pihak ketiga</h2>
-      <p>Fitur AI menggunakan <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API</a>. Penggunaan tunduk pada kebijakan Google. Rhema AI tidak menjual atau membagikan data Anda ke pihak ketiga lain.</p>
-
-      <h2>4. Izin Android</h2>
+      <h2>2. Pemrosesan Data Suara &amp; Audio (Full Duplex)</h2>
+      <p>Untuk fitur asisten suara dua arah (Full Duplex), aplikasi memerlukan akses mikrofon perangkat Anda.</p>
       <ul>
-        <li><strong>Internet</strong> — koneksi ke Google Gemini.</li>
-        <li><strong>Mikrofon</strong> — suara live (hanya saat Anda memulai sesi suara).</li>
+        <li><strong>Koneksi langsung (Direct WebSocket):</strong> Aliran audio dari mikrofon dikirim <strong>langsung</strong> dari perangkat Anda ke server Google API menggunakan protokol aman <code>wss://generativelanguage.googleapis.com</code>, memakai API Key Anda.</li>
+        <li><strong>Tidak direkam oleh Rhema:</strong> Kami <strong>tidak</strong> merekam, menyimpan, atau mendengarkan percakapan suara Anda di server manapun milik kami.</li>
+        <li><strong>Kebijakan Google:</strong> Pemrosesan audio tunduk pada <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Ketentuan Google Gemini API</a> dan kebijakan Google AI Studio / Google Cloud terkait akun Anda.</li>
+        <li><strong>Mikrofon hanya saat dipakai:</strong> Akses mikrofon aktif hanya ketika Anda memulai sesi suara live — bukan di latar belakang tanpa sepengetahuan Anda.</li>
+      </ul>
+
+      <h2>3. Data Lain yang Diproses di Perangkat</h2>
+      <ul>
+        <li><strong>Teks &amp; gambar</strong> — prompt renungan, chat, atau analisis foto dikirim ke Google Gemini saat fitur AI dipakai (memakai key Anda).</li>
+        <li><strong>Preferensi lokal</strong> — region ibadah, suara AI, highlight ayat, catatan, jurnal doa.</li>
+        <li><strong>Alkitab &amp; kidung offline</strong> — teks bundled di aplikasi; tidak dikirim ke server Rhema.</li>
+      </ul>
+
+      <h2>4. Iklan Pihak Ketiga</h2>
+      <p><strong>Rhema AI tidak menampilkan iklan</strong> (tidak menggunakan Google AdMob atau jaringan iklan lain). Aplikasi ini didukung oleh model BYOK — biaya API (jika ada) ditanggung langsung oleh Anda melalui akun Google AI Studio / Cloud Project Anda.</p>
+
+      <h2>5. Pihak Ketiga &amp; Gemini Live API</h2>
+      <p>Fitur AI menggunakan <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API</a>, termasuk <strong>Gemini Live API</strong> (model preview full-duplex). Kuota dan biaya (jika ada) ditagihkan oleh Google ke akun API Key / Cloud Project Anda — bukan ke Rhema. Kami tidak menjual atau membagikan data Anda ke pihak ketiga lain.</p>
+
+      <h2>6. Izin Android</h2>
+      <ul>
+        <li><strong>Internet</strong> — koneksi ke Google Gemini (REST &amp; WebSocket).</li>
+        <li><strong>Mikrofon</strong> — suara live full duplex (hanya saat sesi suara dimulai).</li>
         <li><strong>Audio settings</strong> — pemutaran musik ambient &amp; latihan nafas.</li>
       </ul>
 
-      <h2>5. Penyimpanan &amp; penghapusan</h2>
-      <p>Data disimpan di perangkat. Hapus app = data lokal terhapus (kecuali backup sistem Android jika Anda aktifkan). Anda dapat menghapus API key kapan saja di Pengaturan.</p>
+      <h2>7. Hak Pengguna</h2>
+      <p>Karena data (termasuk API Key dan preferensi lokal) disimpan di perangkat Anda, Anda memiliki hak penuh untuk:</p>
+      <ul>
+        <li>Menghapus API Key kapan saja via menu Pengaturan.</li>
+        <li>Menghapus seluruh data aplikasi via <strong>Clear Data</strong> di pengaturan Android.</li>
+        <li>Menghapus instalasi aplikasi — data lokal ikut terhapus (kecuali backup sistem Android jika Anda aktifkan).</li>
+      </ul>
+      <p>Pertanyaan privasi: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
 
-      <h2>6. Anak-anak</h2>
-      <p>Rhema AI ditujukan untuk remaja dan dewasa. Persona “Sekolah Minggu” bukan app khusus anak tanpa pengawasan orang tua.</p>
+      <h2>8. Anak-anak</h2>
+      <p>Rhema AI ditujukan untuk remaja dan dewasa. Persona “Sekolah Minggu” bukan aplikasi khusus anak tanpa pengawasan orang tua.</p>
 
-      <h2>7. Disclaimer rohani &amp; AI</h2>
+      <h2>9. Disclaimer Rohani &amp; AI</h2>
       <p>Rhema AI <strong>bukan</strong> pengganti pendeta, konselor profesional, atau doa pribadi dengan Tuhan. Respons AI dapat keliru — selalu uji dengan Alkitab dan komunitas iman Anda.</p>
 
-      <h2>8. Hak cipta konten</h2>
-      <p>Teks Alkitab (TB/LAI, KJV) dan lirik kidung milik penerbit masing-masing. App menyediakan akses ibadah; klaim kepemilikan penuh ada pada penerbit asli.</p>
+      <h2>10. Hak Cipta Konten</h2>
+      <p>Teks Alkitab (TB/LAI, KJV) dan lirik kidung milik penerbit masing-masing. Aplikasi menyediakan akses ibadah; klaim kepemilikan penuh ada pada penerbit asli.</p>
 
-      <h2>9. Perubahan kebijakan</h2>
-      <p>Kebijakan ini dapat diperbarui. Versi terbaru tersedia di URL yang sama.</p>
+      <h2>11. Perubahan Kebijakan</h2>
+      <p>Kebijakan ini dapat diperbarui. Versi terbaru tersedia di URL yang sama. Tanggal pembaruan ditampilkan di bagian atas dokumen ini.</p>
     </section>
 
     <section data-lang="en">
-      <h1>Rhema AI Privacy Policy</h1>
-      <p class="meta">Last updated: September 11, 2026 · id.rhema.alkitabvoice</p>
+      <h1>Privacy Policy – Rhema AI</h1>
+      <p class="meta">Last updated: September 11, 2026 · <code>id.rhema.alkitabvoice</code></p>
 
       <div class="card">
-        <p><strong>Summary:</strong> Rhema AI is a worship companion on your device. We do <strong>not</strong> run servers that store your devotions, prayers, or API keys. AI features use <strong>Google Gemini</strong> with <strong>your own API key</strong> (BYOK).</p>
+        <p>Rhema AI (“We”) are committed to protecting your privacy. This policy explains how information is handled when you use our worship companion app built on <strong>Bring Your Own Key (BYOK)</strong> and the <strong>Gemini 3.1 Flash Live Preview</strong> model.</p>
       </div>
 
-      <h2>1. Data controller</h2>
-      <p>Rhema AI app (<code>id.rhema.alkitabvoice</code>). Privacy contact: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a>.</p>
-
-      <h2>2. Data processed</h2>
+      <h2>1. Bring Your Own Key (BYOK) &amp; API Key Security</h2>
+      <p>Our app runs entirely on BYOK — you provide your own Google Gemini API key.</p>
       <ul>
-        <li><strong>Google Gemini API key</strong> — stored on device only. Not sent to Rhema servers.</li>
-        <li><strong>Microphone audio</strong> — for live voice sessions; sent to Google under your key.</li>
-        <li><strong>Text &amp; images</strong> — devotion prompts, chat, vision analysis sent to Google Gemini when AI is used.</li>
-        <li><strong>Local preferences</strong> — worship region, voice, verse highlights, notes, prayer journal (local storage).</li>
+        <li><strong>Encrypted local storage:</strong> Your API key is stored securely on your device. On Android, we use <strong>EncryptedSharedPreferences</strong> and the <strong>Android Keystore</strong>.</li>
+        <li><strong>No transmission to our servers:</strong> We do <strong>not</strong> operate intermediary servers. Your API key is <strong>never</strong> sent to, stored on, or shared with Rhema AI servers.</li>
+        <li><strong>Full control:</strong> You may remove or replace your API key anytime in <strong>Settings</strong>.</li>
+        <li><strong>Live API validation:</strong> When you save a key, the app runs a direct WebSocket test to Google to confirm Live API support — without routing through Rhema servers.</li>
+      </ul>
+
+      <h2>2. Voice &amp; Audio Processing (Full Duplex)</h2>
+      <p>Two-way voice requires microphone access on your device.</p>
+      <ul>
+        <li><strong>Direct WebSocket:</strong> Audio from your microphone is sent <strong>directly</strong> from your device to Google’s API over secure <code>wss://generativelanguage.googleapis.com</code>, using your API key.</li>
+        <li><strong>Not recorded by Rhema:</strong> We do <strong>not</strong> record, store, or listen to your voice conversations on any server we operate.</li>
+        <li><strong>Google policies:</strong> Audio processing is subject to the <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API Terms</a> and your Google AI Studio / Cloud account policies.</li>
+        <li><strong>Microphone only when in use:</strong> Microphone access is active only when you start a live voice session.</li>
+      </ul>
+
+      <h2>3. Other On-Device Data</h2>
+      <ul>
+        <li><strong>Text &amp; images</strong> — devotion prompts, chat, or photo analysis sent to Google Gemini when AI features are used (under your key).</li>
+        <li><strong>Local preferences</strong> — worship region, AI voice, verse highlights, notes, prayer journal.</li>
         <li><strong>Offline Bible &amp; hymns</strong> — bundled in the app; not sent to Rhema servers.</li>
       </ul>
 
-      <h2>3. Third parties</h2>
-      <p>AI uses <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API</a>. Subject to Google policies. Rhema AI does not sell your data.</p>
+      <h2>4. Third-Party Advertising</h2>
+      <p><strong>Rhema AI does not show ads</strong> (no Google AdMob or other ad networks). The app is supported by BYOK — any API costs are between you and Google via your AI Studio / Cloud Project account.</p>
 
-      <h2>4. Android permissions</h2>
+      <h2>5. Third Parties &amp; Gemini Live API</h2>
+      <p>AI features use the <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API</a>, including <strong>Gemini Live API</strong> (full-duplex preview). Quota and any charges are billed by Google to your API key / Cloud Project — not Rhema. We do not sell or share your data with other third parties.</p>
+
+      <h2>6. Android Permissions</h2>
       <ul>
-        <li><strong>Internet</strong> — Gemini API connectivity.</li>
-        <li><strong>Microphone</strong> — live voice (only when you start a voice session).</li>
-        <li><strong>Audio settings</strong> — ambient music &amp; breathing prayer.</li>
+        <li><strong>Internet</strong> — Google Gemini connectivity (REST &amp; WebSocket).</li>
+        <li><strong>Microphone</strong> — full-duplex live voice (only when a voice session starts).</li>
+        <li><strong>Audio settings</strong> — ambient music &amp; breathing prayer playback.</li>
       </ul>
 
-      <h2>5. Retention &amp; deletion</h2>
-      <p>Data stays on device. Uninstalling removes local data (except OS backup if enabled). Remove your API key anytime in Settings.</p>
+      <h2>7. Your Rights</h2>
+      <p>Because data (including your API key and local preferences) stays on your device, you may:</p>
+      <ul>
+        <li>Remove your API key anytime in Settings.</li>
+        <li>Clear all app data via Android <strong>Clear Data</strong>.</li>
+        <li>Uninstall the app — local data is removed (except OS backup if enabled).</li>
+      </ul>
+      <p>Privacy contact: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
 
-      <h2>6. Children</h2>
-      <p>Intended for teens and adults. “Sunday School” persona is not unsupervised children’s software.</p>
+      <h2>8. Children</h2>
+      <p>Intended for teens and adults. The “Sunday School” persona is not unsupervised children’s software.</p>
 
-      <h2>7. Spiritual &amp; AI disclaimer</h2>
-      <p>Rhema AI is <strong>not</strong> a substitute for pastors, professional counseling, or personal prayer. AI may err — verify with Scripture and your faith community.</p>
+      <h2>9. Spiritual &amp; AI Disclaimer</h2>
+      <p>Rhema AI is <strong>not</strong> a substitute for pastoral care, professional counseling, or personal prayer. AI may err — verify with Scripture and your faith community.</p>
 
-      <h2>8. Content copyright</h2>
+      <h2>10. Content Copyright</h2>
       <p>Bible texts (TB/LAI, KJV) and hymn lyrics belong to their publishers. The app provides worship access; full rights remain with original publishers.</p>
 
-      <h2>9. Changes</h2>
-      <p>This policy may be updated. The latest version is published at the same URL.</p>
+      <h2>11. Policy Changes</h2>
+      <p>This policy may be updated. The latest version is published at the same URL. The update date appears at the top of this document.</p>
     </section>
   </main>
   <script>

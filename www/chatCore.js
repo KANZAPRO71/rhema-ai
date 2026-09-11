@@ -15,6 +15,15 @@ import {
 import { buildCreatorReply, isCreatorQuery } from "./rhemaAddressRule.js";
 import { saveLocaleProfile } from "./localeProfile.js";
 import { openRegionOnboarding } from "./regionOnboarding.js";
+import {
+  clearStoredGoogleKey,
+  setStoredGoogleKey,
+  validateGoogleKeyForVoice,
+  getGoogleKeyStatusMeta,
+} from "./geminiConstants.js";
+import { formatGeminiKeyError, pasteFromClipboard } from "./byokUx.js";
+import { t } from "./uiStrings.js";
+import { syncByokHomeBanner } from "./byokOnboarding.js";
 
 const MODES = ["agent", "plan", "ask", "debug"];
 const GOOGLE_KEY_FLAG = "rhema-ai-google-key-configured";
@@ -102,6 +111,20 @@ export function initChatApp(transport, options = {}) {
         el.className = "settings-save-status";
       }, 2500);
     }
+  }
+
+  function updateByokKeyStatusLine(configured = getGoogleKeyStatusMeta().configured) {
+    const meta = getGoogleKeyStatusMeta();
+    const line = document.getElementById("byok-key-status-line");
+    const deleteBtn = document.getElementById("btn-delete-byok-key");
+    if (line) {
+      line.textContent = !meta.configured
+        ? t("settings.keyStatusMissing")
+        : meta.liveValidated
+          ? t("settings.keyStatusLive")
+          : t("settings.keyStatusActive");
+    }
+    if (deleteBtn) deleteBtn.toggleAttribute("disabled", !configured);
   }
 
   function $(id) {
@@ -232,6 +255,56 @@ export function initChatApp(transport, options = {}) {
       }
     });
 
+    document.getElementById("btn-byok-paste")?.addEventListener("click", async () => {
+      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("byok-google"));
+      const text = await pasteFromClipboard();
+      if (!text) {
+        showSaveStatus(t("byok.error.network"), "error");
+        return;
+      }
+      if (input) input.value = text;
+      showSaveStatus("", "");
+      input?.focus();
+    });
+
+    document.getElementById("btn-check-byok-key")?.addEventListener("click", async () => {
+      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("byok-google"));
+      const draft = input?.value?.trim();
+      showSaveStatus(t("byok.validating"), "");
+      if (draft && draft.length >= 16) {
+        setStoredGoogleKey(draft);
+        transport.post({ type: "saveProviderKey", provider: "google", key: draft });
+      }
+      const check = await validateGoogleKeyForVoice();
+      if (check.ok) {
+        updateByokKeyStatusLine(true);
+        showSaveStatus(t("byok.validOk"), "ok");
+        syncByokHomeBanner();
+        return;
+      }
+      const errText =
+        check.error === "no_key"
+          ? t("byok.error.noKey")
+          : formatGeminiKeyError(check.status, String(check.error || ""), String(check.kind || ""));
+      updateByokKeyStatusLine(false);
+      showSaveStatus(errText, "error");
+    });
+
+    document.getElementById("btn-delete-byok-key")?.addEventListener("click", () => {
+      if (!window.confirm(t("settings.keyDeleteConfirm"))) return;
+      clearStoredGoogleKey();
+      storage.removeItem?.(GOOGLE_KEY_FLAG);
+      const input = /** @type {HTMLInputElement|null} */ (document.getElementById("byok-google"));
+      if (input) {
+        input.value = "";
+        input.placeholder = "AIza… — Google AI Studio (Gemini Live)";
+      }
+      transport.post({ type: "saveProviderKey", provider: "google", key: "" });
+      updateByokKeyStatusLine(false);
+      syncByokHomeBanner();
+      showSaveStatus(t("settings.keyDeleted"), "ok");
+    });
+
     settingsPanel?.querySelectorAll("[data-open]").forEach((el) => {
       el.addEventListener("click", (e) => {
         e.preventDefault();
@@ -289,6 +362,32 @@ export function initChatApp(transport, options = {}) {
   });
 
   settingsPanel?.addEventListener("click", (e) => e.stopPropagation());
+
+  function rerenderSettingsPanel() {
+    const panel = document.getElementById("settings-panel");
+    if (!panel) return;
+    const wasOpen = settingsOpen;
+    const prevKey = /** @type {HTMLInputElement|null} */ (document.getElementById("byok-google"))?.value || "";
+    panel.outerHTML = renderSettingsPanel({
+      settings: initialSettings,
+      showApiKey: appMode === "browser",
+      showExtensionActions: appMode === "extension",
+      rules: options.rules || [],
+      providerKeyStatus: {
+        ...(options.providerKeyStatus || {}),
+        google: options.providerKeyStatus?.google || storedGoogleConfigured,
+      },
+    });
+    settingsPanel = document.getElementById("settings-panel");
+    wireSettingsControls();
+    settingsPanel?.addEventListener("click", (e) => e.stopPropagation());
+    const keyEl = document.getElementById("byok-google");
+    if (keyEl && prevKey) keyEl.value = prevKey;
+    if (wasOpen) toggleSettings(true);
+  }
+
+  document.addEventListener("rhema-locale-changed", rerenderSettingsPanel);
+
   wireSettingsControls();
 
   function setStatus(mode, label) {
@@ -941,11 +1040,14 @@ export function initChatApp(transport, options = {}) {
             input.value = "";
             delete input.dataset.pendingSave;
           }
-          input && (input.placeholder = "Key tersimpan ✓ — ketik key baru untuk ganti");
-          storage.setItem?.(GOOGLE_KEY_FLAG, "1");
-          showSaveStatus("Tersimpan ✓", "ok");
+          const hasKey = getGoogleKeyStatusMeta().configured;
+          if (input && hasKey) input.placeholder = t("settings.keySaved");
+          storage.setItem?.(GOOGLE_KEY_FLAG, hasKey ? "1" : "0");
+          updateByokKeyStatusLine(hasKey);
+          syncByokHomeBanner();
+          showSaveStatus(hasKey ? `${t("settings.save")} ✓` : t("settings.keyDeleted"), hasKey ? "ok" : "");
         } else if (data.provider === "google") {
-          showSaveStatus("Gagal menyimpan. Coba lagi.", "error");
+          showSaveStatus(t("byok.error.invalid"), "error");
         }
         break;
       case "prefill":

@@ -3,7 +3,14 @@
  * Gemini API key milik pengguna, tersimpan hanya di perangkat.
  */
 
-import { getStoredGoogleKey, googleKeyConfigured, setStoredGoogleKey, validateGoogleKeyForVoice } from "./geminiConstants.js";
+import {
+  getStoredGoogleKey,
+  googleKeyConfigured,
+  setStoredGoogleKey,
+  validateGoogleKeyForVoice,
+} from "./geminiConstants.js";
+import { formatGeminiKeyError, getSecurityTrustLine, pasteFromClipboard } from "./byokUx.js";
+import { t } from "./uiStrings.js";
 
 export const BYOK_DONE_KEY = "rhema-byok-onboarding-done";
 export const BYOK_DEFERRED_KEY = "rhema-byok-onboarding-deferred";
@@ -88,40 +95,44 @@ export function openByokOnboarding(opts = {}) {
       </div>
 
       <div class="byok-step" data-step="1">
-        <p class="byok-kicker">Selamat datang</p>
-        <h2 class="byok-onboard-title" id="byok-onboard-title">Rhema AI siap menemani saat teduh Anda</h2>
-        <p class="byok-copy">Alkitab TB LAI, renungan, doa, dan suara live. Untuk mengaktifkan AI, Anda memakai <strong>API key Google Gemini milik sendiri</strong> — gratis dari Google AI Studio.</p>
-        <p class="byok-fine">AI menemani ibadah — bukan pengganti pendeta atau doa pribadi. <a href="/privacy.html">Kebijakan Privasi</a></p>
+        <p class="byok-kicker">${t("byok.step1.kicker")}</p>
+        <h2 class="byok-onboard-title" id="byok-onboard-title">${t("byok.step1.title")}</h2>
+        <p class="byok-copy">${t("byok.step1.copy")}</p>
+        <p class="byok-fine">${t("byok.step1.fine")} <a href="/privacy.html">Privacy</a></p>
       </div>
 
       <div class="byok-step hidden" data-step="2">
-        <p class="byok-kicker">Bring Your Own Key</p>
-        <h2 class="byok-onboard-title">Key Anda, di HP Anda</h2>
+        <p class="byok-kicker">${t("byok.step2.kicker")}</p>
+        <h2 class="byok-onboard-title">${t("byok.step2.title")}</h2>
         <ul class="byok-points">
-          <li><strong>Privasi</strong> — key tidak dikirim ke server Rhema. Hanya tersimpan di perangkat ini.</li>
-          <li><strong>Kuota milik Anda</strong> — Google memberi kuota gratis. Habis? ganti key di Pengaturan.</li>
-          <li><strong>Tanpa langganan app</strong> — Rhema tidak menjual API. Anda bawa key sendiri.</li>
+          <li><strong>${t("byok.step2.privacy")}</strong></li>
+          <li><strong>${t("byok.step2.quota")}</strong></li>
+          <li><strong>${t("byok.step2.free")}</strong></li>
         </ul>
       </div>
 
       <div class="byok-step hidden" data-step="3">
-        <p class="byok-kicker">Ambil key gratis</p>
-        <h2 class="byok-onboard-title">Tiga langkah di Google AI Studio</h2>
+        <p class="byok-kicker">${t("byok.step3.kicker")}</p>
+        <h2 class="byok-onboard-title">${t("byok.step3.title")}</h2>
         <ol class="byok-steps-ol">
-          <li>Buka <strong>Google AI Studio</strong> dan masuk dengan akun Google.</li>
-          <li>Pilih <strong>Get API key</strong> → <strong>Create API key</strong>.</li>
-          <li>Salin key, lalu tempel di langkah berikutnya.</li>
+          <li>${t("byok.step3.s1")}</li>
+          <li>${t("byok.step3.s2")}</li>
+          <li>${t("byok.step3.s3")}</li>
         </ol>
-        <button type="button" class="byok-btn byok-btn-studio" id="byok-open-studio">Buka aistudio.google.com</button>
-        <p class="byok-fine">Butuh jaringan. Key biasanya dimulai dengan AIza…</p>
+        <button type="button" class="byok-btn byok-btn-studio" id="byok-open-studio">${t("byok.step3.studioBtn")}</button>
+        <p class="byok-fine">${t("byok.step3.fine")}</p>
       </div>
 
       <div class="byok-step hidden" data-step="4">
-        <p class="byok-kicker">Aktifkan AI</p>
-        <h2 class="byok-onboard-title">Tempel Gemini API key</h2>
-        <label class="byok-field-label" for="byok-onboard-key">API key</label>
-        <input id="byok-onboard-key" class="byok-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="AIza… atau key Google AI Studio" />
-        <button type="button" class="byok-toggle-vis" id="byok-toggle-vis">Tampilkan</button>
+        <p class="byok-kicker">${t("byok.step4.kicker")}</p>
+        <h2 class="byok-onboard-title">${t("byok.step4.title")}</h2>
+        <label class="byok-field-label" for="byok-onboard-key">${t("byok.step4.label")}</label>
+        <div class="byok-key-row">
+          <input id="byok-onboard-key" class="byok-key-input" type="password" autocomplete="off" spellcheck="false" placeholder="${t("byok.step4.placeholder")}" />
+          <button type="button" class="byok-paste-btn" id="byok-paste-key" aria-label="${t("byok.paste")}">📋</button>
+        </div>
+        <button type="button" class="byok-toggle-vis" id="byok-toggle-vis">${t("byok.show")}</button>
+        <p class="byok-security-trust">${getSecurityTrustLine()}</p>
         <p class="byok-status" id="byok-onboard-status" aria-live="polite"></p>
       </div>
 
@@ -129,7 +140,7 @@ export function openByokOnboarding(opts = {}) {
         <button type="button" class="byok-btn byok-btn-ghost" id="byok-secondary"></button>
         <button type="button" class="byok-btn byok-btn-primary" id="byok-primary"></button>
       </div>
-      <button type="button" class="byok-skip" id="byok-skip">Jelajahi Alkitab dulu — AI bisa nanti</button>
+      <button type="button" class="byok-skip" id="byok-skip">${t("byok.skip")}</button>
     </div>
   `;
 
@@ -142,6 +153,7 @@ export function openByokOnboarding(opts = {}) {
   const statusEl = modal.querySelector("#byok-onboard-status");
   const input = /** @type {HTMLInputElement | null} */ (modal.querySelector("#byok-onboard-key"));
   const visBtn = modal.querySelector("#byok-toggle-vis");
+  const pasteBtn = modal.querySelector("#byok-paste-key");
 
   function setStatus(text, kind = "") {
     if (!statusEl) return;
@@ -161,12 +173,12 @@ export function openByokOnboarding(opts = {}) {
     });
     if (secondary) {
       secondary.hidden = step === 1;
-      secondary.textContent = "Kembali";
+      secondary.textContent = t("byok.back");
     }
     if (primary) {
       primary.disabled = false;
-      if (step < 4) primary.textContent = "Lanjut";
-      else primary.textContent = "Simpan & mulai";
+      if (step < 4) primary.textContent = t("byok.next");
+      else primary.textContent = t("byok.saveStart");
     }
     if (skip) skip.hidden = step === 4;
     if (step === 4) {
@@ -186,7 +198,7 @@ export function openByokOnboarding(opts = {}) {
     close();
     document.dispatchEvent(
       new CustomEvent("rhema-alkitab-toast", {
-        detail: "Alkitab siap. Aktifkan suara AI kapan saja lewat banner atau Akun → Pengaturan.",
+        detail: t("byok.skipToast"),
       }),
     );
   }
@@ -194,24 +206,28 @@ export function openByokOnboarding(opts = {}) {
   async function saveKey() {
     const key = (input?.value || "").trim();
     if (key.length < 16) {
-      setStatus("Tempel API key yang disalin dari Google AI Studio.", "err");
+      setStatus(t("byok.validShort"), "err");
       input?.focus();
       return;
     }
     if (primary) primary.disabled = true;
-    setStatus("Memeriksa key…", "");
+    setStatus(t("byok.validating"), "");
     setStoredGoogleKey(key);
     const check = await validateGoogleKeyForVoice();
     if (!check.ok) {
       setStoredGoogleKey("");
-      setStatus(check.error || "Key tidak valid. Periksa salinan, lalu coba lagi.", "err");
+      const errText =
+        check.error === "no_key"
+          ? t("byok.error.noKey")
+          : formatGeminiKeyError(check.status, String(check.error || ""), String(check.kind || ""));
+      setStatus(errText, "err");
       if (primary) primary.disabled = false;
       return;
     }
     markByokComplete();
-    setStatus("Key valid. Selamat beribadah.", "ok");
+    setStatus(t("byok.validOk"), "ok");
     document.dispatchEvent(new CustomEvent("rhema-byok-ready"));
-    window.setTimeout(() => close(), 650);
+    window.setTimeout(() => close(), 850);
   }
 
   primary?.addEventListener("click", () => {
@@ -236,11 +252,22 @@ export function openByokOnboarding(opts = {}) {
     void openExternalUrl(AISTUDIO_KEY_URL);
   });
 
+  pasteBtn?.addEventListener("click", async () => {
+    const text = await pasteFromClipboard();
+    if (!text) {
+      setStatus(t("byok.error.network"), "err");
+      return;
+    }
+    if (input) input.value = text;
+    setStatus("", "");
+    input?.focus();
+  });
+
   visBtn?.addEventListener("click", () => {
     if (!input) return;
     const show = input.type === "password";
     input.type = show ? "text" : "password";
-    visBtn.textContent = show ? "Sembunyikan" : "Tampilkan";
+    visBtn.textContent = show ? t("byok.hide") : t("byok.show");
   });
 
   input?.addEventListener("keydown", (e) => {
