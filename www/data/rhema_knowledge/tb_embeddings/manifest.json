@@ -1,0 +1,163 @@
+{
+  "schemaVersion": "1.0.0",
+  "model": "Xenova/all-MiniLM-L6-v2",
+  "encoding": "int8",
+  "scale": 127,
+  "dims": 384,
+  "built": "2026-08-16",
+  "totalVerses": 29705,
+  "embeddedCount": 29705,
+  "shards": [
+    {
+      "id": 0,
+      "file": "shard-000.json",
+      "count": 1000
+    },
+    {
+      "id": 1,
+      "file": "shard-001.json",
+      "count": 1000
+    },
+    {
+      "id": 2,
+      "file": "shard-002.json",
+      "count": 1000
+    },
+    {
+      "id": 3,
+      "file": "shard-003.json",
+      "count": 1000
+    },
+    {
+      "id": 4,
+      "file": "shard-004.json",
+      "count": 1000
+    },
+    {
+      "id": 5,
+      "file": "shard-005.json",
+      "count": 1000
+    },
+    {
+      "id": 6,
+      "file": "shard-006.json",
+      "count": 1000
+    },
+    {
+      "id": 7,
+      "file": "shard-007.json",
+      "count": 1000
+    },
+    {
+      "id": 8,
+      "file": "shard-008.json",
+      "count": 1000
+    },
+    {
+      "id": 9,
+      "file": "shard-009.json",
+      "count": 1000
+    },
+    {
+      "id": 10,
+      "file": "shard-010.json",
+      "count": 1000
+    },
+    {
+      "id": 11,
+      "file": "shard-011.json",
+      "count": 1000
+    },
+    {
+      "id": 12,
+      "file": "shard-012.json",
+      "count": 1000
+    },
+    {
+      "id": 13,
+      "file": "shard-013.json",
+      "count": 1000
+    },
+    {
+      "id": 14,
+      "file": "shard-014.json",
+      "count": 1000
+    },
+    {
+      "id": 15,
+      "file": "shard-015.json",
+      "count": 1000
+    },
+    {
+      "id": 16,
+      "file": "shard-016.json",
+      "count": 1000
+    },
+    {
+      "id": 17,
+      "file": "shard-017.json",
+      "count": 1000
+    },
+    {
+      "id": 18,
+      "file": "shard-018.json",
+      "count": 1000
+    },
+    {
+      "id": 19,
+      "file": "shard-019.json",
+      "count": 1000
+    },
+    {
+      "id": 20,
+      "file": "shard-020.json",
+      "count": 1000
+    },
+    {
+      "id": 21,
+      "file": "shard-021.json",
+      "count": 1000
+    },
+    {
+      "id": 22,
+      "file": "shard-022.json",
+      "count": 1000
+    },
+    {
+      "id": 23,
+      "file": "shard-023.json",
+      "count": 1000
+    },
+    {
+      "id": 24,
+      "file": "shard-024.json",
+      "count": 1000
+    },
+    {
+      "id": 25,
+      "file": "shard-025.json",
+      "count": 1000
+    },
+    {
+      "id": 26,
+      "file": "shard-026.json",
+      "count": 1000
+    },
+    {
+      "id": 27,
+      "file": "shard-027.json",
+      "count": 1000
+    },
+    {
+      "id": 28,
+      "file": "shard-028.json",
+      "count": 905
+    },
+    {
+      "id": 29,
+      "file": "shard-029.json",
+      "count": 800
+    }
+  ],
+  "gapfill": 1
+}

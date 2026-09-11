@@ -1,0 +1,985 @@
+{
+  "meta": {
+    "versi": "1.2",
+    "catatan": "Pemahaman tafsir untuk Rhema AI — Fase 5: perluasan ayat khotbah & eksposisi populer. Ayat TB dari dataset terpisah.",
+    "updated": "2026-08-16",
+    "sumber_jenis": [
+      "Komentar Ulangan / Deuteronomy (konteks Perjanjian Moab)",
+      "Hermeneutika Alkitab (historis-gramatikal, TB LAI)",
+      "Pastoral care & teologi lament (Job, Mazmur ratapan)"
+    ]
+  },
+  "refs": {
+    "ul:29:29": {
+      "referensi": "Ulangan 29:29",
+      "konteks": "Musa di Moab, sebelum Israel masuk Kanaan. Pasal 29–30 = pembaruan perjanjian. Ayat penutup pasal 29 setelah peringatan akan kutuk jika melanggar perjanjian.",
+      "makna_ringkas": "Ada hal yang hanya Allah yang tahu (rahasia-Nya). Yang sudah diwahyukan — terutama hukum/perintah Taurat — diberikan kepada Israel dan keturunannya supaya dilakukan. Bukan tentang 'baik/jahat datang dari Tuhan', melainkan batas pengetahuan manusia vs tanggung jawab taat pada wahyu.",
+      "makna_sedang": "Literatur komentar menempatkan ayat ini sebagai penyeimbang: Israel tidak diminta menebak-nebak rencana rahasia Allah, tetapi hidup seturut apa yang sudah dinyatakan dalam perjanjian. 'Hal tersembunyi' = domain kedaulatan ilahi yang melampaui jangkauan manusia. 'Hal dinyatakan' = instruksi moral dan religius yang Israel wajib jalankan. Konteks langsung: jangan cari alasan untuk melanggar perjanjian dengan berdalih 'rahasia Tuhan'.",
+      "makna_mendalam": "Dalam teologi Perjanjian Lama, ayat ini membatasi spekulasi metafisik sambil menegaskan tanggung jawab etis. Transendensi: Allah tidak wajib memberi akun penuh atas setiap peristiwa. Wahyu: dalam kasih-Nya, Allah memberi cukup petunjuk (Taurat) agar umat hidup benar. Komentar modern (mis. Wright, Christensen, Craigie) menekankan: misteri dan perintah tidak bertentangan — manusia diundang percaya dan taat tanpa memiliki seluruh blueprint ilahi. Ayat ini BUKAN legitimasi untuk menyatakan setiap tragedi pribadi 'sudah kehendak Tuhan'.",
+      "kaitan_ayat": ["Ul 29:1-28 (kutuk perjanjian)", "Ul 30:11-14 (perintah dekat, bisa dilakukan)", "Am 3:7 (Allah memberitahukan kepada nabi)", "Ay 11:7-9 (Job: hal-hal terlalu ajaib)"],
+      "salah_tafsir": [
+        "Bukan: segala yang baik/jahat datang dari Tuhan sebagai kutipan ayat ini",
+        "Bukan: setiap penderitaan = hukuman langsung karena dosa personal",
+        "Bukan: kita boleh acuh pada penderitaan karena 'rahasia Tuhan'"
+      ],
+      "tema": ["rahasia_allah", "taurat", "perjanjian", "kedaulatan", "wahyu"]
+    },
+    "yoh:3:16": {
+      "referensi": "Yohanes 3:16",
+      "konteks": "Yesus berbicara kepada Nikodemus tentang kelahiran kembali.",
+      "makna_ringkas": "Allah mengasihi dunia dan mengutus Anak-Nya supaya siapa percaya memperoleh hidup kekal, bukan binasa.",
+      "makna_sedang": "Kata 'dunia' (kosmos) = umat manusia dalam keadaan berdosa, bukan hanya alam semesta. 'Anak yang tunggal' menegaskan pemberian unik. Percaya = respons iman, bukan sekadar setuju intelektual.",
+      "makna_mendalam": "Ayat ini merangkum injil: inisiatif kasih dari Allah, pengorbanan Anak, respons percaya, kontras binasa vs hidup kekal. Konteks Nikodemus: kelahiran dari atas diperlukan sebelum memahami kasih ini.",
+      "tema": ["kasih_allah", "injil", "iman"]
+    },
+    "mzm:23:1": {
+      "referensi": "Mazmur 23:1",
+      "konteks": "Mazmur Daud — metafora gembala. Mazmur 23 sering dibaca utuh dalam ibadah penghiburan dan pemakaman.",
+      "makna_ringkas": "TUHAN sebagai gembala yang menuntun, memberi, dan menemani — tidak ada kekurangan yang fatal.",
+      "makna_sedang": "Gambaran gembala = perlindungan, arah, dan perawatan di padang hijau maupun lembah kekelaman. 'Takkan kekurangan aku' bukan janji kekayaan materi, melainkan kecukupan jiwa dalam relasi dengan Allah.",
+      "makna_mendalam": "Dalam budaya Timur Tengah, gembala rela berkorban untuk domba. Mazmur ini mengarahkan iman dari kepemilikan Allah atas hidup kita — bahkan di hadapan musuh (ayat 5), kehadiran-Nya yang meneguhkan.",
+      "kaitan_ayat": ["Yohanes 10:11 (Gembala yang baik)", "Yesaya 40:11", "Wahyu 7:17"],
+      "salah_tafsir": [
+        "Bukan: janji hidup tanpa kesulitan sama sekali",
+        "Bukan: kekurangan materi = kurang iman"
+      ],
+      "tema": ["penghiburan", "kepercayaan", "gembala"]
+    },
+    "rom:8:28": {
+      "referensi": "Roma 8:28",
+      "konteks": "Paulus di Roma — puncak argumen tentang hidup dalam Roh dan kepastian kasih Allah (Roma 8).",
+      "makna_ringkas": "Allah mengerjakan segala sesuatu untuk kebaikan bagi mereka yang mengasihi-Nya dan dipanggil sesuai rencana-Nya.",
+      "makna_sedang": "'Segala sesuatu' = seluruh keadaan hidup, bukan hanya peristiwa menyenangkan. 'Kebaikan' = conformitas dengan gambar Kristus (lihat ayat 29), bukan selalu kenyamanan jangka pendek.",
+      "makna_mendalam": "Ayat ini sering disalahgunakan sebagai kalimat instan atas tragedi. Konteks Paulus: penderitaan, kelaparan, bahaya — tidak memisahkan dari kasih Kristus (8:35-39). Kebaikan ilahi berorientasi kekal dan pembentukan karakter.",
+      "kaitan_ayat": ["Kejadian 50:20", "Yeremia 29:11", "2 Korintus 4:17"],
+      "salah_tafsir": [
+        "Bukan: setiap musibah pasti 'baik' menurut rasa manusia",
+        "Bukan: orang berdosa tidak mengalami rencana Allah"
+      ],
+      "tema": ["providensi", "penderitaan", "harapan"]
+    },
+    "yer:29:11": {
+      "referensi": "Yeremia 29:11",
+      "konteks": "Surat Yeremia kepada umat buangan di Babel — bukan janji instan, melainkan dalam kerangka 70 tahun (29:10).",
+      "makna_ringkas": "Allah mengetahui rencana damai sejahtera bagi Israel, bukan malapetaka — masa depan penuh harapan.",
+      "makna_sedang": "Janji ini ditujukan kepada bangsa Israel dalam pembuangan. 'Damai sejahtera' (shalom) = kesejahteraan holistik dalam relasi dengan Allah, bukan hanya sukses karier.",
+      "makna_mendalam": "Ayat 12-14 memperingatkan jangan percaya nabi palsu. Aplikasi modern: harapan harus dibaca dengan kesabaran dan taat (29:13 — cari Allah). Bukan formula prosperity instan.",
+      "kaitan_ayat": ["Yeremia 29:13", "Roma 8:28", "Filipi 1:6"],
+      "salah_tafsir": [
+        "Bukan: janji individu tanpa konteks pembuangan",
+        "Bukan: Allah pasti cepat mengubah keadaan sulit"
+      ],
+      "tema": ["harapan", "perjanjian", "kesabaran"]
+    },
+    "ams:3:5": {
+      "referensi": "Amsal 3:5-6",
+      "konteks": "Hikmat Solomon — ajaran praktis Israel tentang hidup beriman.",
+      "makna_ringkas": "Percayalah kepada TUHAN dengan segenap hatimu; jangan andalkan pengertian sendiri. Akui Dia dalam segala jalanmu.",
+      "makna_sedang": "'Segenap hati' = totalitas kepercayaan, bukan setengah-setengah. 'Pengertian sendiri' = otonomi tanpa Allah. 'Meluruskan jalan' = arah hidup yang selaras dengan kehendak-Nya.",
+      "kaitan_ayat": ["Amsal 16:3", "Mazmur 37:5", "Yesaya 26:3"],
+      "tema": ["hikmat", "kepercayaan", "petunjuk"]
+    },
+    "mat:6:33": {
+      "referensi": "Matius 6:33",
+      "konteks": "Khotbah di Bukit — Yesus tentang kekhawatiran dan prioritas kerajaan Allah.",
+      "makna_ringkas": "Carilah dahulu kerajaan Allah dan kebenaran-Nya; maka segala yang kamu perlukan akan ditambahkan.",
+      "makna_sedang": "Konteks: jangan kuatir akan makan, minum, pakaian (6:25-32). Prioritas = tahta Allah, bukan akumulasi materi. 'Ditambahkan' = providence dalam relasi percaya.",
+      "kaitan_ayat": ["Lukas 12:31", "Amsal 3:5-6", "Mazmur 37:4"],
+      "salah_tafsir": [
+        "Bukan: janji kekayaan otomatis bagi setiap orang percaya",
+        "Bukan: mengabaikan tanggung jawab kerja dan keluarga"
+      ],
+      "tema": ["kerajaan_allah", "prioritas", "providensi"]
+    },
+    "fil:4:13": {
+      "referensi": "Filipi 4:13",
+      "konteks": "Paulus menulis dari penjara — surat sukacita. Ayat 13 mengikuti ayat 11-12 tentang belajar cukup.",
+      "makna_ringkas": "Segala perkara dapat kutanggung di dalam Dia yang memberi kekuatan kepadaku.",
+      "makna_sedang": "'Segala perkara' dalam konteks = cukup dalam kekurangan maupun kelimpahan (4:12), bukan janji menang olahraga atau bisnis. Kekuatan = Kristus dalam penderitaan dan pelayanan.",
+      "kaitan_ayat": ["2 Korintus 12:9-10", "Filipi 4:11-12", "Filipi 4:19"],
+      "salah_tafsir": [
+        "Bukan: janji sukses materi atau kemenangan olahraga",
+        "Bukan: tidak akan pernah lelah atau putus asa"
+      ],
+      "tema": ["kekuatan", "cukup", "penderitaan"]
+    },
+    "fil:4:6": {
+      "referensi": "Filipi 4:6-7",
+      "konteks": "Paulus mengajarkan jemaat Filipi mengatasi kekhawatiran lewat doa syukur.",
+      "makna_ringkas": "Jangan kuatir tentang apa pun; nyatakanlah dalam doa dengan ucapan syukur — damai sejahtera Allah akan menjaga hatimu.",
+      "makna_sedang": "Doa + syukur = disiplin rohani, bukan penolakan emosi. Damai sejahtera melampaui akal — bukan berarti masalah hilang, melainkan hati terpelihara.",
+      "kaitan_ayat": ["1 Petrus 5:7", "Matius 6:25", "Yohanes 14:27"],
+      "tema": ["doa", "damai", "kekhawatiran"]
+    },
+    "yes:41:10": {
+      "referensi": "Yesaya 41:10",
+      "konteks": "Nubuat penghiburan — Allah meneguhkan umat-Nya yang takut.",
+      "makna_ringkas": "Jangan takut, sebab Aku menyertai engkau; Aku akan meneguhkan dan menolong engkau.",
+      "makna_sedang": "Allah memanggil umat-Nya 'yaitu hamba-Ku' — identitas dalam relasi perjanjian. Kehadiran ilahi lebih utama daripada penghilangan rasa takut instan.",
+      "kaitan_ayat": ["Yesaya 43:1-2", "Ulangan 31:6", "Mazmur 27:1"],
+      "tema": ["penghiburan", "keberanian", "kehadiran_allah"]
+    },
+    "mat:11:28": {
+      "referensi": "Matius 11:28-30",
+      "konteks": "Yesus setelah mengkritik keras kepandaian yang memberatkan (11:20-27).",
+      "makna_ringkas": "Marilah kepada-Ku, hai kamu yang letih lesu dan berbeban berat — Aku akan memberi kelegaan.",
+      "makna_sedang": "Beban = legalisme dan keletihan jiwa. Kristus menawarkan kuk yang ringan — belajar dari-Nya yang lemah lembut. Bukan janji hidup tanpa tanggung jawab.",
+      "kaitan_ayat": ["Matius 11:29-30", "Yohanes 7:37", "Yesaya 55:1"],
+      "tema": ["kelegaan", "belajar", "kerendahan_hati"]
+    },
+    "ef:2:8": {
+      "referensi": "Efesus 2:8-10",
+      "konteks": "Paulus tentang keselamatan oleh anugerah — jemaat Efesus (Gentil + Yahudi).",
+      "makna_ringkas": "Karena kasih karunia kamu diselamatkan oleh iman; itu bukan hasil usahamu, karunia Allah.",
+      "makna_sedang": "Iman = respons, bukan prestasi. Karunia menolak pamer diri. Ayat 10: kita ciptaan Allah untuk pekerjaan baik — keselamatan berbuah, bukan hidup tanpa perubahan.",
+      "kaitan_ayat": ["Roma 3:28", "Titus 3:5", "Galatia 2:16"],
+      "salah_tafsir": [
+        "Bukan: iman saja tanpa buah (banding Yakobus 2)",
+        "Bukan: berbuat baik bisa menambah keselamatan"
+      ],
+      "tema": ["anugerah", "keselamatan", "iman"]
+    },
+    "yes:53:5": {
+      "referensi": "Yesaya 53:5",
+      "konteks": "Lagu Penderita Hamba TUHAN — nubuat Mesias penderita (PL).",
+      "makna_ringkas": "Dia tertikam karena pemberontakan kita; ganjaran yang mendatangkan keselamatan ditimpakan kepadanya.",
+      "makna_sedang": "Pengganti (substitusi) — Mesias menanggung hukum dan luka umat. Konteks PB: penggenapan salib Kristus (1 Petrus 2:24).",
+      "kaitan_ayat": ["1 Petrus 2:24", "Roma 5:8", "Matius 8:17"],
+      "salah_tafsir": [
+        "Bukan: setiap sakit fisik pasti sembuh instan karena ayat ini saja",
+        "Bukan: mengabaikan peran medis dan tanggung jawab manusia"
+      ],
+      "tema": ["salib", "penebusan", "penderitaan"]
+    },
+    "ibr:11:1": {
+      "referensi": "Ibrani 11:1",
+      "konteks": "Surat kepada Yahudi Kristen — katalog iman para bapa.",
+      "makna_ringkas": "Iman adalah dasar dari harapan yang diwariskan, bukti realitas yang tidak kelihatan.",
+      "makna_sedang": "Iman di Ibrani = kesetiaan hidup berorientasi janji Allah (contoh: Abraham, Musa). Bukan iman buta tanpa objek — objeknya adalah Allah yang dijanjikan.",
+      "kaitan_ayat": ["Roma 4:20", "2 Korintus 5:7", "Yakobus 2:17"],
+      "tema": ["iman", "harapan", "contoh_alkitab"]
+    },
+    "yoh:14:6": {
+      "referensi": "Yohanes 14:6",
+      "konteks": "Perjamuan terakhir — Tomas bertanya tentang jalan. Yesus menjawab.",
+      "makna_ringkas": "Akulah jalan, kebenaran, dan hidup; tidak ada yang datang kepada Bapa kecuali melalui Aku.",
+      "makna_sedang": "Klaim eksklusif Kristus — bukan salah satu jalan, melainkan jalan. 'Kebenaran' = revelasi Bapa; 'Hidup' = hidup kekal dalam relasi.",
+      "kaitan_ayat": ["Kisah Para Rasul 4:12", "1 Timotius 2:5", "Yohanes 1:14"],
+      "tema": ["inklusivitas_kristus", "jalan", "kebenaran"]
+    },
+    "yos:24:15": {
+      "referensi": "Yosua 24:15",
+      "konteks": "Yosua memimpin Israel megadakan perjanjian di Sikhem — pilihan whom to serve.",
+      "makna_ringkas": "Pilihlah hari ini siapa yang mau kamu layani — tetapi aku dan seisi rumahku, kami akan melayani TUHAN.",
+      "makna_sedang": "Panggilan keputusan — tidak netral. Melayani TUHAN = menolak berhala masa lalu (24:14). Aplikasi: integritas keluarga dan kepemimpinan rohani di rumah.",
+      "kaitan_ayat": ["Ulangan 6:4-5", "1 Raja-raja 18:21", "Rut 1:16"],
+      "tema": ["pilihan", "keluarga", "kesetiaan"]
+    },
+    "2ko:5:17": {
+      "referensi": "2 Korintus 5:17",
+      "konteks": "Paulus tentang pelayanan rekonsiliasi — orang baru di dalam Kristus.",
+      "makna_ringkas": "Jikalau orang di dalam Kristus, ciptaan baru; yang lama telah berlalu, yang baru telah tiba.",
+      "makna_sedang": "Identitas baru = hasil rekonsiliasi dengan Allah (5:18-19). Transformasi progresif (2 Kor 3:18), bukan sempurna instan.",
+      "kaitan_ayat": ["Galatia 6:15", "Efesus 4:22-24", "Roma 12:2"],
+      "tema": ["transformasi", "identitas", "rekonsiliasi"]
+    },
+    "1pe:5:7": {
+      "referensi": "1 Petrus 5:7",
+      "konteks": "Petrus menasihati jemaat yang menderita — kerendahan hati dan kepercayaan.",
+      "makna_ringkas": "Serahkanlah segala kekuatiranmu kepada-Nya, sebab Ia memelihara kamu.",
+      "makna_sedang": "Mengikuti ajakan merendahkan diri (5:6). Allah peduli — bukan apatis. Serahkan = disiplin doa berulang, bukan menolak realitas masalah.",
+      "kaitan_ayat": ["Filipi 4:6-7", "Mazmur 55:22", "Matius 6:34"],
+      "tema": ["kekuatiran", "pemeliharaan", "doa"]
+    },
+    "kej:1:1": {
+      "referensi": "Kejadian 1:1",
+      "konteks": "Pembukaan Torah — ciptaan ex nihilo.",
+      "makna_ringkas": "Pada mulanya Allah menciptakan langit dan bumi.",
+      "makna_sedang": "Allah sebagai subjek aktif sebelum materi ada. Dasar teologi: dunia berawal dari kehendak ilahi, bukan kebetulan.",
+      "kaitan_ayat": ["Yohanes 1:1-3", "Kolose 1:16", "Mazmur 19:1"],
+      "tema": ["ciptaan", "kedaulatan", "asal"]
+    },
+    "mzm:46:1": {
+      "referensi": "Mazmur 46:1",
+      "konteks": "Mazmur Korah — nyanyian kepercayaan saat bumi berguncang.",
+      "makna_ringkas": "Allah tempat perlindungan dan kekuatan, penolong dalam kesesakan sangat terbukti.",
+      "makna_sedang": "Meski gunung bergeser ke laut (46:2), Allah di tengah umat-Nya (46:5). Ayat 10: diam, Akulah Allah — panggilan hening dalam krisis.",
+      "kaitan_ayat": ["Mazmur 46:10", "Yesaya 41:10", "Nahum 1:7"],
+      "tema": ["perlindungan", "krisis", "keheningan"]
+    },
+    "why:3:20": {
+      "referensi": "Wahyu 3:20",
+      "konteks": "Surat kepada jemaat Laodikea — jemaat suam-suam kuku (3:15-16).",
+      "makna_ringkas": "Lihat, Aku berdiri di muka pintu dan mengetok; barangsiapa mendengar suara-Ku dan membuka pintu, Aku masuk.",
+      "makna_sedang": "Gambaran relasi personal — Kristus mengetuk, bukan memaksa. Makan bersama = persekutuan. Bukan hanya keputusan pertama, melainkan keterbukaan berulang.",
+      "kaitan_ayat": ["Yohanes 10:9", "Lukas 19:10", "Yesaya 55:6"],
+      "tema": ["undangan", "persekutuan", "respons"]
+    },
+    "rom:5:8": {
+      "referensi": "Roma 5:8",
+      "konteks": "Paulus menjelaskan kasih Allah sebelum kita taat — argumen teologi Roma 5 tentang pembenaran dan kasih.",
+      "makna_ringkas": "Allah menunjukkan kasih-Nya: Kristus mati untuk kita ketika kita masih berdosa.",
+      "makna_sedang": "Kasih ilahi bukan respons atas kebaikan manusia — inisiatif Allah mendahului. 'Masih berdosa' menegaskan kasih yang tidak layak diterima.",
+      "makna_mendalam": "Ayat ini menjadi jembatan antara pengakuan dosa (3:23) dan kepastian keselamatan (5:1). Kasih yang terbukti di salib — bukan abstraksi.",
+      "kaitan_ayat": ["Yohanes 3:16", "1 Yohanes 4:9", "Roma 8:32"],
+      "salah_tafsir": [
+        "Bukan: Allah mengasihi karena kita sudah baik",
+        "Bukan: dosa ringan tidak perlu pengorbanan salib"
+      ],
+      "tema": ["kasih_allah", "salib", "anugerah"]
+    },
+    "rom:3:23": {
+      "referensi": "Roma 3:23",
+      "konteks": "Paulus menyimpulkan universalitas dosa — semua manusia di bawah hukum.",
+      "makna_ringkas": "Semua orang telah berbuat dosa dan jatuh di bawah kemuliaan Allah.",
+      "makna_sedang": "'Semua' = universal, tanpa pengecualian etnis atau status. 'Kemuliaan Allah' = standar kekudusan-Nya, bukan sekadar hukum Taurat.",
+      "kaitan_ayat": ["Roma 6:23", "Yesaya 53:6", "1 Yohanes 1:8"],
+      "tema": ["dosa", "anugerah", "inklusivitas"]
+    },
+    "gal:5:22": {
+      "referensi": "Galatia 5:22-23",
+      "konteks": "Paulus kontras buah Roh vs. keinginan daging — surat Galatia tentang kebebasan dalam Kristus.",
+      "makna_ringkas": "Buah Roh: kasih, sukacita, damai sejahtera, dan delapan sifat lain — bukan hasil legalisme.",
+      "makna_sedang": "Buah = tumbuh alami dari hidup dalam Roh (5:25), bukan daftar peraturan. Kasih di urutan pertama — puncak karakter Kristus.",
+      "kaitan_ayat": ["Yohanes 15:5", "Efesus 5:9", "Kolose 3:12-14"],
+      "salah_tafsir": [
+        "Bukan: checklist moral yang bisa dipaksakan",
+        "Bukan: buah Roh = sukses materi atau popularitas"
+      ],
+      "tema": ["roh_kudus", "karakter", "transformasi"]
+    },
+    "kol:3:23": {
+      "referensi": "Kolose 3:23-24",
+      "konteks": "Paulus tentang etika kerja — hamba dan tuan dalam Kristus (Kolose 3:18-4:1).",
+      "makna_ringkas": "Apa pun yang kamu perbuat, perbuatlah dengan segenap hatimu seperti untuk Tuhan, bukan manusia.",
+      "makna_sedang": "Pekerjaan sehari-hari = ibadah jika orientasi pada Kristus. 'Warisan' (3:24) = upah kekal, bukan hanya gaji duniawi.",
+      "kaitan_ayat": ["1 Korintus 10:31", "Efesus 6:7", "Amsal 16:3"],
+      "tema": ["pekerjaan", "ibadah", "integritas"]
+    },
+    "mat:28:19": {
+      "referensi": "Matius 28:19-20",
+      "konteks": "Perintah terakhir Yesus — Great Commission setelah kebangkitan.",
+      "makna_ringkas": "Pergilah, jadikan semua bangsa murid-Ku, baptis dan ajar mereka.",
+      "makna_sedang": "'Murid' = proses pembelajaran berkelanjutan, bukan sekadar konversi instan. 'Sampai ke ujung bumi' = misi global. 'Aku menyertai' = janji kehadiran Kristus.",
+      "kaitan_ayat": ["Kisah Para Rasul 1:8", "Markus 16:15", "2 Timotius 2:2"],
+      "tema": ["misi", "pemuridan", "inklusivitas"]
+    },
+    "kis:1:8": {
+      "referensi": "Kisah Para Rasul 1:8",
+      "konteks": "Yesus sebelum naik ke sorga — janji Roh Kudus dan misi.",
+      "makna_ringkas": "Kamu akan menerima kuasa Roh Kudus dan menjadi saksi-Ku sampai ke ujung bumi.",
+      "makna_sedang": "Kuasa = untuk misi (saksi), bukan hanya pengalaman pribadi. Progres geografis: Yerusalem → Yudea → Samaria → ujung bumi.",
+      "kaitan_ayat": ["Matius 28:19", "Yohanes 14:26", "Roma 15:19"],
+      "tema": ["roh_kudus", "misi", "saksi"]
+    },
+    "1yo:1:9": {
+      "referensi": "1 Yohanes 1:9",
+      "konteks": "Yohanes menulis tentang persekutuan dengan Allah — jujur tentang dosa.",
+      "makna_ringkas": "Jika kita mengaku dosa, Allah setia dan adil mengampuni dan menyucikan.",
+      "makna_sedang": "Pengakuan = langkah iman, bukan wallowing in guilt. Allah 'setia' = karakter-Nya konsisten mengampuni. 'Menyucikan' = proses pembaruan, bukan hanya legal.",
+      "kaitan_ayat": ["Mazmur 32:1", "Mazmur 51:1", "Matius 6:14-15"],
+      "tema": ["pengampunan", "doa", "integritas"]
+    },
+    "2ko:12:9": {
+      "referensi": "2 Korintus 12:9",
+      "konteks": "Paulus tentang 'duri dalam daging' — doa tiga kali, respons Allah.",
+      "makna_ringkas": "Cukuplah kasih karunia-Ku; sebab justru dalam kelemahan, kuasa-Ku menjadi sempurna.",
+      "makna_sedang": "Allah tidak selalu menghilangkan penderitaan — tetapi memberi anugerah cukup. Kelemahan = ruang kuasa Kristus, bukan aib yang harus disembunyikan.",
+      "kaitan_ayat": ["Filipi 4:13", "2 Korintus 12:10", "Yesaya 40:29"],
+      "salah_tafsir": [
+        "Bukan: setiap doa penyembuhan pasti dijawab instan",
+        "Bukan: kelemahan = kurang iman"
+      ],
+      "tema": ["kelemahan", "anugerah", "penderitaan"]
+    },
+    "yes:40:31": {
+      "referensi": "Yesaya 40:31",
+      "konteks": "Bagian penghiburan Yesaya 40 — Allah yang kekal vs. manusia fana.",
+      "makna_ringkas": "Orang yang menanti-nantikan TUHAN mendapat kekuatan baru; terbang seperti rajawali.",
+      "makna_sedang": "'Menunggu' (qavah) = harap aktif, bukan pasif. Metafora rajawali = kekuatan dari atas, bukan usaha sendiri.",
+      "kaitan_ayat": ["Mazmur 103:5", "Yesaya 41:10", "2 Korintus 12:9"],
+      "tema": ["harapan", "kekuatan", "kesabaran"]
+    },
+    "mik:6:8": {
+      "referensi": "Mikha 6:8",
+      "konteks": "Mikha — tuntutan Allah yang ringkas vs. ritual kosong (6:6-7).",
+      "makna_ringkas": "Allah telah memberitahukan: berlaku adil, mencintai belas kasihan, hidup rendah hati.",
+      "makna_sedang": "Tiga pilar: keadilan (mishpat), kasih setia (chesed), kerendahan hati. Bukan pengganti iman — melainkan buah relasi dengan Allah.",
+      "kaitan_ayat": ["Amos 5:24", "Yesaya 1:17", "Matius 23:23"],
+      "tema": ["keadilan", "belas_kasihan", "kerendahan_hati"]
+    },
+    "mzm:27:1": {
+      "referensi": "Mazmur 27:1",
+      "konteks": "Mazmur Daud — kepercayaan di tengah ancaman (27:2-3).",
+      "makna_ringkas": "TUHAN adalah terangku dan keselamatanku — siapakah yang kufuruti?",
+      "makna_sedang": "Terang = arah dan keberanian. Keselamatan = perlindungan holistik, bukan hanya escape fisik.",
+      "kaitan_ayat": ["Mazmur 23:1", "Yesaya 41:10", "Yohanes 8:12"],
+      "tema": ["keberanian", "kepercayaan", "perlindungan"]
+    },
+    "yoh:1:12": {
+      "referensi": "Yohanes 1:12",
+      "konteks": "Prolog Yohanes — Firman menjadi manusia, respons iman.",
+      "makna_ringkas": "Semua yang menerima-Nya diberi-Nya kuasa menjadi anak-anak Allah.",
+      "makna_sedang": "'Menerima' = respons iman personal. 'Kuasa' (exousia) = hak/hubungan anak, bukan sekadar status legal.",
+      "kaitan_ayat": ["Yohanes 3:16", "Galatia 3:26", "Roma 8:15-16"],
+      "tema": ["identitas", "anak_allah", "iman"]
+    },
+    "rom:12:2": {
+      "referensi": "Roma 12:2",
+      "konteks": "Paulus transisi ke etika praktis — respons iman (Roma 12).",
+      "makna_ringkas": "Jangan serupa dunia — berubah oleh pembaharuan pikiran, uji kehendak Allah.",
+      "makna_sedang": "Transformasi = pembaruan pikiran (nous), bukan hanya perilaku luar. 'Kehendak Allah yang baik' = hidup selaras karakter-Nya.",
+      "kaitan_ayat": ["2 Korintus 5:17", "Efesus 4:22-24", "Kolose 3:10"],
+      "tema": ["transformasi", "hikmat", "konformitas"]
+    },
+    "mat:6:9": {
+      "referensi": "Matius 6:9-13",
+      "konteks": "Khotbah di Bukit — model doa Bapa Kami.",
+      "makna_ringkas": "Bapa kami yang di sorga, kuduskanlah nama-Mu; datanglah kerajaan-Mu.",
+      "makna_sedang": "Doa dimulai dengan Bapa — relasi intim. Prioritas: nama kudus, kerajaan, kehendak. Permohonan harian: roti, pengampunan, pencobaan.",
+      "kaitan_ayat": ["Lukas 11:2-4", "Yohanes 17:1", "Mazmur 103:13"],
+      "tema": ["doa", "kerajaan_allah", "relasi"]
+    },
+    "luk:15:11": {
+      "referensi": "Lukas 15:11-32",
+      "konteks": "Perumpamaan anak yang hilang — konteks Yesus makan dengan pendosa (15:1-2).",
+      "makna_ringkas": "Anak bungsu meminta bagian, menghamburkan, kembali — Bapa menerima dengan sukacita.",
+      "makna_sedang": "Bapa = gambaran kasih Allah yang menerima pertobatan. Anak sulung = peringatan legalisme dan iri hati. Makan bersama = rekonsiliasi.",
+      "kaitan_ayat": ["Yohanes 3:16", "Efesus 2:4-5", "1 Timotius 1:15"],
+      "salah_tafsir": [
+        "Bukan: Bapa menerima tanpa pertobatan — anak bungsu 'bangun pergi'",
+        "Bukan: anak sulung = selalu salah; poin = sikap hati"
+      ],
+      "tema": ["pengampunan", "kasih_allah", "pertobatan"]
+    },
+    "1ko:13:4": {
+      "referensi": "1 Korintus 13:4-7",
+      "konteks": "Paulus — himne kasih di tengah diskusi karunia rohani (1 Kor 12-14).",
+      "makna_ringkas": "Kasih sabar, murah hati, tidak iri — definisi Paulus tentang agape.",
+      "makna_sedang": "Kasih > karunia spektakuler tanpa kasih = bunyi gong. Daftar sifat kasih = etika relasi jemaat dan keluarga.",
+      "kaitan_ayat": ["1 Yohanes 4:7-8", "Galatia 5:22", "Kolose 3:14"],
+      "tema": ["kasih", "jemaat", "karakter"]
+    },
+    "yoh:15:5": {
+      "referensi": "Yohanes 15:5",
+      "konteks": "Perumpamaan pokok anggur — perjamuan terakhir, perintah kasih.",
+      "makna_ringkas": "Akulah pokok anggur, kamu ranting; barangsiapa tinggal di dalam Aku, ia berbuah banyak.",
+      "makna_sedang": "Membuahkan = hasil relasi erat dengan Kristus, bukan usaha legalistik. 'Tanpa Aku' = tidak ada buah rohani yang sejati.",
+      "kaitan_ayat": ["Yohanes 15:4", "Galatia 5:22", "Matius 7:17"],
+      "tema": ["persekutuan", "buah_roh", "identitas"]
+    },
+    "mzm:91:1": {
+      "referensi": "Mazmur 91:1",
+      "konteks": "Mazmur perlindungan — tradisi atribusi Musa, sering dibaca untuk penghiburan.",
+      "makna_ringkas": "Siapa berlindung pada Yang Mahatinggi dan berada dalam naungan Yang Mahakuasa — TUHAN tempat perlindunganku.",
+      "makna_sedang": "Metafora naungan = kedekatan relasi, bukan janji ajaib tanpa iman. Ayat 11-12: malaikat menjaga — dalam konteks pengharapan ilahi, bukan superstisi.",
+      "kaitan_ayat": ["Mazmur 46:1", "Yesaya 41:10", "Nahum 1:7"],
+      "salah_tafsir": [
+        "Bukan: janji kekebalan fisik mutlak bagi setiap orang percaya",
+        "Bukan: mengabaikan kehati-hatian dan tanggung jawab manusia"
+      ],
+      "tema": ["perlindungan", "penghiburan", "kepercayaan"]
+    },
+    "mzm:100:1": {
+      "referensi": "Mazmur 100",
+      "konteks": "Mazmur pujian — seruan masuk ke pelataran-Nya dengan sorak-sorai.",
+      "makna_ringkas": "Bersorak-sorailah bagi TUHAN, segenap bumi! Layani TUHAN dengan sukacita.",
+      "makna_sedang": "Pujian = respons sukacita atas kasih setia Allah (100:5). 'Domba gembala-Nya' = identitas umat dalam relasi perawatan.",
+      "kaitan_ayat": ["Mazmur 95:1-2", "Mazmur 150:6", "1 Tesalonika 5:18"],
+      "tema": ["pujian", "syukur", "ibadah"]
+    },
+    "mzm:119:105": {
+      "referensi": "Mazmur 119:105",
+      "konteks": "Mazmur panjang tentang Taurat — alfabetik, pujian terhadap firman Allah.",
+      "makna_ringkas": "Firman-Mu itu pelita bagi kakiku dan terang bagi jalanku.",
+      "makna_sedang": "Taurat = petunjuk praktis hidup, bukan hanya hukum kaku. Metafora cahaya = arah moral dan spiritual di kegelapan.",
+      "kaitan_ayat": ["Mazmur 19:8", "Amsal 6:23", "2 Timotius 3:16"],
+      "tema": ["firman", "petunjuk", "hikmat"]
+    },
+    "mzm:37:4": {
+      "referensi": "Mazmur 37:4",
+      "konteks": "Mazmur hikmat Daud — kontras jalan orang benar vs. orang fasik.",
+      "makna_ringkas": "Bergembiralah dalam TUHAN, maka Ia akan memberi keinginan hatimu.",
+      "makna_sedang": "Bergembira dalam TUHAN = orientasi hati pada-Nya, bukan materialisme. Keinginan hati selaras dengan kehendak-Nya — bukan wish fulfillment instan.",
+      "kaitan_ayat": ["Matius 6:33", "Mazmur 23:1", "Filipi 4:11"],
+      "salah_tafsir": [
+        "Bukan: janji semua keinginan ego terkabul",
+        "Bukan: tidak perlu usaha atau kesabaran"
+      ],
+      "tema": ["harapan", "kepercayaan", "prioritas"]
+    },
+    "yoh:10:11": {
+      "referensi": "Yohanes 10:11",
+      "konteks": "Yesus perumpamaan gembala — kontras dengan upahan (10:12-13).",
+      "makna_ringkas": "Akulah gembala yang baik; gembala yang baik memberikan nyawanya untuk domba-domba.",
+      "makna_sedang": "Klaim Mesias sebagai Gembala sejati — penggenapan Mazmur 23. Pengorbanan nyawa = salib, bukan metafora kosong.",
+      "kaitan_ayat": ["Mazmur 23:1", "Yesaya 40:11", "Wahyu 7:17"],
+      "tema": ["gembala", "salib", "kasih"]
+    },
+    "yoh:14:1": {
+      "referensi": "Yohanes 14:1-3",
+      "konteks": "Perjamuan terakhir — Yesus menghibur murid yang cemas akan perpisahan.",
+      "makna_ringkas": "Jangan gelisah hatimu; percayalah kepada Allah, percayalah juga kepada-Ku.",
+      "makna_sedang": "Penghiburan di ambang salib. 'Banyak tempat tinggal' = janji kehadiran Bapa — persiapan tempat = kepastian relasi kekal.",
+      "kaitan_ayat": ["Filipi 4:6-7", "1 Petrus 5:7", "Yohanes 14:27"],
+      "tema": ["penghiburan", "harapan", "kepercayaan"]
+    },
+    "yoh:15:1": {
+      "referensi": "Yohanes 15:1-8",
+      "konteks": "Perumpamaan pokok anggur — eksposisi tentang tinggal di Kristus.",
+      "makna_ringkas": "Akulah pokok anggur yang benar; Bapalah pengurus kebun. Setiap ranting di dalam Aku yang tidak berbuah, dibuang-Nya.",
+      "makna_sedang": "Pemangkasan = disiplin pembentukan karakter. Membuahkan = bukti relasi hidup dengan Kristus, bukan legalisme.",
+      "kaitan_ayat": ["Yohanes 15:5", "Galatia 5:22", "Efesus 2:10"],
+      "tema": ["persekutuan", "buah_roh", "disiplin"]
+    },
+    "yoh:4:10": {
+      "referensi": "Yohanes 4:10",
+      "konteks": "Yesus dan perempuan Samaria di sumur Yakub — percakapan tentang air hidup.",
+      "makna_ringkas": "Jika engkau tahu karunia Allah dan siapa yang berkata kepadamu, engkau pasti meminta dan Dia memberi air hidup.",
+      "makna_sedang": "Inisiatif Allah memberi — bukan religiusitas geografis. Air hidup = Roh dan hidup kekal (4:14).",
+      "kaitan_ayat": ["Yohanes 7:37-39", "Yesaya 12:3", "Wahyu 21:6"],
+      "tema": ["air_hidup", "inklusivitas", "karunia"]
+    },
+    "yoh:6:35": {
+      "referensi": "Yohanes 6:35",
+      "konteks": "Khutbah roti hidup setelah peristiwa lima roti dua ikan.",
+      "makna_ringkas": "Akulah roti hidup; barangsiapa datang kepada-Ku, ia tidak akan lapar lagi.",
+      "makna_sedang": "Roti = diri Kristus yang harus 'dimakan' oleh iman (6:51-58) — metafora partisipasi dalam relasi dengan-Nya.",
+      "kaitan_ayat": ["Ulangan 8:3", "Matius 4:4", "1 Korintus 11:24"],
+      "tema": ["roti_hidup", "iman", "kecukupan"]
+    },
+    "yoh:11:25": {
+      "referensi": "Yohanes 11:25",
+      "konteks": "Kebangkitan Lazarus — Yesus berbicara kepada Marta.",
+      "makna_ringkas": "Akulah kebangkitan dan hidup; barangsiapa percaya kepada-Ku, ia hidup meskipun ia mati.",
+      "makna_sedang": "Klaim eskatologis Kristus — hidup kekal dimulai sekarang dalam iman. Lazarus = tanda kekuasaan Kristus.",
+      "kaitan_ayat": ["1 Korintus 15:20", "Wahyu 1:18", "Yohanes 5:28-29"],
+      "tema": ["kebangkitan", "hidup_kekal", "harapan"]
+    },
+    "yoh:20:31": {
+      "referensi": "Yohanes 20:31",
+      "konteks": "Penutup Injil Yohanes — tujuan penulisan.",
+      "makna_ringkas": "Tetapi semuanya ini ditulis, supaya kamu percaya bahwa Yesus adalah Mesias, Anak Allah.",
+      "makna_sedang": "Hermeneutika Yohanes: tanda-tanda (semeia) ditulis untuk iman, bukan spekulasi. Percaya = hidup dalam relasi kekal.",
+      "kaitan_ayat": ["Yohanes 1:12", "1 Yohanes 5:13", "Roma 10:9"],
+      "tema": ["injil", "iman", "tujuan_penulisan"]
+    },
+    "rom:6:23": {
+      "referensi": "Roma 6:23",
+      "konteks": "Paulus — kontras dosa vs. anugerah dalam argumen baptisan (Roma 6).",
+      "makna_ringkas": "Upah dosa ialah maut, tetapi karunia Allah ialah hidup kekal dalam Kristus Yesus, Tuhan kita.",
+      "makna_sedang": "Upah = konsekuensi alami dosa. Karunia = cuma-cuma, tidak bisa diusahakan. Hidup kekal = relasi dengan Kristus, bukan hanya durasi.",
+      "kaitan_ayat": ["Roma 3:23", "Yohanes 3:16", "Efesus 2:8"],
+      "tema": ["dosa", "anugerah", "keselamatan"]
+    },
+    "rom:10:9": {
+      "referensi": "Roma 10:9-10",
+      "konteks": "Paulus tentang kebenaran oleh iman — kontras dengan legalisme.",
+      "makna_ringkas": "Jika engkau mengaku dengan mulutmu bahwa Yesus adalah Tuhan, dan percaya dalam hatimu bahwa Allah membangkitkan Dia — engkau akan diselamatkan.",
+      "makna_sedang": "Pengakuan + iman = respons utuh, bukan sekadar formula verbal. 'Tuhan' (Kyrios) = pengakuan keilahian Kristus.",
+      "kaitan_ayat": ["Roma 10:13", "Filipi 2:11", "Kisah Para Rasul 16:31"],
+      "tema": ["keselamatan", "pengakuan", "iman"]
+    },
+    "rom:12:1": {
+      "referensi": "Roma 12:1-2",
+      "konteks": "Transisi Paulus ke etika praktis — respons iman atas anugerah (Rm 1-11).",
+      "makna_ringkas": "Karena kemurahan Allah, persembahkan tubuhmu sebagai persembahan hidup, kudus, dan berkenan kepada Allah.",
+      "makna_sedang": "Ibadah = seluruh hidup, bukan hanya ritual. 'Jangan serupa dunia' = transformasi pikiran oleh Roh.",
+      "kaitan_ayat": ["Roma 12:2", "1 Korintus 6:19-20", "Efesus 4:1"],
+      "tema": ["ibadah", "transformasi", "pengabdian"]
+    },
+    "mat:5:3": {
+      "referensi": "Matius 5:3-12",
+      "konteks": "Khotbah di Bukit — Beatitudes, pembuka manifesto kerajaan Allah.",
+      "makna_ringkas": "Berbahagialah orang yang miskin di hadapan Allah, karena merekalah yang empunya kerajaan sorga.",
+      "makna_sedang": "'Miskin di hadapan Allah' = kerendahan hati spiritual, bukan glorifikasi kemiskinan materi. Beatitudes membalikkan nilai dunia.",
+      "kaitan_ayat": ["Lukas 6:20", "Yesaya 61:1", "Yakobus 2:5"],
+      "tema": ["kerajaan_allah", "kerendahan_hati", "beatitudes"]
+    },
+    "mat:22:37": {
+      "referensi": "Matius 22:37-40",
+      "konteks": "Yesus diuji tentang hukum terbesar — jawaban dari Ulangan 6:5 dan Imamat 19:18.",
+      "makna_ringkas": "Kasihilah Tuhan Allahmu dengan segenap hatimu; dan kasihilah sesamamu manusia seperti dirimu sendiri.",
+      "makna_sedang": "Dua hukum yang merangkum Taurat dan Nabi. Kasih = orientasi totalitas hidup, bukan perasaan saja. Sesama = praktis, bukan abstrak.",
+      "kaitan_ayat": ["Ulangan 6:4-5", "Galatia 5:14", "1 Yohanes 4:21"],
+      "tema": ["kasih", "hukum", "etika"]
+    },
+    "ef:6:10": {
+      "referensi": "Efesus 6:10-18",
+      "konteks": "Paulus penutup surat Efesus — metafora baju zirah rohani.",
+      "makna_ringkas": "Akhirnya, hendaklah kamu kuat di dalam Tuhan dan di dalam kekuatan kuasa-Nya. Kenakanlah seluruh senjata Allah.",
+      "makna_sedang": "Perjuangan rohani melawan penguasa kegelapan — bukan manusia. Senjata = kebenaran, keadilan, iman, Injil, doa.",
+      "kaitan_ayat": ["2 Korintus 10:4", "1 Petrus 5:8", "Yakobus 4:7"],
+      "salah_tafsir": [
+        "Bukan: spiritual warfare = cari iblis di setiap masalah",
+        "Bukan: mengabaikan tanggung jawab manusia dan medis"
+      ],
+      "tema": ["perang_rohani", "doa", "kekuatan"]
+    },
+    "why:21:4": {
+      "referensi": "Wahyu 21:4",
+      "konteks": "Visi langit baru dan bumi baru — pengharapan eskatologis.",
+      "makna_ringkas": "Ia akan menghapus segala air mata; maut tidak ada lagi; dukacita, ratap tangis, dan sengsara tidak ada lagi.",
+      "makna_sedang": "Pengharapan kekal untuk umat yang menderita. Realitas baru — bukan escape dari dunia, melainkan rekonsiliasi kosmis.",
+      "kaitan_ayat": ["Yesaya 25:8", "1 Korintus 15:26", "Wahyu 7:17"],
+      "tema": ["harapan", "kebangkitan", "penghiburan"]
+    },
+    "1ko:13:1": {
+      "referensi": "1 Korintus 13",
+      "konteks": "Himne kasih Paulus — di tengah diskusi karunia rohani (1 Kor 12-14).",
+      "makna_ringkas": "Sekalipun aku berbicara dengan bahasa manusia dan bahasa malaikat, jika aku tidak berkasih, aku menjadi gemerbung tembaga.",
+      "makna_sedang": "Kasih (agape) > karunia spektakuler. Kasih sabar, murah hati, tidak iri — etika relasi jemaat dan keluarga.",
+      "kaitan_ayat": ["1 Yohanes 4:7-8", "Galatia 5:22", "Kolose 3:14"],
+      "tema": ["kasih", "karunia", "jemaat"]
+    },
+    "rom:1:16": {
+      "referensi": "Roma 1:16",
+      "konteks": "Pembuka surat Roma — Paulus memperkenalkan diri dan tema Injil.",
+      "makna_ringkas": "Aku tidak malu akan Injil, karena Injil adalah kekuatan Allah untuk keselamatan setiap orang yang percaya.",
+      "makna_sedang": "Injil = kuasa ilahi aktif, bukan doktrin mati. 'Tidak malu' = berani dalam konteks Rome yang memandang salib foolish.",
+      "kaitan_ayat": ["1 Korintus 1:18", "Roma 1:17", "Markus 16:15"],
+      "tema": ["injil", "kuasa", "keselamatan"]
+    },
+    "rom:1:17": {
+      "referensi": "Roma 1:17",
+      "konteks": "Thesis Paulus — kebenaran Allah dinyatakan dalam Injil.",
+      "makna_ringkas": "Kebenaran Allah dinyatakan di dalamnya, dari iman leading to iman.",
+      "makna_sedang": "Kebenaran Allah = standar kekudusan-Nya diberikan kepada orang percaya — bukan earned by law. Tema iman menggenapi Habakuk 2:4.",
+      "kaitan_ayat": ["Habakuk 2:4", "Galatia 3:11", "Roma 3:22"],
+      "tema": ["kebenaran", "iman", "injil"]
+    },
+    "rom:3:21": {
+      "referensi": "Roma 3:21-26",
+      "konteks": "Puncak argumen pembenaran — setelah universalitas dosa (3:23).",
+      "makna_ringkas": "Kebenaran Allah telah dinyatakan tanpa Taurat — dibenarkan oleh kasih karunia melalui penebusan dalam Kristus.",
+      "makna_sedang": "Pembenaran = declarative act Allah, bukan human achievement. Propitiation — Kristus sebagai tempat pendamaian.",
+      "kaitan_ayat": ["Roma 3:23", "Efesus 2:8", "Galatia 2:16"],
+      "tema": ["pembenaran", "anugerah", "salib"]
+    },
+    "rom:5:1": {
+      "referensi": "Roma 5:1-2",
+      "konteks": "Konsekuensi pembenaran — damai dengan Allah.",
+      "makna_ringkas": "Karena dibenarkan oleh iman, kita beroleh damai sejahtera dengan Allah.",
+      "makna_sedang": "Damai = reconciled relationship, bukan sekadar perasaan tenang. Akses oleh iman ke anugerah.",
+      "kaitan_ayat": ["Roma 5:8", "Efesus 2:14", "Kolose 1:20"],
+      "tema": ["damai", "pembenaran", "anugerah"]
+    },
+    "rom:8:1": {
+      "referensi": "Roma 8:1",
+      "konteks": "Puncak bagian Roh — kontras hidup dalam Roh vs. daging.",
+      "makna_ringkas": "Tidak ada lagi penghukuman bagi mereka yang ada di dalam Kristus Yesus.",
+      "makna_sedang": "Penghukuman = legal condemnation removed — bukan lisensi berdosa. 'Di dalam Kristus' = union with Christ.",
+      "kaitan_ayat": ["Roma 8:2", "Yohanes 5:24", "Roma 8:38-39"],
+      "tema": ["kebebasan", "roh_kudus", "pembenaran"]
+    },
+    "rom:8:38": {
+      "referensi": "Roma 8:38-39",
+      "konteks": "Klimaks Roma 8 — kepastian kasih Kristus.",
+      "makna_ringkas": "Aku yakin: maut, kehidupan, malaikat, kuasa — tidak ada yang dapat memisahkan kita dari kasih Allah dalam Kristus.",
+      "makna_sedang": "Daftar komprehensif yang mungkin memisahkan — Paulus menolak semua. Kasih Kristus = covenantal, bukan sentimental.",
+      "kaitan_ayat": ["Roma 8:28", "Yohanes 10:28", "Efesus 3:18-19"],
+      "tema": ["kasih", "kepastian", "penderitaan"]
+    },
+    "mzm:1:1": {
+      "referensi": "Mazmur 1",
+      "konteks": "Mazmur pembuka kitab — kontras orang benar vs. fasik.",
+      "makna_ringkas": "Berbahagialah orang yang tidak berjalan mengikuti nasehat orang fasik — kehidupannya seperti pohon di tepi sungai.",
+      "makna_sedang": "Torah meditation = delight in God's instruction. Metafora pohon = stabilitas dan buah dalam musim.",
+      "kaitan_ayat": ["Yosua 1:8", "Mazmur 119:1", "Yeremia 17:7-8"],
+      "tema": ["hikmat", "torah", "berkat"]
+    },
+    "mzm:19:1": {
+      "referensi": "Mazmur 19:1-4",
+      "konteks": "Mazmur Daud — ciptaan dan Taurat.",
+      "makna_ringkas": "Langit menceritakan kemuliaan Allah; ciptaan bersaksi tanpa kata.",
+      "makna_sedang": "General revelation through creation + special revelation in Torah (19:7-11). Dual witness to God's glory.",
+      "kaitan_ayat": ["Kejadian 1:1", "Roma 1:20", "Mazmur 119:105"],
+      "tema": ["ciptaan", "firman", "kemuliaan"]
+    },
+    "mzm:51:1": {
+      "referensi": "Mazmur 51",
+      "konteks": "Mazmur ratapan Daud setelah dosa dengan Batsyeba (2 Samuel 11-12).",
+      "makna_ringkas": "Kasihanilah aku, ya Allah, menurut kasih setia-Mu; basuhlah aku dari kesalahanku.",
+      "makna_sedang": "Pengakuan dosa autentik — 'against You only' (51:4). Hati hancur = offering God accepts (51:17).",
+      "kaitan_ayat": ["1 Yohanes 1:9", "Mazmur 32:1", "2 Samuel 12:13"],
+      "salah_tafsir": [
+        "Bukan: dosa bisa diabaikan tanpa pertobatan",
+        "Bukan: ritual saja cukup tanpa hati hancur"
+      ],
+      "tema": ["pengampunan", "pertobatan", "ratapan"]
+    },
+    "mzm:139:1": {
+      "referensi": "Mazmur 139",
+      "konteks": "Mazmur Daud — Allah mengenal intim, dari rahim hingga akhir hayat.",
+      "makna_ringkas": "TUHAN, Engkau telah meneliti aku dan Engkau mengetahui. Engkau familiar dengan duduk dan bangunku.",
+      "makna_sedang": "Omniscience Allah = personal care, bukan surveillance menakutkan. Diformed in secret (139:13) — sanctity of life.",
+      "kaitan_ayat": ["Yeremia 1:5", "Mazmur 23:1", "Yesaya 43:1"],
+      "tema": ["identitas", "ciptaan", "kehadiran_allah"]
+    },
+    "mzm:145:1": {
+      "referensi": "Mazmur 145",
+      "konteks": "Mazmur pujian akrostik — kemahatan dan kasih Allah.",
+      "makna_ringkas": "Aku hendak membesarkan-Mu, ya Allah Raja-ku, dan memuji nama-Mu selama-lamanya.",
+      "makna_sedang": "Allah dekat pada yang memanggil (145:18). Memelihara yang falling (145:14). Generational praise (145:4).",
+      "kaitan_ayat": ["Mazmur 103:1", "Mazmur 150:6", "1 Tesalonika 5:18"],
+      "tema": ["pujian", "kemahatan", "kasih"]
+    },
+    "mzm:34:18": {
+      "referensi": "Mazmur 34:18",
+      "konteks": "Mazmur Daud — kesaksian deliverance.",
+      "makna_ringkas": "TUHAN dekat pada yang patah hati; Ia selamatkan yang remuk jiwanya.",
+      "makna_sedang": "Allah dekat pada brokenhearted — pastoral comfort, bukan blame. Contrasts with wicked (34:21).",
+      "kaitan_ayat": ["Mazmur 51:17", "Yesaya 57:15", "Matius 5:4"],
+      "tema": ["penghiburan", "ratapan", "dekat"]
+    },
+    "rom:2:4": {
+      "referensi": "Roma 2:4",
+      "konteks": "Paulus menegur penghakiman — kebaikan Allah menuntun bertobat.",
+      "makna_ringkas": "Kekayaan kemurahan-Nya, kesabaran, dan kelonggaran menuntun engkau bertobat.",
+      "makna_sedang": "Kesabaran Allah bukan persetujuan dosa — undangan bertobat. Orang yang menghardikan diri menimbun murka.",
+      "kaitan_ayat": ["2 Petrus 3:9", "Roma 3:25", "Wahyu 2:21"],
+      "tema": ["pertobatan", "kemurahan", "kesabaran"]
+    },
+    "rom:4:20": {
+      "referensi": "Roma 4:20",
+      "konteks": "Paulus tentang iman Abraham — bagian argumen pembenaran.",
+      "makna_ringkas": "Dalam iman Abraham tidak ragu-ragu; imannya bertambah kuat dan ia memuliakan Allah.",
+      "makna_sedang": "Abraham percaya janji meski tubuh dan Sarah sudah tua — iman against hope. Kredit sebagai kebenaran (4:22).",
+      "kaitan_ayat": ["Ibrani 11:1", "Ibrani 11:11", "Kejadian 15:6"],
+      "tema": ["iman", "janji", "abraham"]
+    },
+    "rom:7:15": {
+      "referensi": "Roma 7:15-25",
+      "konteks": "Paulus — konflik batin orang percaya dengan dosa.",
+      "makna_ringkas": "Apa yang aku perbuat, aku tidak mengenalnya; bukan yang baik yang aku perbuat, melainkan yang jahat.",
+      "makna_sedang": "Pengalaman universal perjuangan dosa — bukan excuse, melainkan dorongan ke anugerah (7:24-25). Hidup dalam Roh (Roma 8) sebagai jawaban.",
+      "kaitan_ayat": ["Galatia 5:17", "Roma 8:1-2", "1 Korintus 10:13"],
+      "tema": ["dosa", "perjuangan", "anugerah"]
+    },
+    "rom:8:26": {
+      "referensi": "Roma 8:26",
+      "konteks": "Paulus — Roh membantu kelemahan kita dalam doa.",
+      "makna_ringkas": "Roh membantu kelemahan kita; Roh intercedes dengan keluhan yang tidak terucap.",
+      "makna_sedang": "Doa saat kata-kata tidak cukup — Roh bekerja selaras kehendak Allah (8:27). Penghiburan bagi yang tidak tahu harus berdoa apa.",
+      "kaitan_ayat": ["Roma 8:27", "Efesus 6:18", "Yudas 1:20"],
+      "tema": ["doa", "roh_kudus", "kelemahan"]
+    },
+    "rom:8:31": {
+      "referensi": "Roma 8:31",
+      "konteks": "Retorika Paulus — jika Allah di pihak kita.",
+      "makna_ringkas": "Jika Allah di pihak kita, siapakah yang akan melawan kita?",
+      "makna_sedang": "Logika pembenaran: Allah yang membenarkan tidak akan menghukum (8:33-34). Kristus di kanan Allah memohon.",
+      "kaitan_ayat": ["Roma 8:38-39", "Mazmur 118:6", "Ibrani 7:25"],
+      "tema": ["kepastian", "pemeliharaan", "kasih"]
+    },
+    "rom:12:9": {
+      "referensi": "Roma 12:9-21",
+      "konteks": "Etika praktis Roma 12 — hidup sebagai korban hidup.",
+      "makna_ringkas": "Hendaklah kasihmu jangan pura-pura; bencilah yang jahat, dan tempelkanlah dirimu pada yang baik.",
+      "makna_sedang": "Daftar perintah praktis — kasih tulus, keramahan, berkati penganiaya (12:14). Jangan dikalahkan jahat dengan jahat.",
+      "kaitan_ayat": ["1 Korintus 13:4", "1 Petrus 4:8", "Matius 5:44"],
+      "tema": ["kasih", "etika", "jemaat"]
+    },
+    "rom:8:18": {
+      "referensi": "Roma 8:18",
+      "konteks": "Paulus tentang penderitaan masa kini vs kemuliaan yang akan datang.",
+      "makna_ringkas": "Aku yakin bahwa penderitaan yang sekarang ini seberat apapun tidak dapat dibandingkan dengan kemuliaan yang akan dinyatakan kepada kita.",
+      "makna_sedang": "Skala eskatologis — penderitaan tidak dikecilkan, tetapi ditempatkan dalam horizon kemuliaan. Konteks: seluruh ciptaan menanti pembebasan (8:19-22).",
+      "kaitan_ayat": ["2 Korintus 4:17", "1 Petrus 1:6-7", "Wahyu 21:4"],
+      "tema": ["penderitaan", "harapan", "kemuliaan"]
+    },
+    "rom:11:33": {
+      "referensi": "Roma 11:33",
+      "konteks": "Doxologi setelah argumen tentang Israel dan bangsa-bangsa.",
+      "makna_ringkas": "O, keluasan kekayaan dan hikmat dan pengetahuan Allah! Betapa tidak terselidiki hukum-hukum-Nya dan tidak terselami jalan-jalan-Nya!",
+      "makna_sedang": "Respons iman terhadap misteri rencana Allah — bukan frustrasi, melainkan pujian. Paulus tidak 'memecahkan' teologi Israel; ia berdoa.",
+      "kaitan_ayat": ["Ulangan 29:29", "Yesaya 55:8-9", "1 Korintus 2:16"],
+      "tema": ["hikmat_allah", "misteri", "pujian"]
+    },
+    "rom:13:8": {
+      "referensi": "Roma 13:8-10",
+      "konteks": "Paulus tentang kewajiban kepada sesama dan hukum Taurat.",
+      "makna_ringkas": "Janganlah kamu berutang apa-apa kepada siapa pun, kecuali utang kasih.",
+      "makna_sedang": "Kasih = pemenuhan hukum (13:10). Etika Kristen = relasi kasih konkret, bukan legalisme kosong.",
+      "kaitan_ayat": ["Galatia 5:14", "Matius 22:37-40", "Yakobus 2:8"],
+      "tema": ["kasih", "hukum", "etika"]
+    },
+    "rom:15:13": {
+      "referensi": "Roma 15:13",
+      "konteks": "Doa penutup bagian teologis surat Roma.",
+      "makna_ringkas": "Semoga Allah, sumber pengharapan, memenuhi kamu dengan sukacita dan damai sejahtera dalam iman.",
+      "makna_sedang": "Pengharapan bukan optimisme manusia — sumbernya Allah. Sukacita dan damai = buah iman yang hidup dalam komunitas.",
+      "kaitan_ayat": ["Roma 5:1-2", "Filipi 4:7", "Ibrani 6:19"],
+      "tema": ["pengharapan", "damai", "doa"]
+    },
+    "mzm:8:1": {
+      "referensi": "Mazmur 8",
+      "konteks": "Mazmur Daud — kemahatan Allah dalam ciptaan.",
+      "makna_ringkas": "Ya TUHAN, Tuhan kami, betapa megahnya nama-Mu di seluruh bumi!",
+      "makna_sedang": "Kontras kecilnya manusia vs. luasnya langit — namun manusia dimahkotai dengan kemuliaan (8:5-6). Digenapkan dalam Kristus (Ibrani 2).",
+      "kaitan_ayat": ["Kejadian 1:26", "Ibrani 2:6-9", "Mazmur 19:1"],
+      "tema": ["ciptaan", "kemahatan", "manusia"]
+    },
+    "mzm:16:1": {
+      "referensi": "Mazmur 16",
+      "konteks": "Mazmur korban selamat — kepercayaan dan resurrect hope.",
+      "makna_ringkas": "Peliharalah aku, ya Allah, sebab aku berlindung pada-Mu.",
+      "makna_sedang": "Tuhan sebagai bagian dan cawan (16:5). Tidak ditinggalkan di Sheol (16:10) — dikutip dalam Kisah Para Rasul 2 tentang Kristus.",
+      "kaitan_ayat": ["Kisah Para Rasul 2:25-28", "Mazmur 23:1", "Filipi 1:21"],
+      "tema": ["perlindungan", "kebangkitan", "kepercayaan"]
+    },
+    "mzm:32:1": {
+      "referensi": "Mazmur 32:1",
+      "konteks": "Mazmur Daud — beatitude of forgiveness.",
+      "makna_ringkas": "Berbahagialah orang yang diampuni pelanggarannya, yang dosa nnya ditutupi.",
+      "makna_sedang": "Pengakuan dosa membawa pengampunan (32:5). Kontras dengan menyembunyikan dosa. Paulus mengutip dalam Roma 4:7.",
+      "kaitan_ayat": ["Mazmur 51:1", "1 Yohanes 1:9", "Roma 4:7"],
+      "tema": ["pengampunan", "berkat", "pengakuan"]
+    },
+    "mzm:103:1": {
+      "referensi": "Mazmur 103",
+      "konteks": "Mazmur pujian Daud — kasih setia dan anugerah Allah.",
+      "makna_ringkas": "Berkilah, hai jiwaku, TUHAN, dan segala yang ada di dalamku, berilah hormat kepada nama-Nya yang kudus.",
+      "makna_sedang": "Allah penyayang dan pengasih (103:8) — jauh ke timur dari barat dijauhkan-Nya pelanggaran kita (103:12).",
+      "kaitan_ayat": ["Mazmur 145:1", "Yesaya 43:25", "Mikha 7:18"],
+      "tema": ["pujian", "pengampunan", "kasih_setia"]
+    },
+    "mzm:121:1": {
+      "referensi": "Mazmur 121",
+      "konteks": "Song of Ascents — perjalanan ke Jerusalem.",
+      "makna_ringkas": "Aku angkat mataku ke gunung-gunung; dari manakah datang pertolonganku?",
+      "makna_sedang": "Jawaban: pertolongan dari TUHAN Pencipta langit dan bumi. Penjaga yang tidak pernah tidur (121:3-4).",
+      "kaitan_ayat": ["Mazmur 124:8", "Yesaya 41:10", "Mazmur 46:1"],
+      "tema": ["pertolongan", "perjalanan", "pemeliharaan"]
+    },
+    "mzm:150:1": {
+      "referensi": "Mazmur 150",
+      "konteks": "Penutup kitab Mazmur — pujian total.",
+      "makna_ringkas": "Haleluja! Pujilah Allah di tempat kudus-Nya; pujilah Dia di cakrawala kekuatan-Nya.",
+      "makna_sedang": "Klimaks pujian — setiap alat musik, segala yang bernafas (150:6). Doxologi penutup kitab Mazmur.",
+      "kaitan_ayat": ["Mazmur 103:1", "Mazmur 145:1", "Wahyu 5:13"],
+      "tema": ["pujian", "haleluja", "ibadah"]
+    },
+    "mzm:2:1": {
+      "referensi": "Mazmur 2",
+      "konteks": "Mazmur kerajaan — bangsa-bangsa bersekutu melawan TUHAN dan Mesias-Nya.",
+      "makna_ringkas": "Allah menertawakan pemberontakan manusia; Mesias-Nya ditetapkan sebagai Raja di Sion.",
+      "makna_sedang": "Meskipun dunia menolak, Allah menegaskan otoritas Anak-Nya. Panggilan: layani TUHAN dengan gentar, bergembira dengan trembling (2:11).",
+      "kaitan_ayat": ["Kisah Para Rasul 4:25-26", "Wahyu 19:15", "Mazmur 110:1"],
+      "tema": ["kerajaan", "mesias", "kedaulatan"]
+    },
+    "mzm:22:1": {
+      "referensi": "Mazmur 22",
+      "konteks": "Ratapan Daud — sering dibaca liturgis Jumat Agung; dipenuhi dalam Kristus.",
+      "makna_ringkas": "Allahku, Allahku, mengapa Engkau meninggalkan aku? — ratapan yang berakhir dalam pujian.",
+      "makna_sedang": "Mazmur lament yang jujur tentang kesepian dan ejekan, namun berpaling pada kesetiaan Allah. Ayat 22-31 = pujian komunal setelah pembebasan.",
+      "kaitan_ayat": ["Matius 27:46", "Ibrani 2:12", "Mazmur 69:21"],
+      "salah_tafsir": [
+        "Bukan: ratapan = kurang iman",
+        "Bukan: hanya tentang Daud pribadi — NT melihat tipologi Kristus"
+      ],
+      "tema": ["ratapan", "salib", "pembebasan"]
+    },
+    "mzm:40:1": {
+      "referensi": "Mazmur 40",
+      "konteks": "Syukur setelah pembebasan — Daud menunggu TUHAN.",
+      "makna_ringkas": "Aku menunggu dengan tekun; TUHAN mencondongkan telinga dan mengangkat aku.",
+      "makna_sedang": "Menunggu (qavah) bukan pasif — iman yang aktif. Ayat 6-8 dipetik dalam Ibrani 10 tentang tubuh yang disiapkan untuk kehendak Allah.",
+      "kaitan_ayat": ["Ibrani 10:5-7", "Yesaya 40:31", "Mazmur 27:14"],
+      "tema": ["menunggu", "syukur", "ketaatan"]
+    },
+    "mzm:42:1": {
+      "referensi": "Mazmur 42",
+      "konteks": "Korah — kerinduan akan hadirat Allah di bait suci.",
+      "makna_ringkas": "Seperti rusa haus akan aliran air, jiwaku haus akan Allah.",
+      "makna_sedang": "Kerinduan spiritual yang jujur — air mata sebagai makanan siang (42:3). Refrains 'Mengapa engkau tertekan?' = dialog iman dengan jiwa sendiri.",
+      "kaitan_ayat": ["Mazmur 63:1", "Mazmur 84:2", "Yohanes 7:37"],
+      "tema": ["kerinduan", "hadirat_allah", "ratapan"]
+    },
+    "mzm:63:1": {
+      "referensi": "Mazmur 63",
+      "konteks": "Daud di padang gurun Yehuda — kerinduan di tempat kering.",
+      "makna_ringkas": "Allahku, Engkau Allahku; aku mencari Engkau; jiwaku haus, tubuhku rindu.",
+      "makna_sedang": "Ibadah pribadi yang intens — lebih baik kasih setia Allah dari pada hidup (63:3). Malam = meditasi tentang Allah.",
+      "kaitan_ayat": ["Mazmur 42:1", "Mazmur 143:6", "Yesaya 55:1"],
+      "tema": ["kerinduan", "ibadah", "kasih_setia"]
+    },
+    "mzm:84:1": {
+      "referensi": "Mazmur 84",
+      "konteks": "Song of Ascents — Korah, kerinduan akan rumah Allah.",
+      "makna_ringkas": "Betapa indah tempat kediaman-Mu, ya TUHAN semesta alam!",
+      "makna_sedang": "Sehari di pelataran Allah lebih baik dari seribu hari di tempat lain (84:10). Orang yang lemah diberi kekuatan dalam perjalanan.",
+      "kaitan_ayat": ["Mazmur 122:1", "Mazmur 27:4", "Wahyu 21:3"],
+      "tema": ["ibadah", "kerinduan", "tempat_kudus"]
+    },
+    "mzm:90:1": {
+      "referensi": "Mazmur 90",
+      "konteks": "Doa Musa — refleksi tentang kefanaan manusia vs kekekalan Allah.",
+      "makna_ringkas": "Tuhan, Engkau tempat perlindungan kami turun-temurun.",
+      "makna_sedang": "Allah dari kekekalan ke kekekalan; manusia seperti rumput (90:5-6). Doa: ajarkan menghitung hari kami (90:12) dan kasih karunia pagi (90:14).",
+      "kaitan_ayat": ["Kejadian 1:1", "2 Petrus 3:8", "Mazmur 102:12"],
+      "tema": ["kekekalan", "kefanaan", "hikmat"]
+    },
+    "mzm:95:1": {
+      "referensi": "Mazmur 95",
+      "konteks": "Panggilan pujian dan peringatan jangan keraskan hati.",
+      "makna_ringkas": "Marilah kita bersorak-sorai bagi TUHAN, bersorak-sorak bagi gunung batu keselamatan kita.",
+      "makna_sedang": "Pujian (95:1-7) diikuti peringatan keras hati seperti di Meriba (95:8-11). Dipetik dalam Ibrani 3-4 tentang hari istirahat.",
+      "kaitan_ayat": ["Ibrani 3:7-11", "Mazmur 100:1", "Keluaran 17:7"],
+      "tema": ["pujian", "keras_hati", "istirahat"]
+    },
+    "mzm:118:1": {
+      "referensi": "Mazmur 118",
+      "konteks": "Haleluja — liturgi perayaan; dipakai saat masuk Yerusalem.",
+      "makna_ringkas": "Bersyukurlah kepada TUHAN, sebab Ia baik; kasih setia-Nya untuk selama-lamanya.",
+      "makna_sedang": "Ayat 22: batu yang dibuang jadi batu penjuru — dipetik tentang Kristus (Matius 21:42). Mazmur kemenangan personal dan komunal.",
+      "kaitan_ayat": ["Matius 21:42", "Kisah Para Rasul 4:11", "Mazmur 136:1"],
+      "tema": ["syukur", "kemenangan", "kasih_setia"]
+    },
+    "mat:1:23": {
+      "referensi": "Matius 1:23",
+      "konteks": "Kelahiran Yesus — kutipan Yesaya 7:14 dalam narasi Emmanuel.",
+      "makna_ringkas": "Sesungguhnya, anak dara itu akan melahirkan anak laki-laki, dan mereka akan menamakan Dia Immanuel.",
+      "makna_sedang": "Immanuel = Allah beserta kita. Matius menegaskan identitas Mesias sebagai kehadiran ilahi di tengah umat.",
+      "kaitan_ayat": ["Yesaya 7:14", "Matius 28:20", "Yohanes 1:14"],
+      "tema": ["inkarnasi", "emmanuel", "mesias"]
+    },
+    "mat:16:16": {
+      "referensi": "Matius 16:16",
+      "konteks": "Petrus di Kaisarea Filipi — pengakuan iman.",
+      "makna_ringkas": "Engkau Mesias, Anak Allah yang hidup.",
+      "makna_sedang": "Confessio Petri — fondasi gereja (16:18) bukan pada manusia, melainkan revelasi Bapa. Mesias = Raja dan Anak.",
+      "kaitan_ayat": ["Matius 16:18", "Yohanes 6:69", "Kisah Para Rasul 2:36"],
+      "tema": ["pengakuan_iman", "mesias", "gereja"]
+    },
+    "mat:4:19": {
+      "referensi": "Matius 4:19",
+      "konteks": "Panggilan murid pertama — Simon dan Andreas.",
+      "makna_ringkas": "Mari, ikutlah Aku, dan kamu Kujadikan penjala manusia.",
+      "makna_sedang": "Panggilan = relasi dan misi. 'Penjala manusia' = partisipasi dalam misi kerajaan, bukan karier religius instan.",
+      "kaitan_ayat": ["Markus 1:17", "Lukas 5:10", "Matius 28:19"],
+      "tema": ["panggilan", "murid", "misji"]
+    },
+    "mat:18:20": {
+      "referensi": "Matius 18:20",
+      "konteks": "Matius 18 — komunitas, pengampunan, dan hadirat Kristus.",
+      "makna_ringkas": "Sebab di mana dua atau tiga orang berkumpun demi nama-Ku, di situ Aku ada di tengah-tengah mereka.",
+      "makna_sedang": "Janji kehadiran Kristus dalam persekutuan kecil yang berorientasi nama-Nya — bukan magic number, melainkan komunitas iman autentik.",
+      "kaitan_ayat": ["Matius 28:20", "Yohanes 14:23", "Ibrani 10:25"],
+      "tema": ["persekutuan", "hadirat", "gereja"]
+    },
+    "luk:2:10": {
+      "referensi": "Lukas 2:10",
+      "konteks": "Kelahiran Yesus — malaikat kepada gembala.",
+      "makna_ringkas": "Jangan takut, sebab behold, aku memberitakan kepadamu suatu kabar baik yang akan membangkitkan sukacita.",
+      "makna_sedang": "Euangelion = kabar baik. Gembala = penerima pertama — Injil untuk yang rendah, bukan hanya elite.",
+      "kaitan_ayat": ["Lukas 2:11", "Yesaya 9:5", "Matius 1:21"],
+      "tema": ["injil", "kelahiran", "sukacita"]
+    },
+    "luk:23:34": {
+      "referensi": "Lukas 23:34",
+      "konteks": "Salib — doa Yesus untuk para penyaliban-Nya.",
+      "makna_ringkas": "Bapa, ampunilah mereka, sebab mereka tidak tahu apa yang mereka perbuat.",
+      "makna_sedang": "Puncak kasih pengampunan di saat penderitaan maksimal. Model iman yang menolak balas dendam.",
+      "kaitan_ayat": ["Matius 5:44", "Kisah Para Rasul 7:60", "1 Petrus 2:23"],
+      "tema": ["pengampunan", "salib", "kasih"]
+    },
+    "luk:24:6": {
+      "referensi": "Lukas 24:6",
+      "konteks": "Kebangkitan — malaikat di kubur kosong.",
+      "makna_ringkas": "Ia tidak ada di sini, tapi telah bangkit. Ingatlah bagaimana Ia berbicara kepadamu.",
+      "makna_sedang": "Kebangkitan = fakta pusat Injil Lukas. 'Ingatlah firman-Nya' = iman berakar wahyu, bukan spekulasi.",
+      "kaitan_ayat": ["1 Korintus 15:3-4", "Matius 28:6", "Markus 16:6"],
+      "tema": ["kebangkitan", "injil", "harapan"]
+    },
+    "luk:10:27": {
+      "referensi": "Lukas 10:27",
+      "konteks": "Ahli Taurat menguji Yesus — hukum terbesar (paralel Matius 22).",
+      "makna_ringkas": "Kasihilah Tuhan Allahmu dengan segenap hatimu… dan sesamamu manusia seperti dirimu sendiri.",
+      "makna_sedang": "Diikuti perumpamaan Samaria yang baik (10:25-37) — kasih sesama = aksi konkret, bukan teori.",
+      "kaitan_ayat": ["Matius 22:37", "Galatia 5:14", "Lukas 10:33-37"],
+      "tema": ["kasih", "sesama", "etika"]
+    },
+    "1ko:15:3": {
+      "referensi": "1 Korintus 15:3-4",
+      "konteks": "Paulus tentang kebangkitan — tradisi injil paling awal yang tercatat.",
+      "makna_ringkas": "Kristus telah mati karena dosa kita… telah dikuburkan… telah dibangkitkan pada hari ketiga.",
+      "makna_sedang": "Formula kerygma: mati, kubur, bangkit. Tanpa kebangkitan, iman sia-sia (15:17). Fondasi historis Injil.",
+      "kaitan_ayat": ["Roma 4:25", "Lukas 24:46", "1 Petrus 1:3"],
+      "tema": ["kebangkitan", "injil", "kerygma"]
+    },
+    "1ko:15:55": {
+      "referensi": "1 Korintus 15:55",
+      "konteks": "Klimaks argumen kebangkitan — kemenangan atas maut.",
+      "makna_ringkas": "Hai maut, di manakah kemenanganmu? Hai maut, di manakah sengatmu?",
+      "makna_sedang": "Kutipan nubuat (Hos 13:14) dipenuhi dalam Kristus yang bangkit. Pengharapan eskatologis umat.",
+      "kaitan_ayat": ["Wahyu 21:4", "1 Korintus 15:26", "Yesaya 25:8"],
+      "tema": ["kebangkitan", "kemenangan", "maut"]
+    },
+    "1ko:10:13": {
+      "referensi": "1 Korintus 10:13",
+      "konteks": "Paulus tentang godaan — contoh Israel di padang gurun.",
+      "makna_ringkas": "Allah setia; Ia tidak akan membiarkan kamu dicobai melampaui kekuatanmu.",
+      "makna_sedang": "Godaan umum manusia — Allah sediakan jalan keluar. Bukan janji tanpa pencobaan, melainkan batas dan jalan escape.",
+      "kaitan_ayat": ["Yakobus 1:13-15", "Ibrani 4:15", "1 Petrus 5:8"],
+      "tema": ["godaan", "kesetiaan", "kekuatan"]
+    },
+    "1ko:2:9": {
+      "referensi": "1 Korintus 2:9",
+      "konteks": "Hikmat Allah vs hikmat dunia — revelasi Roh.",
+      "makna_ringkas": "Apa yang tidak pernah dilihat mata… yang disediakan Allah bagi mereka yang mengasihi Dia.",
+      "makna_sedang": "Bukan janji materi instan — konteks hikmat Roh yang menyatakan rencana Allah (2:10).",
+      "kaitan_ayat": ["Yesaya 64:4", "1 Korintus 2:10", "Wahyu 21:4"],
+      "tema": ["hikmat", "revelasi", "pengharapan"]
+    },
+    "why:1:8": {
+      "referensi": "Wahyu 1:8",
+      "konteks": "Penglihatan Kristus yang mulia — pembukaan Wahyu.",
+      "makna_ringkas": "Akulah yang Awal dan yang Akhir, firman-Nya, yang hidup dan yang telah mati.",
+      "makna_sedang": "Kristus yang ditinggikan menguasai sejarah. Alpha-Omega = kedaulatan ilahi atas masa lalu dan eskatologi.",
+      "kaitan_ayat": ["Wahyu 22:13", "Yesaya 44:6", "Kolose 1:17"],
+      "tema": ["kedaulatan", "kristologi", "eskatologi"]
+    },
+    "why:5:9": {
+      "referensi": "Wahyu 5:9",
+      "konteks": "Makhluk di takhta dan tua-tua — nyanyian Anak Domba.",
+      "makna_ringkas": "Engkau layak menerima kitab… sebab Engkau telah disembelih dan dengan darah-Mu membeli umat.",
+      "makna_sedang": "Pujian liturgi surga — pusat pengorbanan Kristus dan pembelian umat dari setiap suku/bahasa.",
+      "kaitan_ayat": ["Wahyu 5:12", "1 Petrus 1:18-19", "Yesaya 53:7"],
+      "tema": ["penebusan", "pujian", "salib"]
+    },
+    "why:22:13": {
+      "referensi": "Wahyu 22:13",
+      "konteks": "Penutup Wahyu — janji Kristus yang datang.",
+      "makna_ringkas": "Akulah yang Awal dan yang Akhir, yang Pertama dan yang Terakhir.",
+      "makna_sedang": "Bookend dengan 1:8 — Kristus menguasai keseluruhan revelasi. 'Aku datang segera' (22:20) = pengharapan aktif.",
+      "kaitan_ayat": ["Wahyu 1:8", "Yesaya 41:4", "Wahyu 22:20"],
+      "tema": ["kedatangan", "kedaulatan", "pengharapan"]
+    },
+    "why:19:11": {
+      "referensi": "Wahyu 19:11",
+      "konteks": "Kristus penunggang kuda putih — penghakiman dan kemenangan.",
+      "makna_ringkas": "Aku melihat langit terbuka… dan Ia yang duduk di atasnya dinamakan Setia dan Benar.",
+      "makna_sedang": "Kontras dengan binatang — Kristus sebagai Raja yang adil. 'Setia dan Benar' = karakter pemerintahan-Nya.",
+      "kaitan_ayat": ["Wahyu 17:14", "Mazmur 2:9", "2 Tesalonika 1:7"],
+      "tema": ["kemenangan", "keadilan", "mesias"]
+    }
+  },
+  "tema": {
+    "penderitaan_orang_taat": {
+      "keys": ["taat", "gereja", "ditinggal", "mati", "ketabrak", "sakit berat", "kesialan", "mengapa tuhan", "penderitaan"],
+      "konteks_literatur": "Alkitab tidak menjanjikan formula 'taat = hidup tanpa tragedi'. Job taat tetapi menderita; Mazmur 88 dan 13 adalah ratapan; Kohelet 9:2 — yang benar dan jahat sama-sama menghadapi peristiwa. Ul 29:29 membatasi spekulasi tentang 'rahasia' Tuhan, bukan menjustifikasi penderitaan.",
+      "pastoral_orb": "Yang dibutuhkan orang sedih: kehadiran (dampingi), bukan kalimat siap pakai 'ini kehendak Tuhan'. Literatur pastoral: lament (ratapan) adalah bentuk iman yang valid. Jangan teologi instan di atas luka fresh.",
+      "kaitan_ul_29_29": "Rahasia rencana Tuhan tidak harus kita pahami penuh untuk tetap setia — tapi itu BUKAN alasan menolak empati atau menyalahkan korban. Tanggung jawab kita: taat pada yang dinyatakan (kasih, belas kasihan, keadilan), bukan menebak tragedi.",
+      "larangan_orb": "Jangan bilang 'sudah kehendak Tuhan' sebagai penutup. Jangan bilang penderitaan pasti karena dosa. Jangan teologi Kenosis atau istilah akademis tanpa konteks."
+    },
+    "prinsip_tafsir_tb": {
+      "keys": ["tafsir", "hermeneutika", "makna ayat", "literatur"],
+      "data": "Prinsip tafsir TB: (1) baca konteks kitab dan pasal, (2) teks ayat dari TB LAI — jangan parafrase seenaknya, (3) bedakan makna waktu Musa/Yesus vs aplikasi hari ini, (4) rendah hati — komentar banyak penerjemahan, bukan pengganti pendeta, (5) kasih > debat teologis."
+    },
+    "kehendak_tuhan_instans": {
+      "keys": ["kehendak tuhan", "sesuai kehendak", "rencana tuhan", "misteri tuhan"],
+      "data": "Literatur: 'kehendak Tuhan' punya banyak dimensi (sovereign will, moral will, permissive will). Frasa instan 'sudah kehendak Tuhan' sering mematikan ratapan yang sehat. Ul 29:29 mengajarkan humilitas tentang yang tersembunyi, bukan klausul untuk setiap tragedi."
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "appId": "id.rhema.alkitabvoice",
+  "appName": "rhema ai",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#f3eee6"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": false,
+      "backgroundColor": "#f3eee6",
+      "showSpinner": false,
+      "androidSplashResourceName": "splash",
+      "layoutName": "splash_screen"
+    },
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#f3eee6"
+    }
+  }
+}

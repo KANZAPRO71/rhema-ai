@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "1.7.0",
+  "product": "Rhema AI",
+  "updated": "2026-08-16",
+  "description": "Katalog metadata pengetahuan Rhema — sumber kebenaran firman TB, tafsir, lexicon, tema, dan etika AI rohani untuk Khotbah AI dan Alkitab Voice.",
+  "domains": [
+    {
+      "id": "scripture_tb",
+      "label": "Alkitab Terjemahan Baru (LAI)",
+      "type": "directory",
+      "path": "alkitab_tb/buku",
+      "indexPath": "alkitab_tb/kitab_index.json",
+      "metaPath": "alkitab_tb/meta.json",
+      "capabilities": ["lookup_verse", "lookup_passage", "verify_verse", "verse_of_day", "search_tb"],
+      "authority": "primary",
+      "translation": "TB",
+      "note": "Satu-satunya sumber kutipan ayat resmi — model dilarang mengarang teks ayat."
+    },
+    {
+      "id": "tafsir_kitab",
+      "label": "Pengantar 66 Kitab TB",
+      "type": "json",
+      "path": "alkitab_tb/tafsir_kitab.json",
+      "capabilities": ["book_intro", "sermon_context"],
+      "authority": "supplementary",
+      "note": "Ringkasan dan konteks mendalam per kitab — untuk khotbah dan renungan."
+    },
+    {
+      "id": "tafsir_literatur",
+      "label": "Tafsir Literatur & Tema Pastoral",
+      "type": "json",
+      "path": "alkitab_tb/tafsir_literatur.json",
+      "capabilities": ["lookup_tafsir", "theme_pastoral", "sermon_context"],
+      "authority": "supplementary",
+      "note": "Konteks historis-gramatikal dan peringatan salah tafsir — bukan pengganti pendeta."
+    },
+    {
+      "id": "cross_references",
+      "label": "Rantai Ayat Terkait",
+      "type": "json",
+      "path": "rhema_knowledge/cross_references.json",
+      "capabilities": ["cross_references", "sermon_context"],
+      "authority": "supplementary"
+    },
+    {
+      "id": "lexicon",
+      "label": "Lexicon Kata Kunci Asli",
+      "type": "json",
+      "path": "rhema_knowledge/lexicon.json",
+      "capabilities": ["lookup_lexicon", "sermon_context", "exposition"],
+      "authority": "supplementary",
+      "note": "Yunani/Ibrani ringkas + Strong's — untuk eksposisi mendalam."
+    },
+    {
+      "id": "themes",
+      "label": "Tema Pastoral TB",
+      "type": "json",
+      "path": "rhema_knowledge/themes.json",
+      "capabilities": ["search_tb", "theme_pastoral", "sermon_context"],
+      "authority": "supplementary",
+      "note": "Indeks tema → referensi ayat untuk pencarian offline."
+    },
+    {
+      "id": "tb_search_index",
+      "label": "Indeks Semantic TB (TF-IDF)",
+      "type": "json",
+      "path": "rhema_knowledge/tb_search_index.json",
+      "capabilities": ["search_tb", "semantic_search"],
+      "authority": "primary",
+      "translation": "TB",
+      "note": "~30k ayat TB — build via npm run build:tb-index"
+    },
+    {
+      "id": "tb_verse_embeddings",
+      "label": "Cache Embedding Ayat Populer",
+      "type": "json",
+      "path": "rhema_knowledge/tb_verse_embeddings.json",
+      "capabilities": ["search_tb", "semantic_search", "rerank_cache"],
+      "authority": "supplementary",
+      "note": "~250 ayat anchor — build via npm run build:tb-embed-cache"
+    },
+    {
+      "id": "tb_embeddings_full",
+      "label": "Indeks Embedding TB Penuh (int8 shards)",
+      "type": "directory",
+      "path": "rhema_knowledge/tb_embeddings",
+      "capabilities": ["search_tb", "semantic_search"],
+      "authority": "supplementary",
+      "note": "~30k ayat TB — build via npm run build:tb-embed-full (resume checkpoint)"
+    },
+    {
+      "id": "strongs_glossary",
+      "label": "Glossary Strong's Ringkas",
+      "type": "json",
+      "path": "rhema_knowledge/strongs_glossary.json",
+      "capabilities": ["lookup_strongs", "lookup_lexicon", "exposition"],
+      "authority": "supplementary",
+      "note": "Entri G/H populer — melengkapi lexicon per ayat"
+    }
+  ],
+  "ethics": {
+    "source": "alkitab_tb/meta.json",
+    "rules": [
+      "Kutip ayat HANYA dari teks TB yang disediakan sistem — bukan ingatan model.",
+      "Jika ayat tidak ditemukan: bilang jujur, jangan nebak.",
+      "Tafsir: rendah hati, bukan pengganti pendeta/guru rohani.",
+      "Hormati semua agama; netral SARA; tidak menyesatkan.",
+      "Sebelum khotbah: gunakan lookup_passage dan verify_verse untuk akurasi TB."
+    ]
+  },
+  "product": {
+    "creator": "Posman Silaban",
+    "role": "Pencipta dan pengembang Rhema AI / Alkitab Voice"
+  },
+  "voiceTools": [
+    "lookup_verse",
+    "lookup_passage",
+    "verify_verse",
+    "lookup_book_intro",
+    "lookup_tafsir",
+    "lookup_lexicon",
+    "lookup_strongs",
+    "search_tb",
+    "lookup_hymn",
+    "get_session_metadata"
+  ],
+  "sermonPipeline": {
+    "steps": [
+      "parse_reference",
+      "load_passage",
+      "book_intro",
+      "tafsir",
+      "lexicon",
+      "cross_refs",
+      "inject_context",
+      "live_sermon",
+      "verify_quotes"
+    ],
+    "defaultContextRadius": 2,
+    "maxPassageVerses": 40
+  }
+}

@@ -1,0 +1,3803 @@
+/* Apple Intelligence UI layer — v0.8.0 premium */
+
+/* Layer stacking — jangan isolate (bisa ganggu hit-test tap/klik) */
+.app-mobile {
+  isolation: auto;
+}
+
+.mobile-header {
+  position: relative;
+  z-index: 500;
+  pointer-events: auto !important;
+  padding-top: max(12px, env(safe-area-inset-top)) !important;
+  background: rgba(255, 252, 247, 0.94) !important;
+  backdrop-filter: saturate(160%) blur(16px) !important;
+  -webkit-backdrop-filter: saturate(160%) blur(16px) !important;
+  border-bottom: 1px solid var(--apple-separator) !important;
+  box-shadow: 0 1px 0 rgba(196, 146, 58, 0.08);
+}
+
+.mobile-main {
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.ambient-glow {
+  position: absolute;
+  inset: -15% -8%;
+  pointer-events: none !important;
+  z-index: 0;
+  opacity: 0.35;
+  background:
+    radial-gradient(ellipse 50% 40% at 20% 8%, rgba(196, 146, 58, 0.16) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 85% 12%, rgba(42, 106, 134, 0.1) 0%, transparent 50%);
+  filter: blur(20px);
+}
+
+.luminous-edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none !important;
+  z-index: 1;
+  opacity: 0;
+  padding: 2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle, 0deg),
+    rgba(255, 214, 10, 0.7),
+    rgba(10, 132, 255, 0.7),
+    rgba(191, 90, 242, 0.65),
+    rgba(255, 214, 10, 0.7)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: opacity 0.5s ease;
+}
+
+.app-mobile:not(.voice-live-active):not(.voice-connecting) .luminous-edge {
+  display: none !important;
+}
+
+.app-mobile.voice-live-active .luminous-edge { opacity: 1; }
+.app-mobile.voice-connecting .luminous-edge { opacity: 0.4; }
+
+.dynamic-island {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(18, 18, 24, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(212, 175, 55, 0.3);
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: calc(100% - 130px);
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dynamic-island:hover {
+  transform: translateX(-50%) scale(1.04);
+}
+
+.dynamic-island:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+.dynamic-island.hidden {
+  display: none !important;
+}
+
+.di-waves {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.di-waves span {
+  display: block;
+  width: 3px;
+  height: 6px;
+  border-radius: 2px;
+  background: #38bdf8;
+  animation: di-bar 0.9s ease-in-out infinite;
+}
+
+.di-waves span:nth-child(2) { animation-delay: 0.12s; height: 10px; }
+.di-waves span:nth-child(3) { animation-delay: 0.24s; height: 8px; }
+.di-waves span:nth-child(4) { animation-delay: 0.36s; height: 11px; }
+
+@keyframes di-bar {
+  0%, 100% { transform: scaleY(0.45); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.di-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(430px, calc(100vw - 16px));
+  max-width: calc(430px - 16px);
+  z-index: 99999;
+  pointer-events: auto !important;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 8px 6px 10px !important;
+  border-radius: 22px !important;
+  border: 1px solid var(--apple-separator) !important;
+  background: #ffffff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 8px 28px rgba(0, 0, 0, 0.12),
+    0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  overflow: visible;
+}
+
+.nav-item-voice:not(.active) .sacred-nav-orb {
+  background: linear-gradient(145deg, #b8c4d0, #94a3b8) !important;
+  box-shadow: none !important;
+  border: 2px solid #cbd5e1 !important;
+  animation: none !important;
+}
+
+.nav-item-voice.active .sacred-nav-orb {
+  background: radial-gradient(circle at 35% 25%, #ffffff 0%, #38bdf8 30%, #1e40af 75%, #0f172a 100%) !important;
+  box-shadow:
+    0 8px 24px rgba(59, 130, 246, 0.6),
+    0 0 18px rgba(212, 175, 55, 0.55),
+    inset 0 2px 6px rgba(255, 255, 255, 0.9) !important;
+  border: 3px solid #fff !important;
+  animation: none !important;
+}
+
+.nav-item-voice:active .sacred-nav-orb {
+  transform: scale(0.94);
+  transition: transform 0.15s ease;
+}
+
+@keyframes sacred-nav-pulse {
+  0% { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1.08); filter: brightness(1.12); }
+}
+
+/* Home bento */
+.home-bento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "voice voice"
+    "verse verse"
+    "streak streak"
+    "plans quiz"
+    "pj sleep"
+    "renungan renungan"
+    "kidung kidung"
+    "recent recent";
+  gap: 10px;
+  margin: 8px 0 20px;
+}
+
+.bento-tile-voice { grid-area: voice; }
+.bento-tile-verse { grid-area: verse; padding: 16px; min-height: 148px; align-self: start; }
+.bento-tile-streak { grid-area: streak; }
+.bento-tile-plans { grid-area: plans; }
+.bento-tile-quiz { grid-area: quiz; }
+.bento-tile-pj { grid-area: pj; }
+.bento-tile-sleep { grid-area: sleep; }
+.bento-tile-renungan { grid-area: renungan; }
+.bento-tile-kidung { grid-area: kidung; padding: 16px; }
+.bento-tile-recent { grid-area: recent; padding: 16px; min-height: 100px; }
+
+.bento-verse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.bento-verse-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #b38800;
+  background: rgba(212, 175, 55, 0.18);
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bento-verse-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-micro-bento {
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-fill-tertiary);
+  color: var(--apple-label);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-micro-bento:hover {
+  background: var(--apple-fill-secondary);
+}
+
+.btn-micro-bento.primary {
+  background: var(--apple-blue);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+.bento-tile {
+  border-radius: 18px;
+  background: var(--apple-bg-elevated);
+  border: 0.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-goto-bento-action {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 10px;
+  border-radius: 18px;
+  background: var(--apple-bg-elevated);
+  border: 0.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-goto-bento-action:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.card-goto-bento-action .goto-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--apple-fill-tertiary);
+  flex-shrink: 0;
+}
+
+.card-goto-bento-action .goto-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-goto-bento-action .goto-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-goto-bento-action .goto-sub {
+  font-size: 10.5px;
+  color: var(--apple-label-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.card-goto-bento-action .goto-arrow {
+  color: var(--apple-label-tertiary);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.card-goto-bento-action .goto-arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+.card-renungan-wide {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(196, 146, 58, 0.12) 0%, rgba(42, 106, 134, 0.08) 100%);
+  border: 1px solid rgba(196, 146, 58, 0.22);
+}
+
+.card-renungan-wide .goto-icon {
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  background: rgba(196, 146, 58, 0.18);
+}
+
+.header-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.header-refresh-btn {
+  border: none;
+  background: var(--apple-fill-tertiary);
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-label);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.header-refresh-btn:hover {
+  background: var(--apple-fill-secondary);
+}
+
+.header-refresh-btn:active {
+  transform: scale(0.97);
+}
+
+.header-refresh-btn:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.header-tool-btn {
+  border: none;
+  background: var(--apple-fill-tertiary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--apple-label);
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.header-tool-btn:hover {
+  background: var(--apple-fill-secondary);
+  transform: scale(1.05);
+}
+
+.header-tool-btn.active {
+  background: linear-gradient(135deg, #d4af37, #f59e0b);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.4);
+  animation: pitchPulse 1.5s infinite alternate;
+}
+
+.bento-tile-verse {
+  background: linear-gradient(165deg, #fffcf7 0%, #fff6e8 100%);
+  border-left: 3px solid var(--apple-warm);
+  padding: 18px !important;
+  overflow: visible;
+}
+
+.bento-tile-voice,
+.bento-tile-renungan,
+.bento-tile-sleep,
+.bento-tile-pj {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.bento-tile-streak.home-streak-mini {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  cursor: pointer;
+  background: var(--glass-thick);
+}
+
+.bento-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--worship-gold-dark);
+  margin: 0 0 6px;
+}
+
+.bento-sub {
+  font-size: 13px;
+  color: var(--apple-label-secondary);
+  margin: 0 0 10px;
+}
+
+.bento-verse-text {
+  font-family: var(--font-verse);
+  font-size: 16px !important;
+  line-height: 1.58 !important;
+  letter-spacing: 0.01em;
+  margin: 6px 0;
+  color: var(--apple-label);
+  overflow: visible;
+  white-space: normal;
+}
+
+.bento-verse-ref {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--apple-blue) !important;
+  letter-spacing: 0.02em;
+}
+
+.mobile-greeting {
+  font-size: 34px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.08 !important;
+  background: linear-gradient(135deg, #1d1d1f 0%, #3a3a3c 55%, #007aff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.mobile-tagline {
+  font-size: 15px !important;
+  letter-spacing: -0.01em;
+}
+
+.hero-badge {
+  background: rgba(255, 255, 255, 0.88) !important;
+  border: 0.5px solid var(--apple-separator) !important;
+  box-shadow: var(--shadow-sm);
+  font-weight: 600 !important;
+}
+
+.card-voice-cta.card-goto-voice-hub {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto auto;
+  width: 100%;
+  padding: 20px 18px !important;
+  border-radius: 22px !important;
+  background: linear-gradient(145deg, #2a6a86 0%, #1f4f66 55%, #8a6320 160%) !important;
+  border: 0.5px solid rgba(196, 146, 58, 0.35) !important;
+  color: #fff8ea;
+  box-shadow: 0 12px 28px rgba(42, 106, 134, 0.28) !important;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.22s ease;
+}
+
+.card-voice-cta.card-goto-voice-hub::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 85% 15%, rgba(212, 176, 106, 0.28) 0%, transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(255, 248, 234, 0.08) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.card-voice-cta.card-goto-voice-hub:active {
+  transform: scale(0.985);
+  box-shadow: 0 6px 18px rgba(42, 106, 134, 0.22) !important;
+}
+
+.card-goto-voice-hub .cta-title {
+  font-size: 21px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  color: #fff8ea !important;
+}
+
+.card-goto-voice-hub .cta-hint {
+  color: rgba(255, 248, 234, 0.82) !important;
+  font-size: 13px !important;
+}
+
+.card-goto-voice-hub .cta-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 248, 234, 0.16);
+  color: #fff8ea !important;
+  font-size: 0 !important;
+}
+
+.card-goto-voice-hub .cta-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.cta-sacred-mini {
+  background: linear-gradient(145deg, #e6c77a, #c4923a) !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(196, 146, 58, 0.4) !important;
+}
+
+.cta-sacred-core {
+  background: rgba(255, 255, 255, 0.45) !important;
+  inset: 30% !important;
+}
+
+.card-goto-renungan {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 116px;
+  padding: 16px 18px !important;
+  border: 0.5px solid rgba(175, 82, 222, 0.18) !important;
+  border-radius: 20px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #faf6ff 100%) !important;
+  box-shadow: var(--shadow-sm);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.2s ease;
+}
+
+.card-goto-renungan:active {
+  transform: scale(0.985);
+}
+
+.card-goto-renungan .goto-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(175, 82, 222, 0.14), rgba(0, 122, 255, 0.1));
+  color: var(--apple-purple);
+  font-size: 0;
+  flex-shrink: 0;
+}
+
+.card-goto-renungan .goto-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.card-goto-renungan .goto-title {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+}
+
+.card-goto-renungan .goto-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(175, 82, 222, 0.1);
+  color: var(--apple-purple);
+  font-size: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.card-goto-renungan .goto-arrow svg {
+  width: 14px;
+  height: 14px;
+}
+
+#home-kidung-list .card-list-item {
+  background: var(--apple-bg-secondary);
+  border: none;
+  color: var(--apple-label);
+}
+
+#alkitab-recent-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#alkitab-recent-list li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#alkitab-recent-list .alkitab-quick-btn {
+  width: auto;
+  text-align: center;
+  padding: 6px 12px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--apple-bg-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--apple-label);
+  cursor: pointer;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+#alkitab-recent-list .alkitab-mini-empty {
+  width: 100%;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.alkitab-quick .alkitab-recent-chip {
+  border-color: rgba(52, 199, 89, 0.45);
+  background: rgba(52, 199, 89, 0.1);
+  font-weight: 600;
+}
+
+.alkitab-khotbah-hub {
+  margin: 0 0 14px;
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(88, 86, 214, 0.12), rgba(52, 199, 89, 0.08));
+  border: 1px solid rgba(88, 86, 214, 0.18);
+}
+
+.alkitab-khotbah-head {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.alkitab-khotbah-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+
+.alkitab-khotbah-title {
+  margin: 0 0 2px;
+  font-size: 0.98rem;
+}
+
+.alkitab-khotbah-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.alkitab-verse-text.kjv-missing {
+  opacity: 0.75;
+  font-style: italic;
+}
+
+/* Voice screen */
+.voice-screen-intelligence .mobile-scroll.voice-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 0 0 calc(84px + env(safe-area-inset-bottom, 0px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.voice-screen-intelligence.active {
+  display: flex !important;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.voice-layout-modern {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 0;
+  max-height: 100%;
+  overflow: hidden;
+  padding: 6px 14px 0;
+  box-sizing: border-box;
+  gap: 6px;
+}
+
+.voice-intelligence-center {
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6px 4px 2px;
+  text-align: center;
+  overflow: visible;
+  gap: 6px;
+}
+
+/* --- Sacred Living Hero Orb (Apple Intelligence & Divine Sanctuary) --- */
+.voice-tap-main.sacred-hero-orb {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 4px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.voice-tap-main.sacred-hero-orb:hover {
+  transform: scale(1.04);
+}
+
+.voice-tap-main.sacred-hero-orb:active {
+  transform: scale(0.95);
+}
+
+.voice-orb-display {
+  pointer-events: none;
+  user-select: none;
+  cursor: default;
+}
+
+.voice-orb-display:hover,
+.voice-orb-display:active {
+  transform: none;
+  filter: none;
+}
+
+/* Dynamic Rotating Iridescent Halo */
+.voice-orb-halo {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: conic-gradient(from var(--glow-angle, 0deg), #d4af37, #3b82f6, #8b5cf6, #ec4899, #f59e0b, #d4af37);
+  filter: blur(10px);
+  opacity: 0.65;
+  z-index: 0;
+  transition: opacity 0.4s ease, filter 0.4s ease;
+  animation: orb-halo-spin 10s linear infinite;
+}
+
+@keyframes orb-halo-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Concentric Aura Radiating Waves */
+.voice-orb-aura-1,
+.voice-orb-aura-2 {
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(212, 175, 55, 0.35);
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(212, 175, 55, 0.04) 60%, transparent 80%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.voice-orb-aura-2 {
+  inset: -22px;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+/* 3D Luminous Glass Sphere */
+.voice-orb-glass-sphere {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #ffffff 0%, #e0edff 35%, #1e3a8a 75%, #0f172a 100%);
+  box-shadow:
+    0 12px 28px rgba(15, 23, 42, 0.3),
+    0 4px 10px rgba(59, 130, 246, 0.2),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.4),
+    inset 0 3px 10px rgba(255, 255, 255, 0.85);
+  z-index: 1;
+  overflow: hidden;
+  display: block;
+}
+
+/* Specular Top Light Reflection */
+.voice-orb-specular {
+  position: absolute;
+  top: 4px;
+  left: 20%;
+  width: 60%;
+  height: 34%;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.05) 100%);
+  transform: rotate(-12deg);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+/* Inner Golden Core Glow */
+.voice-orb-core-glow {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, rgba(139, 92, 246, 0.4) 50%, transparent 80%);
+  filter: blur(6px);
+  opacity: 0.7;
+  animation: core-breathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes core-breathe {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.15); opacity: 0.95; }
+}
+
+/* Salib 3D timbul di tengah orb */
+.voice-tap-main .voice-tap-icon,
+.voice-tap-main .voice-orb-cross-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.voice-tap-main .voice-orb-cross-svg {
+  width: 30px;
+  height: 30px;
+  transform: translateY(-0.5px) perspective(120px) rotateX(8deg);
+  transform-style: preserve-3d;
+  filter:
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55))
+    drop-shadow(0 5px 10px rgba(0, 0, 0, 0.28))
+    drop-shadow(0 -1px 0 rgba(255, 255, 255, 0.35));
+}
+
+.voice-tap-main .voice-orb-cross-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -4px -2px -8px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 85%, rgba(0, 0, 0, 0.38) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* --- STATE: LIVE LISTENING --- */
+.voice-tap-main.live {
+  transform: scale(var(--orb-pulse, 1.04));
+  transition: transform 0.1s ease-out;
+}
+
+.voice-tap-main.live .voice-orb-halo {
+  opacity: 0.9;
+  filter: blur(11px);
+  inset: -7px;
+  animation: orb-halo-spin 6s linear infinite;
+}
+
+.voice-tap-main.live .voice-orb-aura-1,
+.voice-tap-main.live .voice-orb-aura-2 {
+  opacity: 0;
+  animation: none;
+}
+
+.voice-tap-main.live.voice-capturing .voice-orb-glass-sphere {
+  animation: orb-mic-pulse 0.55s ease-in-out infinite alternate;
+}
+
+.voice-tap-main.live.voice-capturing .voice-orb-halo {
+  animation: orb-halo-spin 3s linear infinite, orb-halo-breathe 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes orb-mic-pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  100% {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+  }
+}
+
+@keyframes orb-halo-breathe {
+  0% { opacity: 0.75; inset: -6px; }
+  100% { opacity: 0.98; inset: -9px; }
+}
+
+.voice-tap-main.live .voice-orb-cross-svg {
+  filter:
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 12px rgba(245, 158, 11, 0.75))
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.45));
+}
+
+.voice-tap-main.live.voice-capturing .voice-orb-cross-wrap {
+  transform: scale(1.06);
+}
+
+@keyframes aura-radiate {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.65;
+  }
+  70% {
+    transform: scale(1.18);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.26);
+    opacity: 0;
+  }
+}
+
+/* --- STATE: CONNECTING --- */
+.voice-tap-main.connecting .voice-orb-halo {
+  animation: orb-halo-spin 1.2s linear infinite;
+  opacity: 0.9;
+  filter: blur(12px);
+}
+
+.voice-title-group {
+  margin-bottom: 6px;
+}
+
+.voice-intelligence-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 2px;
+  color: var(--apple-label);
+}
+
+.voice-intelligence-hint {
+  font-size: 12px;
+  color: var(--apple-label-secondary);
+  margin: 0;
+  max-width: 320px;
+  line-height: 1.35;
+}
+
+.voice-quick-prompts {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: flex-start;
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 4px 2px 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.voice-quick-prompts::-webkit-scrollbar {
+  display: none;
+}
+
+.voice-waveform {
+  display: none !important;
+}
+
+/* --- Voice TB Theme Search Bar --- */
+.voice-tb-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  margin: 2px 0 0;
+  box-sizing: border-box;
+}
+
+.voice-tb-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg-elevated);
+  color: var(--apple-label);
+  font-size: 12.5px;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.voice-tb-search-input:focus {
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+  background: var(--apple-bg);
+}
+
+.voice-tb-search-input::placeholder {
+  color: var(--apple-label-tertiary);
+  font-size: 12px;
+}
+
+.voice-tb-search-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: none;
+  background: var(--apple-blue);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.22);
+  transition: all 0.2s ease;
+}
+
+.voice-tb-search-btn:hover {
+  background: #0062cc;
+  transform: translateY(-1px);
+}
+
+.voice-tb-search-btn:active {
+  transform: scale(0.96);
+}
+
+.voice-chip {
+  padding: 5px 12px;
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 14px;
+  background: var(--apple-bg-elevated);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  color: var(--apple-label);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.voice-chip:hover {
+  border-color: var(--apple-blue);
+  background: var(--apple-bg-tertiary);
+  transform: translateY(-1px);
+}
+
+.voice-chip:active {
+  transform: scale(0.97);
+}
+
+.voice-chip-sermon {
+  border-color: rgba(212, 175, 55, 0.45);
+  background: linear-gradient(180deg, rgba(255, 251, 235, 0.95) 0%, rgba(255, 255, 255, 0.92) 100%);
+  color: #7c5c10;
+  font-weight: 700;
+}
+
+/* --- Expansive Percakapan Live Card --- */
+.voice-glass-panel-modern {
+  flex: 1 1 0%;
+  min-height: 0;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--apple-bg-elevated);
+  border-radius: 20px;
+  border: 1px solid var(--apple-separator);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+  margin: 0;
+  transform: none;
+}
+
+.transcript-header-bar {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid var(--apple-separator);
+  background: #fafafa;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.transcript-top-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.transcript-title-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+.khotbah-header-tools {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding-top: 4px !important;
+  border-top: 0.5px solid rgba(0, 0, 0, 0.05) !important;
+  width: 100% !important;
+}
+
+.btn-khotbah-mode,
+.btn-khotbah-ai {
+  border: 0.5px solid rgba(212, 175, 55, 0.5);
+  background: linear-gradient(180deg, rgba(255, 251, 235, 0.98) 0%, rgba(255, 255, 255, 0.92) 100%);
+  color: #7c5c10;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1.2;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-khotbah-topik {
+  border-color: rgba(120, 140, 200, 0.45);
+  background: linear-gradient(180deg, rgba(240, 244, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 100%);
+  color: #3d4a7a;
+}
+
+.btn-khotbah-mode.active,
+.btn-khotbah-mode:hover,
+.btn-khotbah-ai.active,
+.btn-khotbah-ai:hover {
+  background: linear-gradient(180deg, #fff7e0 0%, #fff 100%);
+  box-shadow: 0 2px 6px rgba(212, 175, 55, 0.2);
+}
+
+.btn-khotbah-topik.active,
+.btn-khotbah-topik:hover {
+  background: linear-gradient(180deg, #eef2ff 0%, #fff 100%);
+  box-shadow: 0 2px 6px rgba(120, 140, 200, 0.18);
+}
+
+.btn-khotbah-mode:active,
+.btn-khotbah-ai:active {
+  transform: scale(0.97);
+}
+
+.sermon-verse-bar {
+  padding: 8px 14px 10px;
+  border-bottom: 0.5px solid var(--apple-separator);
+  background: rgba(255, 251, 235, 0.5);
+  box-sizing: border-box;
+}
+
+.sermon-verse-bar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  min-height: 22px;
+}
+
+.sermon-verse-bar-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a6914;
+  letter-spacing: 0.02em;
+}
+
+.btn-sermon-bar-close {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--apple-label-secondary);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.btn-sermon-bar-close:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--apple-label);
+}
+
+.btn-sermon-bar-close:active {
+  transform: scale(0.94);
+}
+
+.sermon-verse-bar.hidden {
+  display: none !important;
+}
+
+.sermon-knowledge-panel {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--apple-fill-tertiary);
+  border: 0.5px solid var(--apple-separator);
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--apple-label-secondary);
+}
+
+.sermon-knowledge-panel.hidden {
+  display: none !important;
+}
+
+.sermon-knowledge-head {
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--apple-label);
+  margin-bottom: 6px;
+}
+
+.sermon-knowledge-panel .sk-intro,
+.sermon-knowledge-panel .sk-tafsir {
+  margin: 0 0 6px;
+}
+
+.sermon-knowledge-panel .sk-verses,
+.sermon-knowledge-panel .sk-cross ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.sermon-knowledge-panel .sk-cross span {
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sermon-verse-compact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sermon-verse-label {
+  display: none;
+}
+
+.sermon-verse-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.sermon-verse-input-row .sermon-verse-input {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.btn-sermon-verse-mic {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-fill-secondary);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.btn-sermon-verse-mic.listening {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+  animation: sermon-mic-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes sermon-mic-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+.sermon-verse-listen-status {
+  margin: 6px 0 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--apple-blue);
+  line-height: 1.2;
+}
+
+.sermon-verse-listen-status.hidden {
+  display: none !important;
+}
+
+.sermon-verse-input {
+  width: 100%;
+  box-sizing: border-box;
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg-elevated);
+  color: var(--apple-label);
+  font-size: 13px;
+  margin-bottom: 0;
+}
+
+.sermon-verse-input:focus {
+  outline: none;
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.12);
+}
+
+.sermon-verse-input-error {
+  border-color: #ef4444 !important;
+  animation: sermon-shake 0.35s ease;
+}
+
+@keyframes sermon-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+.sermon-verse-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sermon-duration-pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.sermon-dur-btn {
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-fill-secondary);
+  color: var(--apple-label-secondary);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.sermon-dur-btn.active {
+  background: linear-gradient(135deg, #d4af37, #b8860b);
+  color: #fff;
+  border-color: transparent;
+}
+
+.sermon-dur-expo {
+  font-size: 9px;
+  padding: 4px 7px;
+}
+
+.btn-start-sermon-ai {
+  flex-shrink: 0;
+  border: none;
+  background: linear-gradient(135deg, #007aff, #5856d6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  line-height: 1.2;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.22);
+}
+
+.sermon-verse-hint {
+  display: none;
+}
+
+.live-indicator-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.transcript-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--apple-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.transcript-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-transcript-action,
+.btn-transcript-clear {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--apple-label);
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-transcript-action:hover {
+  background: var(--apple-fill-tertiary);
+  color: var(--apple-blue);
+}
+
+.btn-transcript-clear:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--apple-red, #ef4444);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.voice-transcript-stream {
+  flex: 1 1 0%;
+  min-height: 0;
+  height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+
+.voice-empty-state {
+  margin: auto;
+  text-align: center;
+  padding: 16px 12px;
+  max-width: 280px;
+}
+
+.empty-sacred-icon {
+  font-size: 28px;
+  margin-bottom: 4px;
+}
+
+.empty-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 3px;
+}
+
+.empty-desc {
+  font-size: 11.5px;
+  color: var(--apple-label-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Chat Message Bubbles */
+.vt-line {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 90%;
+  animation: msg-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes msg-appear {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.vt-line.user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.vt-line.assistant {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.vt-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+}
+
+.vt-role-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--apple-label-secondary);
+}
+
+.vt-time-tag {
+  font-size: 9.5px;
+  color: var(--apple-label-tertiary);
+}
+
+.vt-bubble {
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  word-break: break-word;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+.vt-line.user .vt-bubble {
+  background: linear-gradient(135deg, #007aff, #0056d6);
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.vt-line.assistant .vt-bubble {
+  background: var(--apple-bg-secondary);
+  color: var(--apple-label);
+  border: 0.5px solid var(--apple-separator);
+  border-bottom-left-radius: 4px;
+}
+
+/* Sleek Single-Line Composer */
+.voice-composer-modern {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 1px solid var(--apple-separator);
+}
+
+.voice-composer-input-row {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 3px 3px 14px;
+  border-radius: 24px;
+  border: 1px solid var(--apple-separator);
+  background: #ffffff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.voice-composer-input-row:focus-within {
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
+}
+
+.voice-text-input {
+  flex: 1;
+  min-width: 0;
+  height: 38px;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  color: var(--apple-label);
+  font-size: 14px;
+  outline: none;
+  box-shadow: none;
+}
+
+.voice-text-input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.btn-voice-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #007aff, #5856d6);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.btn-voice-send:hover {
+  transform: scale(1.06);
+}
+
+.btn-voice-send:active {
+  transform: scale(0.94);
+}
+
+.btn-voice-send svg {
+  width: 17px;
+  height: 17px;
+}
+
+.btn-voice-composer-mic {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--apple-fill-secondary);
+  color: var(--apple-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-voice-composer-mic svg {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-voice-composer-mic.connecting {
+  background: rgba(0, 122, 255, 0.14);
+  color: var(--apple-blue);
+  animation: composer-mic-pulse 1.2s ease-in-out infinite;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.btn-voice-composer-mic.live-hidden {
+  display: none;
+}
+
+.btn-voice-composer-mic:active {
+  transform: scale(0.94);
+}
+
+.btn-voice-composer-stop {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
+  transition: transform 0.15s ease, opacity 0.2s ease, background 0.2s ease;
+  visibility: visible !important;
+  opacity: 1;
+}
+
+.btn-voice-composer-stop.idle,
+.btn-voice-composer-stop:disabled {
+  background: var(--apple-fill-secondary);
+  color: var(--apple-label-tertiary);
+  box-shadow: none;
+  cursor: default;
+  opacity: 0.72;
+}
+
+.btn-voice-composer-stop.live {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(239, 68, 68, 0.35);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.btn-voice-composer-stop.hidden {
+  display: flex !important;
+}
+
+.btn-voice-composer-stop svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-voice-composer-stop:active {
+  transform: scale(0.94);
+}
+
+@keyframes composer-mic-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* Light surfaces — kartu & input terang dengan kontras jelas */
+.card-verse-full,
+.card-lagu-detail,
+.card-devotion,
+.card-reading-plan,
+.card-menu,
+.menu-item,
+.search-bar-premium,
+.search-bar,
+.card-list-item,
+.home-collapse,
+.font-pick,
+.chip-list .alkitab-quick-btn,
+.mobile-screen.mobile-stack,
+.chat-stack .messages,
+.chat-stack .composer,
+body.mobile-body #settings-panel {
+  background: var(--apple-bg-elevated);
+  color: var(--apple-label);
+  border-color: var(--apple-separator);
+}
+
+.search-bar-premium input,
+.search-bar input,
+input,
+textarea {
+  background: var(--apple-bg-tertiary);
+  color: var(--apple-label);
+  border-color: var(--apple-separator);
+}
+
+.mobile-note,
+.section-sub,
+.screen-intro-sub,
+.alkitab-verse-placeholder {
+  color: var(--apple-label-secondary);
+}
+
+.settings-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 0.5px solid var(--apple-separator);
+}
+
+.settings-close-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--apple-bg-secondary);
+  color: var(--apple-label);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.settings-close-icon:hover {
+  background: var(--apple-fill-secondary);
+}
+
+.settings-select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg-secondary);
+  color: var(--apple-label);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-select:focus {
+  border-color: var(--apple-blue);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+}
+
+.btn-pill {
+  background: var(--apple-fill-tertiary);
+  color: var(--apple-label);
+}
+
+.btn-pill.primary {
+  background: linear-gradient(180deg, #47a3ff 0%, #007aff 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.32);
+}
+
+/* Screen intros — large title iOS style */
+.screen-intro {
+  margin: 4px 0 18px;
+}
+
+.screen-intro-title {
+  font-family: var(--font-verse);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  margin: 0 0 6px;
+  color: var(--apple-label);
+}
+
+.screen-intro-sub {
+  font-size: 15px;
+  color: var(--apple-label-secondary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+/* Search & cards premium */
+.search-bar-premium,
+.search-bar {
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), var(--shadow-sm) !important;
+  border: 0.5px solid var(--apple-separator) !important;
+  overflow: visible;
+}
+
+.card-verse-full .alkitab-verse-text {
+  overflow: visible;
+  max-height: none;
+  white-space: normal;
+}
+
+.card-verse-full,
+.card-lagu-detail,
+.card-devotion,
+.card-reading-plan {
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-sm) !important;
+  border-left: 3px solid var(--apple-warm) !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+.card-list-item {
+  border-radius: 14px !important;
+  border: 0.5px solid var(--apple-separator) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: transform 0.15s ease;
+}
+
+.card-list-item:active {
+  transform: scale(0.985);
+}
+
+.home-collapse {
+  border-radius: 18px !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.card-menu {
+  border-radius: 20px !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.menu-item {
+  border-bottom: 0.5px solid var(--apple-separator);
+  transition: background 0.15s ease;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:active {
+  background: var(--apple-gray-6);
+}
+
+.font-pick {
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.font-pick.active {
+  border-color: var(--apple-blue) !important;
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15) !important;
+}
+
+/* =========================================================
+   1. PODCAST DEVOTIONAL WIDGET (Devotion Card Integrated)
+   ========================================================= */
+.devotion-podcast-widget {
+  background: var(--apple-fill-quaternary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin: 12px 0 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dpw-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.dpw-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+.dpw-icon-pulse {
+  font-size: 22px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.15), rgba(88, 86, 214, 0.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dpw-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.dpw-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--apple-blue);
+  display: block;
+}
+
+.dpw-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-dpw-play,
+.btn-dpw-stop {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+}
+
+.btn-dpw-play {
+  background: linear-gradient(135deg, #007aff, #0056d6);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.35);
+}
+
+.btn-dpw-stop {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.35);
+}
+
+.btn-dpw-stop.hidden {
+  display: none !important;
+}
+
+.devotion-podcast-widget.playing .btn-dpw-stop {
+  display: inline-flex !important;
+}
+
+.btn-dpw-play span {
+  pointer-events: none;
+}
+
+.btn-dpw-play:active,
+.btn-dpw-stop:active {
+  transform: scale(0.92);
+}
+
+.btn-devotion-listen-full.devotion-listen-active {
+  background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.dpw-equalizer {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 12px;
+  padding: 0 4px;
+}
+
+.dpw-equalizer span {
+  flex: 1;
+  height: 3px;
+  background: var(--apple-blue);
+  border-radius: 2px;
+  opacity: 0.35;
+  transition: height 0.2s ease, opacity 0.2s ease;
+}
+
+.dpw-equalizer.active span {
+  opacity: 0.85;
+  animation: eq-bounce 0.8s ease-in-out infinite alternate;
+}
+
+.dpw-equalizer.active span:nth-child(2) { animation-delay: 0.1s; }
+.dpw-equalizer.active span:nth-child(3) { animation-delay: 0.2s; }
+.dpw-equalizer.active span:nth-child(4) { animation-delay: 0.3s; }
+.dpw-equalizer.active span:nth-child(5) { animation-delay: 0.15s; }
+.dpw-equalizer.active span:nth-child(6) { animation-delay: 0.25s; }
+.dpw-equalizer.active span:nth-child(7) { animation-delay: 0.05s; }
+.dpw-equalizer.active span:nth-child(8) { animation-delay: 0.35s; }
+
+@keyframes eq-bounce {
+  0% { height: 3px; }
+  100% { height: 12px; }
+}
+
+.dpw-session-phases {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.dpw-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--apple-secondary-label);
+  background: var(--apple-fill-tertiary);
+  border: 0.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.dpw-phase-pill.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--apple-blue), #5856d6);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.25);
+}
+
+.dpw-phase-pill.done {
+  color: var(--apple-blue);
+  background: rgba(0, 122, 255, 0.1);
+  border-color: rgba(0, 122, 255, 0.15);
+}
+
+.dpw-phase-icon {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.dpw-phase-label {
+  white-space: nowrap;
+}
+
+.dpw-meditation-overlay {
+  margin-top: 6px;
+  padding: 14px 12px;
+  border-radius: 14px;
+  text-align: center;
+  background: linear-gradient(160deg, rgba(88, 86, 214, 0.12), rgba(0, 122, 255, 0.08));
+  border: 0.5px solid rgba(88, 86, 214, 0.2);
+}
+
+.dpw-meditation-overlay.hidden {
+  display: none;
+}
+
+.dpw-meditation-icon {
+  font-size: 28px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dpw-meditation-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--apple-label);
+}
+
+.dpw-meditation-hint {
+  margin: 4px 0 8px;
+  font-size: 11px;
+  color: var(--apple-secondary-label);
+}
+
+.dpw-meditation-timer {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--apple-blue);
+}
+
+.dpw-phase-hint {
+  margin: 4px 0 0;
+  font-size: 10px;
+  color: var(--apple-tertiary-label);
+  text-align: center;
+}
+
+.devotion-podcast-widget.meditating .dpw-equalizer {
+  opacity: 0.25;
+}
+
+.devotion-podcast-widget.meditating .dpw-icon-pulse {
+  animation: dpw-pulse-soft 2.4s ease-in-out infinite;
+}
+
+@keyframes dpw-pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.06); opacity: 0.85; }
+}
+
+/* =========================================================
+   2. LIVE SERMON DETECTOR MODAL
+   ========================================================= */
+.sermon-detector-sheet {
+  max-width: 520px;
+  max-height: 88vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.detector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.detector-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--apple-blue);
+  letter-spacing: 0.04em;
+}
+
+.detector-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 2px 0 0;
+  color: var(--apple-label);
+}
+
+.detector-mic-card {
+  background: var(--apple-fill-quaternary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.detector-orb-wrap {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detector-mic-orb {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #007aff, #5856d6);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 122, 255, 0.35);
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.detector-mic-card.listening .detector-mic-orb {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.5);
+  animation: mic-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.detector-status-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 3px;
+}
+
+.detector-status-sub {
+  font-size: 12px;
+  color: var(--apple-label-secondary);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.detector-speech-stream {
+  background: var(--apple-bg-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  color: var(--apple-label-secondary);
+  font-style: italic;
+}
+
+.stream-live-text {
+  color: var(--apple-label);
+  font-weight: 500;
+  font-style: normal;
+}
+
+.results-head-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.results-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0;
+}
+
+.btn-clear-detector {
+  background: transparent;
+  border: none;
+  font-size: 11px;
+  color: var(--apple-label-tertiary);
+  cursor: pointer;
+}
+
+.detector-verses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.detected-verse-card {
+  background: var(--apple-bg-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-left: 3.5px solid var(--apple-blue);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.dvc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.dvc-badge {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--apple-blue);
+}
+
+.dvc-time {
+  font-size: 10.5px;
+  color: var(--apple-label-tertiary);
+}
+
+.dvc-context {
+  font-size: 12px;
+  color: var(--apple-label-secondary);
+  margin: 0 0 8px;
+  line-height: 1.45;
+}
+
+.dvc-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.dvc-actions button {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--apple-label);
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dvc-actions button:hover {
+  background: var(--apple-fill-tertiary);
+  color: var(--apple-blue);
+}
+
+.detector-empty-hint {
+  text-align: center;
+  padding: 20px 14px;
+  color: var(--apple-label-tertiary);
+  font-size: 12px;
+}
+
+.detector-empty-hint span {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detector-test-chips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 6px;
+  border-top: 0.5px solid var(--apple-separator);
+}
+
+.test-label {
+  font-size: 11px;
+  color: var(--apple-label-tertiary);
+}
+
+.test-chip {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 12px;
+  font-size: 11px;
+  padding: 3px 8px;
+  color: var(--apple-label);
+  cursor: pointer;
+}
+
+/* =========================================================
+   3. BIBLICAL GENEALOGY & CHARACTER TREE
+   ========================================================= */
+.genealogy-sheet {
+  background: var(--apple-bg-elevated);
+  border-radius: 28px 28px 0 0;
+  width: 100%;
+  max-width: 560px;
+  max-height: min(90vh, calc(100dvh - 12px));
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 0;
+}
+
+.genealogy-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px 0;
+}
+
+.genealogy-sheet .modal-handle-bar {
+  flex-shrink: 0;
+  margin: 8px auto 0;
+}
+
+.genealogy-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #10b981;
+  letter-spacing: 0.04em;
+}
+
+.genealogy-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 2px 0 0;
+  color: var(--apple-label);
+}
+
+.genealogy-tree-scroll {
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 8px 18px 12px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tree-node-card {
+  flex: 0 0 110px;
+  background: var(--apple-bg-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 16px;
+  padding: 12px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tree-node-card.active {
+  background: var(--apple-bg-elevated);
+  border-color: var(--apple-blue);
+  box-shadow: 0 4px 14px rgba(0, 122, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.node-icon-glow {
+  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--apple-fill-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2px;
+}
+
+.tree-node-card.active .node-icon-glow {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.2), rgba(88, 86, 214, 0.2));
+}
+
+.node-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--apple-label);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.node-era {
+  font-size: 9.5px;
+  color: var(--apple-label-tertiary);
+}
+
+.genealogy-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 18px 8px;
+}
+
+.genealogy-detail-card {
+  background: var(--apple-bg-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.genealogy-action-footer {
+  flex-shrink: 0;
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom, 0px));
+  background: var(--apple-bg-elevated);
+  border-top: 0.5px solid var(--apple-separator);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.gdc-head-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.gdc-era-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #10b981;
+  text-transform: uppercase;
+}
+
+.gdc-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 2px 0 0;
+}
+
+.gdc-hebrew {
+  font-size: 12px;
+  color: var(--apple-label-secondary);
+  margin: 2px 0 0;
+  font-family: inherit;
+}
+
+.gdc-pass-badge {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 10px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--apple-label);
+}
+
+.gdc-role {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--apple-label);
+  margin: 0;
+}
+
+.gdc-verse-box {
+  background: var(--apple-fill-quaternary);
+  border-left: 3px solid var(--apple-warm);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.gdc-verse-ref {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apple-warm);
+  margin-bottom: 2px;
+}
+
+.gdc-verse-text {
+  font-size: 12.5px;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--apple-label);
+}
+
+.gdc-significance-box {
+  background: var(--apple-fill-quaternary);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.gdc-sig-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #8b5cf6;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.gdc-sig-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--apple-label);
+}
+
+.gdc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn-gdc-voice {
+  flex: 1 1 180px;
+  min-height: 48px;
+  background: linear-gradient(135deg, #007aff, #5856d6);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+}
+
+.btn-gdc-verse {
+  flex: 1 1 120px;
+  min-height: 48px;
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  color: var(--apple-label);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Innovations glow backgrounds */
+.glow-detector {
+  background: linear-gradient(135deg, rgba(0, 122, 255, 0.08), rgba(16, 185, 129, 0.08)) !important;
+  border-color: rgba(0, 122, 255, 0.25) !important;
+}
+
+.glow-genealogy {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(245, 158, 11, 0.08)) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+/* =========================================================
+   5. INTERACTIVE WORSHIP CHORD STRUMMER & ACCOMPANIMENT
+   ========================================================= */
+.chord-interactive-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--apple-fill-quaternary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+
+.chord-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apple-warm);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chord-badges-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.interactive-chord-pill {
+  background: var(--apple-bg-secondary);
+  border: 1px solid var(--apple-separator);
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--apple-label);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.15s ease;
+}
+
+.interactive-chord-pill:hover {
+  background: var(--apple-fill-secondary);
+  border-color: var(--apple-blue);
+  color: var(--apple-blue);
+  transform: translateY(-1px);
+}
+
+.interactive-chord-pill.strummed,
+.inline-chord-badge.strummed {
+  background: linear-gradient(135deg, #007aff, #5856d6) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 0 14px rgba(0, 122, 255, 0.6) !important;
+  transform: scale(1.1) !important;
+}
+
+.lyrics-chord-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 2px;
+}
+
+.inline-chord-badge {
+  background: rgba(0, 122, 255, 0.12);
+  border: 0.5px solid rgba(0, 122, 255, 0.35);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--apple-blue);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inline-chord-badge:hover {
+  background: rgba(0, 122, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.lyrics-text-row {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--apple-label);
+  margin-bottom: 4px;
+}
+
+#btn-lagu-accompany.active {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.5) !important;
+  animation: accompany-pulse 1.4s infinite alternate;
+}
+
+@keyframes accompany-pulse {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.04); }
+}
+
+.chord-head-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chord-sub-desc {
+  font-size: 11px;
+  color: var(--apple-label-secondary);
+  font-style: italic;
+}
+
+#btn-lagu-drone-pad.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #fff !important;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.5) !important;
+  animation: drone-shimmer 2s ease-in-out infinite alternate;
+}
+
+#btn-lagu-prompter.active {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9) !important;
+  color: #fff !important;
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.6) !important;
+  animation: accompany-pulse 1.4s infinite alternate;
+}
+
+.lyrics-line-item {
+  transition: all 0.25s ease;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin: 2px 0;
+}
+
+.lyrics-line-item.active-prompter-line {
+  background: rgba(255, 193, 7, 0.24) !important;
+  color: #f59e0b !important;
+  font-weight: 700 !important;
+  transform: scale(1.025) !important;
+  border-left: 3px solid #f59e0b !important;
+  padding-left: 10px !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.35) !important;
+}
+
+@keyframes drone-shimmer {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(1.03); opacity: 1; }
+}
+
+/* =========================================================
+   6. RESPONSIVE VERTICAL / ADAPTIVE WRAP BUTTON TOOLBARS
+   ========================================================= */
+.lagu-toolbar-interactive {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  padding: 14px !important;
+  background: var(--apple-bg-secondary) !important;
+  border-radius: 18px !important;
+  border: 0.5px solid var(--apple-separator) !important;
+}
+
+.lagu-transpose-group {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 0.5px solid var(--apple-separator) !important;
+  width: 100% !important;
+}
+
+.lagu-transpose-group .transpose-label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.lagu-tool-buttons {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.lagu-tool-buttons .btn-tool-pill {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.lagu-books-bar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 10px 0 !important;
+}
+
+.lagu-books-bar .book-pill {
+  flex: 1 1 calc(33.333% - 8px) !important;
+  min-width: 80px !important;
+  text-align: center !important;
+  justify-content: center !important;
+  padding: 9px 8px !important;
+  font-size: 12px !important;
+}
+
+.verse-action-row,
+.alkitab-verse-actions {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: 14px !important;
+}
+
+.verse-action-row .btn-pill,
+.alkitab-verse-actions button {
+  width: 100% !important;
+  padding: 11px 14px !important;
+  font-size: 13px !important;
+  justify-content: center !important;
+  text-align: center !important;
+  border-radius: 12px !important;
+}
+
+.voice-quick-prompts {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 2px 0 0 !important;
+}
+
+.voice-quick-prompts .voice-chip {
+  flex: 0 1 auto !important;
+  width: auto !important;
+  padding: 4px 10px !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+  text-align: center !important;
+}
+
+.verse-floating-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* =========================================================
+   7. GLOBAL MASTER VOICE & AUDIO FLOATING HUD CAPSULE
+   ========================================================= */
+.global-audio-hud {
+  position: fixed;
+  bottom: calc(112px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: min(280px, calc(100vw - 24px));
+  max-width: min(calc(100vw - 24px), 340px);
+  background: rgba(18, 24, 38, 0.92);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  z-index: 100002;
+  padding: 6px 10px 6px 12px;
+  pointer-events: auto;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: hud-float-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.global-audio-hud .hud-content,
+.global-audio-hud .hud-actions,
+.global-audio-hud .btn-hud-control {
+  pointer-events: auto;
+}
+
+.global-audio-hud.hidden {
+  display: none !important;
+}
+
+/* Dashboard Rhema AI — orb + transcript sudah live; sembunyikan kapsul HUD */
+.app-mobile:has(#screen-voice.active).voice-live-active #global-audio-hud,
+.app-mobile:has(#screen-voice.active).voice-connecting #global-audio-hud {
+  display: none !important;
+}
+
+@keyframes hud-float-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+.hud-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.hud-status-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.hud-text-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.hud-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+
+.hud-desc {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.62);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hud-actions {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  visibility: visible;
+  opacity: 1;
+}
+
+.btn-hud-control {
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 34px;
+  min-height: 30px;
+}
+
+.btn-hud-control:active {
+  transform: scale(0.94);
+}
+
+.btn-hud-control.stop {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+  padding: 4px 8px;
+  font-size: 10px;
+}
+
+.btn-hud-control.stop:hover {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+}
+
+/* =========================================================
+   8. ALKITAB SUPER POWER CARDS (MOOD, TRIVIA, SLEEP, PRAYER, PARALLEL)
+   ========================================================= */
+
+.alkitab-power-card {
+  background: var(--apple-bg-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 20px;
+  padding: 16px;
+  margin-top: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+}
+
+.power-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.power-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.power-card-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.power-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.power-card-sub {
+  font-size: 11px;
+  color: var(--apple-label-secondary);
+  margin: 0;
+}
+
+.power-badge {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.08));
+  border: 0.5px solid rgba(212, 175, 55, 0.4);
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+/* --- Mood Chips & Result --- */
+.mood-chips-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mood-chip-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-fill-secondary);
+  color: var(--apple-label);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mood-chip-btn:hover {
+  background: var(--apple-fill-tertiary);
+  transform: translateY(-1px);
+}
+
+.mood-chip-btn.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.mood-result-card {
+  background: rgba(255, 251, 235, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 16px;
+  padding: 14px;
+  animation: hud-float-in 0.25s ease;
+}
+
+.mood-res-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.mood-res-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400e;
+}
+
+.mood-res-badge {
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 8px;
+  border: 0.5px solid rgba(212, 175, 55, 0.3);
+}
+
+.mood-res-daily-note {
+  margin: 0 0 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #a16207;
+  opacity: 0.85;
+}
+
+.mood-res-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #78350f;
+  margin: 0 0 8px;
+  font-weight: 500;
+}
+
+.mood-res-devotion {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #92400e;
+  margin: 0 0 12px;
+}
+
+.mood-res-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* --- Trivia Quiz --- */
+.trivia-card {
+  background: var(--apple-fill-secondary);
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.trivia-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.trivia-q-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--apple-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.trivia-ref-hint {
+  font-size: 11px;
+  color: var(--apple-label-secondary);
+}
+
+.trivia-question {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 14px;
+  line-height: 1.45;
+}
+
+.trivia-options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.trivia-opt-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--apple-bg);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 12px;
+  color: var(--apple-label);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.trivia-opt-btn:hover:not(:disabled) {
+  border-color: var(--apple-blue);
+  background: rgba(0, 122, 255, 0.05);
+}
+
+.trivia-opt-letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--apple-fill-tertiary);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.trivia-opt-btn.correct {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+  color: #047857 !important;
+}
+
+.trivia-opt-btn.correct .trivia-opt-letter {
+  background: #10b981;
+  color: #fff;
+}
+
+.trivia-opt-btn.wrong {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+}
+
+.trivia-opt-btn.wrong .trivia-opt-letter {
+  background: #ef4444;
+  color: #fff;
+}
+
+.feedback-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.feedback-box.correct {
+  background: rgba(16, 185, 129, 0.15);
+  color: #065f46;
+  border: 0.5px solid #10b981;
+}
+
+.feedback-box.wrong {
+  background: rgba(239, 68, 68, 0.12);
+  color: #991b1b;
+  border: 0.5px solid #ef4444;
+}
+
+.trivia-finish-card {
+  text-align: center;
+  padding: 24px 14px;
+}
+
+.trivia-trophy {
+  font-size: 40px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.trivia-finish-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 4px;
+}
+
+.trivia-finish-sub {
+  font-size: 13px;
+  color: var(--apple-label-secondary);
+  margin: 0 0 16px;
+}
+
+/* --- Sleep Stories --- */
+.sleep-stories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.sleep-card-item {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sleep-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sleep-card-moon {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+.sleep-bg-tag {
+  font-size: 10px;
+  color: var(--apple-label-secondary);
+  background: var(--apple-fill-tertiary);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.sleep-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 4px;
+}
+
+.sleep-card-desc {
+  font-size: 11px;
+  color: var(--apple-label-secondary);
+  line-height: 1.4;
+  margin: 0 0 10px;
+  flex-grow: 1;
+}
+
+.sleep-player-card {
+  margin-top: 14px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 27, 75, 0.95));
+  border-radius: 16px;
+  padding: 14px;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.sleep-player-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sleep-player-icon {
+  font-size: 24px;
+}
+
+.sleep-player-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 2px;
+}
+
+.sleep-player-meta {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0;
+}
+
+.sleep-script-preview {
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.sleep-player-controls {
+  display: flex;
+  gap: 8px;
+}
+
+/* --- Prayer Journal --- */
+.prayer-journal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prayer-input-inline {
+  background: var(--apple-fill-secondary);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.prayer-field {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg);
+  color: var(--apple-label);
+  font-size: 13px;
+}
+
+.prayer-form-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prayer-select {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg);
+  color: var(--apple-label);
+  font-size: 12px;
+  flex: 1;
+}
+
+.prayer-item-card {
+  background: var(--apple-fill-secondary);
+  border: 0.5px solid var(--apple-separator);
+  border-radius: 14px;
+  padding: 12px;
+  transition: all 0.2s ease;
+}
+
+.prayer-item-card.answered {
+  background: rgba(254, 243, 199, 0.6);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.prayer-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.prayer-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.prayer-cat-badge {
+  background: var(--apple-fill-tertiary);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--apple-label);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.prayer-date {
+  font-size: 10px;
+  color: var(--apple-label-secondary);
+}
+
+.btn-prayer-delete {
+  background: none;
+  border: none;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.btn-prayer-delete:hover {
+  opacity: 1;
+}
+
+.prayer-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--apple-label);
+  margin: 0 0 6px;
+}
+
+.prayer-answered-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b45309;
+  background: rgba(254, 243, 199, 0.9);
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.prayer-item-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-prayer-toggle-answered,
+.btn-prayer-pray-ai {
+  border: 0.5px solid var(--apple-separator);
+  background: var(--apple-bg);
+  color: var(--apple-label);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-prayer-toggle-answered.active {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+}
+
+.btn-prayer-pray-ai:hover {
+  background: rgba(0, 122, 255, 0.1);
+  color: var(--apple-blue);
+  border-color: var(--apple-blue);
+}
+
+/* =========================================================
+   9. GLOBAL POWERHOUSE EXTENSIONS (BREATHING, COMMENTARY, DUAL MIXER)
+   ========================================================= */
+
+/* --- Mindful Breathing Prayer --- */
+.breathing-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: 16px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.breathing-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.breathing-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #67e8f9;
+}
+
+.breathing-timer-tag {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.breathing-circle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  margin-bottom: 12px;
+}
+
+.breathing-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4), rgba(59, 130, 246, 0.2));
+  border: 2px solid rgba(6, 182, 212, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 3.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+}
+
+.breathing-circle.inhale {
+  transform: scale(1.35);
+  border-color: #38bdf8;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.6), rgba(14, 165, 233, 0.3));
+  box-shadow: 0 0 35px rgba(56, 189, 248, 0.6);
+}
+
+.breathing-circle.hold {
+  transform: scale(1.35);
+  border-color: #facc15;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.5), rgba(234, 179, 8, 0.25));
+  box-shadow: 0 0 30px rgba(250, 204, 21, 0.5);
+}
+
+.breathing-circle.exhale {
+  transform: scale(0.9);
+  border-color: #a855f7;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.4), rgba(147, 51, 234, 0.15));
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+.breathing-phase {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.breathing-verse-guide {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+  min-height: 40px;
+  margin: 0 0 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.breathing-actions {
+  display: flex;
+  justify-content: center;
+}
+
+/* --- Dual Audio Mixer --- */
+.ambient-dual-mixer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--apple-fill-secondary);
+  padding: 12px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+}
+

@@ -1,0 +1,615 @@
+{
+  "meta": {
+    "versi": "1.1",
+    "catatan": "Kata kunci Ibrani/Yunani (Strong's ringkas) untuk Khotbah AI — kutipan ayat tetap dari TB.",
+    "updated": "2026-08-16"
+  },
+  "refs": {
+    "Yohanes 3:16": [
+      {
+        "original": "ἠγάπησεν (ēgapēsen)",
+        "language": "Yunani",
+        "strongs": "G25",
+        "root": "ἀγαπάω (Agape)",
+        "meaning": "Kasih pengorbanan ilahi, bukan sekadar perasaan.",
+        "theology": "Inisiatif kasih Allah yang berwujud dalam pemberian Anak-Nya."
+      },
+      {
+        "original": "μονογενῆ (monogenē)",
+        "language": "Yunani",
+        "strongs": "G3439",
+        "root": "μονογενής (Monogenes)",
+        "meaning": "Anak tunggal, unik dan tak tertandingi.",
+        "theology": "Kedudukan Kristus dalam relasi kekal dengan Bapa."
+      },
+      {
+        "original": "αἰώνιον (aiōnion)",
+        "language": "Yunani",
+        "strongs": "G166",
+        "root": "αἰώνιος (Aionios)",
+        "meaning": "Kekal — kualitas hidup dalam persekutuan dengan Allah.",
+        "theology": "Hidup kekal bukan hanya durasi tanpa akhir."
+      }
+    ],
+    "Mazmur 23:1": [
+      {
+        "original": "רֹעִי (Ro'i)",
+        "language": "Ibrani",
+        "strongs": "H7462",
+        "root": "רָעָה (Ra'ah)",
+        "meaning": "Gembalaku — pemelihara, penuntun, penjaga.",
+        "theology": "Allah dekat sebagai Gembala pribadi, bukan hanya Raja jauh."
+      },
+      {
+        "original": "אֶחְסָר (Echsar)",
+        "language": "Ibrani",
+        "strongs": "H2637",
+        "root": "חָסֵר (Chaser)",
+        "meaning": "Tidak kekurangan yang esensial bagi jiwa.",
+        "theology": "Kecukupan rohani dalam relasi dengan Sang Gembala."
+      }
+    ],
+    "Roma 8:28": [
+      {
+        "original": "συνεργεῖ (synergei)",
+        "language": "Yunani",
+        "strongs": "G4903",
+        "root": "συνεργέω (Synergeo)",
+        "meaning": "Bekerja sama-sama, merajut peristiwa.",
+        "theology": "Allah merajut keadaan menuju kebaikan bagi yang dikasihi-Nya."
+      },
+      {
+        "original": "πρόθεσιν (prothesin)",
+        "language": "Yunani",
+        "strongs": "G4286",
+        "root": "πρόθεσις (Prothesis)",
+        "meaning": "Rencana ilahi yang berdaulat sebelumnya.",
+        "theology": "Kebaikan = conformitas dengan gambar Kristus (8:29)."
+      }
+    ],
+    "Filipi 4:13": [
+      {
+        "original": "ἰσχύω (ischyō)",
+        "language": "Yunani",
+        "strongs": "G2480",
+        "root": "ἰσχύς (Ischys)",
+        "meaning": "Mampu, kuat, bertahan.",
+        "theology": "Dalam konteks 4:11-12: cukup dalam kekurangan maupun kelimpahan."
+      }
+    ],
+    "Yeremia 29:11": [
+      {
+        "original": "שָׁלוֹם (Shalom)",
+        "language": "Ibrani",
+        "strongs": "H7965",
+        "root": "Shalom",
+        "meaning": "Damai sejahtera holistik — bukan hanya absen konflik.",
+        "theology": "Rencana Allah untuk kesejahteraan relasi, bukan formula instan."
+      }
+    ],
+    "Yesaya 53:5": [
+      {
+        "original": "חֵטְא (Chata)",
+        "language": "Ibrani",
+        "strongs": "H2398",
+        "root": "Chata",
+        "meaning": "Dosa, pemberontakan.",
+        "theology": "Hamba menderita menggantikan pemberontakan umat."
+      },
+      {
+        "original": "נָשָׂא (Nasa)",
+        "language": "Ibrani",
+        "strongs": "H5375",
+        "root": "Nasa",
+        "meaning": "Memikul, menanggung beban.",
+        "theology": "Penggantian — Mesias menanggung hukum kita."
+      }
+    ],
+    "Efesus 2:8": [
+      {
+        "original": "χάρις (Charis)",
+        "language": "Yunani",
+        "strongs": "G5485",
+        "root": "Charis",
+        "meaning": "Anugerah, pemberian cuma-cuma.",
+        "theology": "Keselamatan bukan hasil usaha — respons iman."
+      }
+    ],
+    "Ibrani 11:1": [
+      {
+        "original": "πίστις (Pistis)",
+        "language": "Yunani",
+        "strongs": "G4102",
+        "root": "Pistis",
+        "meaning": "Iman, kepercayaan, kesetiaan.",
+        "theology": "Dasar harapan — orientasi hidup pada janji Allah yang tidak terlihat."
+      }
+    ],
+    "Roma 5:8": [
+      {
+        "original": "συνίστησιν (synistēsin)",
+        "language": "Yunani",
+        "strongs": "G4921",
+        "root": "συνίστημι (Synistēmi)",
+        "meaning": "Menunjukkan, membuktikan, menegaskan.",
+        "theology": "Kasih Allah terbukti objektif — bukan sekadar perasaan abstrak."
+      },
+      {
+        "original": "ἔτι (eti)",
+        "language": "Yunani",
+        "strongs": "G2089",
+        "root": "Eti",
+        "meaning": "Masih, pada waktu itu — saat kita masih berdosa.",
+        "theology": "Inisiatif kasih mendahului respons manusia."
+      }
+    ],
+    "2 Korintus 12:9": [
+      {
+        "original": "ἀρκεῖ (arkei)",
+        "language": "Yunani",
+        "strongs": "G714",
+        "root": "ἀρκέω (Arkeō)",
+        "meaning": "Cukup, memadai, mencukupi.",
+        "theology": "Anugerah Allah mencukupi — kelemahan menjadi ruang kuasa Kristus."
+      },
+      {
+        "original": "δύναμις (Dynamis)",
+        "language": "Yunani",
+        "strongs": "G1411",
+        "root": "Dynamis",
+        "meaning": "Kuasa, kekuatan aktif.",
+        "theology": "Kuasa ilahi nyata justru dalam keterbatasan manusia."
+      }
+    ],
+    "Galatia 5:22": [
+      {
+        "original": "καρπὸς (Karpos)",
+        "language": "Yunani",
+        "strongs": "G2590",
+        "root": "Karpos",
+        "meaning": "Buah — hasil alami, bukan produk paksa.",
+        "theology": "Karakter Kristus tumbuh dari hidup dalam Roh, bukan legalisme."
+      },
+      {
+        "original": "ἀγάπη (Agapē)",
+        "language": "Yunani",
+        "strongs": "G26",
+        "root": "Agape",
+        "meaning": "Kasih ilahi — puncak buah Roh.",
+        "theology": "Kasih sebagai buah, bukan sekadar emosi spontan."
+      }
+    ],
+    "Kolose 3:23": [
+      {
+        "original": "ἐκ ψυχῆς (ek psuchēs)",
+        "language": "Yunani",
+        "strongs": "G5590",
+        "root": "Psyche",
+        "meaning": "Dari hati, dengan segenap jiwa.",
+        "theology": "Pekerjaan sehari-hari menjadi ibadah jika dilakukan untuk Tuhan."
+      },
+      {
+        "original": "κυρίου (Kyriou)",
+        "language": "Yunani",
+        "strongs": "G2962",
+        "root": "Kyrios",
+        "meaning": "Tuhan — Kristus sebagai majikan sejati.",
+        "theology": "Etika kerja Kristen: melayani Kristus lewat panggilan profesional."
+      }
+    ],
+    "Matius 28:19": [
+      {
+        "original": "μαθητεύσατε (mathēteusate)",
+        "language": "Yunani",
+        "strongs": "G3100",
+        "root": "Mathēteuō",
+        "meaning": "Jadikan murid — proses pemuridan, bukan sekadar baptisan.",
+        "theology": "Misi gereja: formasi hidup mengikut Kristus."
+      },
+      {
+        "original": "βαπτίζοντες (baptizontes)",
+        "language": "Yunani",
+        "strongs": "G907",
+        "root": "Baptizō",
+        "meaning": "Membaptis — identitas dalam nama Trinitas.",
+        "theology": "Pemuridan meliputi baptisan dan pengajaran berkelanjutan."
+      }
+    ],
+    "1 Yohanes 1:9": [
+      {
+        "original": "ὁμολογῶμεν (homologōmen)",
+        "language": "Yunani",
+        "strongs": "G3670",
+        "root": "Homologeō",
+        "meaning": "Mengaku, menyatakan dengan jujur.",
+        "theology": "Pengakuan dosa — langkah iman menuju pengampunan."
+      },
+      {
+        "original": "πιστός (Pistos)",
+        "language": "Yunani",
+        "strongs": "G4103",
+        "root": "Pistos",
+        "meaning": "Setia, dapat dipercaya.",
+        "theology": "Allah setia mengampuni — karakter-Nya tidak berubah."
+      }
+    ],
+    "Mikha 6:8": [
+      {
+        "original": "מִשְׁפָּט (Mishpat)",
+        "language": "Ibrani",
+        "strongs": "H4941",
+        "root": "Mishpat",
+        "meaning": "Kebenaran, keadilan, hukum yang adil.",
+        "theology": "Allah menuntut keadilan sosial, bukan ritual kosong."
+      },
+      {
+        "original": "חֶסֶד (Chesed)",
+        "language": "Ibrani",
+        "strongs": "H2617",
+        "root": "Chesed",
+        "meaning": "Kasih setia, loyalitas perjanjian.",
+        "theology": "Kasih setia Allah menjadi teladan hidup manusia."
+      },
+      {
+        "original": "צָנֵעַ (Tsana)",
+        "language": "Ibrani",
+        "strongs": "H6800",
+        "root": "Tsana",
+        "meaning": "Rendah hati, hidup sederhana.",
+        "theology": "Kerendahan hati — berjalan bersama Allah."
+      }
+    ],
+    "Yesaya 40:31": [
+      {
+        "original": "קָוָה (Qavah)",
+        "language": "Ibrani",
+        "strongs": "H6960",
+        "root": "Qavah",
+        "meaning": "Menanti dengan harap, menantikan.",
+        "theology": "Menunggu TUHAN — disiplin harapan, bukan pasif."
+      },
+      {
+        "original": "יַעֲלֶה (Ya'aleh)",
+        "language": "Ibrani",
+        "strongs": "H5927",
+        "root": "Alah",
+        "meaning": "Terbang naik — metafora rajawali.",
+        "theology": "Kekuatan baru datang dari relasi dengan Sang Pencipta."
+      }
+    ],
+    "Yohanes 14:27": [
+      {
+        "original": "εἰρήνην (Eirēnēn)",
+        "language": "Yunani",
+        "strongs": "G1515",
+        "root": "Eirēnē",
+        "meaning": "Damai sejahtera — shalom, kesejahteraan holistik.",
+        "theology": "Damai Kristus berbeda dari damai dunia yang fana."
+      }
+    ],
+    "Roma 12:2": [
+      {
+        "original": "μεταμορφοῦσθε (metamorphousthe)",
+        "language": "Yunani",
+        "strongs": "G3339",
+        "root": "Metamorphoō",
+        "meaning": "Berubah wujud, transformasi mendalam.",
+        "theology": "Pembaruan pikiran — kontras dengan conformitas dunia."
+      },
+      {
+        "original": "δοκιμάζειν (Dokimazein)",
+        "language": "Yunani",
+        "strongs": "G1381",
+        "root": "Dokimazō",
+        "meaning": "Menguji, membedakan, mengenali kehendak Allah.",
+        "theology": "Hidup baru = pemikiran yang selaras dengan kehendak ilahi."
+      }
+    ],
+    "1 Korintus 13:4": [
+      {
+        "original": "ἀγάπη (Agapē)",
+        "language": "Yunani",
+        "strongs": "G26",
+        "root": "Agape",
+        "meaning": "Kasih — definisi Paulus: sabar, baik hati, tidak iri.",
+        "theology": "Kasih sebagai karakter, bukan hanya perasaan."
+      },
+      {
+        "original": "μακροθυμεῖ (Makrothumei)",
+        "language": "Yunani",
+        "strongs": "G3114",
+        "root": "Makrothumeō",
+        "meaning": "Sabar panjang, sabar menahan diri.",
+        "theology": "Kasih sejati bertahan dalam relasi yang sulit."
+      }
+    ],
+    "Matius 6:33": [
+      {
+        "original": "βασιλείαν (Basileian)",
+        "language": "Yunani",
+        "strongs": "G932",
+        "root": "Basileia",
+        "meaning": "Kerajaan — pemerintahan Allah yang aktif.",
+        "theology": "Prioritas hidup: tahta Allah di atas akumulasi materi."
+      },
+      {
+        "original": "δικαιοσύνην (Dikaiosynēn)",
+        "language": "Yunani",
+        "strongs": "G1343",
+        "root": "Dikaiosynē",
+        "meaning": "Kebenaran, keadilan, hidup benar.",
+        "theology": "Mencari kebenaran = hidup selaras kehendak Allah."
+      }
+    ],
+    "Yohanes 15:5": [
+      {
+        "original": "κλῆμα (Klēma)",
+        "language": "Yunani",
+        "strongs": "G2814",
+        "root": "Klēma",
+        "meaning": "Ranting — bagian dari pokok anggur.",
+        "theology": "Percakapan erat dengan Kristus — sumber buah rohani."
+      },
+      {
+        "original": "μένων (Menōn)",
+        "language": "Yunani",
+        "strongs": "G3306",
+        "root": "Menō",
+        "meaning": "Tinggal, diam, tetap — relasi berkelanjutan.",
+        "theology": "Membuahkan = hasil tinggal di dalam Kristus, bukan usaha sendiri."
+      }
+    ],
+    "Kisah Para Rasul 1:8": [
+      {
+        "original": "δύναμιν (Dynamin)",
+        "language": "Yunani",
+        "strongs": "G1411",
+        "root": "Dynamis",
+        "meaning": "Kuasa — kekuatan untuk menjadi saksi.",
+        "theology": "Roh Kudus memberi kuasa untuk misi, bukan hanya pengalaman pribadi."
+      },
+      {
+        "original": "μάρτυρες (Martyres)",
+        "language": "Yunani",
+        "strongs": "G3144",
+        "root": "Martys",
+        "meaning": "Saksi — memberitakan apa yang dilihat dan dialami.",
+        "theology": "Identitas gereja: saksi Kristus sampai ke ujung bumi."
+      }
+    ],
+    "Roma 3:23": [
+      {
+        "original": "ἥμαρτον (hēmarton)",
+        "language": "Yunani",
+        "strongs": "G264",
+        "root": "Hamartanō",
+        "meaning": "Berdosa, meleset dari target, gagal.",
+        "theology": "Universalitas dosa — semua manusia tanpa pengecualian."
+      },
+      {
+        "original": "ὑστεροῦνται (hysterountai)",
+        "language": "Yunani",
+        "strongs": "G5302",
+        "root": "Hystereō",
+        "meaning": "Kekurangan, tidak mencapai standar.",
+        "theology": "Kemuliaan Allah = standar kekudusan yang tidak tercapai manusia."
+      }
+    ],
+    "Galatia 2:20": [
+      {
+        "original": "συνεσταύρωμαι (synestaurōmai)",
+        "language": "Yunani",
+        "strongs": "G4957",
+        "root": "Synstauroō",
+        "meaning": "Tersalib bersama — union dengan Kristus.",
+        "theology": "Identitas baru: bukan lagi aku, melainkan Kristus hidup di dalam aku."
+      },
+      {
+        "original": "ζῶ (zō)",
+        "language": "Yunani",
+        "strongs": "G2198",
+        "root": "Zaō",
+        "meaning": "Hidup — kehidupan rohani aktif oleh iman.",
+        "theology": "Hidup oleh iman kepada Anak Allah — bukan legalisme."
+      }
+    ],
+    "2 Korintus 5:17": [
+      {
+        "original": "καινὴ (kainē)",
+        "language": "Yunani",
+        "strongs": "G2537",
+        "root": "Kainos",
+        "meaning": "Baru — kualitas baru, bukan sekadar waktu.",
+        "theology": "Ciptaan baru = identitas dan arah hidup yang fundamentally changed."
+      },
+      {
+        "original": "κτίσις (ktisis)",
+        "language": "Yunani",
+        "strongs": "G2937",
+        "root": "Ktisis",
+        "meaning": "Ciptaan, makhluk baru.",
+        "theology": "Rekonsiliasi dengan Allah menghasilkan orang baru (5:18-19)."
+      }
+    ],
+    "Mazmur 103:1": [
+      {
+        "original": "בָּרֲכִי (Barakhi)",
+        "language": "Ibrani",
+        "strongs": "H1288",
+        "root": "Barak",
+        "meaning": "Berkat, memuji, melimpahkan kebaikan.",
+        "theology": "Pujian sebagai respons jiwa atas kasih setia Allah."
+      },
+      {
+        "original": "חֶסֶד (Chesed)",
+        "language": "Ibrani",
+        "strongs": "H2617",
+        "root": "Chesed",
+        "meaning": "Kasih setia perjanjian.",
+        "theology": "Allah penyayang dan pengasih — karakter-Nya dalam pengampunan (103:8-12)."
+      }
+    ],
+    "Roma 8:28": [
+      {
+        "original": "συνεργεῖ (synergei)",
+        "language": "Yunani",
+        "strongs": "G4903",
+        "root": "Synergeo",
+        "meaning": "Bekerja sama-sama, merajut peristiwa.",
+        "theology": "Allah merajut keadaan menuju kebaikan bagi yang dikasihi-Nya."
+      },
+      {
+        "original": "πρόθεσιν (prothesin)",
+        "language": "Yunani",
+        "strongs": "G4286",
+        "root": "Prothesis",
+        "meaning": "Rencana ilahi yang berdaulat.",
+        "theology": "Kebaikan = conformitas dengan gambar Kristus (8:29)."
+      }
+    ],
+    "Yohanes 4:10": [
+      {
+        "original": "ὕδωρ ζῶν (hydōr zōn)",
+        "language": "Yunani",
+        "strongs": "G5204",
+        "root": "Hydor + Zōn",
+        "meaning": "Air hidup — sumber kehidupan rohani abadi.",
+        "theology": "Karunia Allah yang memuaskan haus jiwa, bukan ritual tempat."
+      },
+      {
+        "original": "δωρεάν (dōrean)",
+        "language": "Yunani",
+        "strongs": "G1432",
+        "root": "Dōrea",
+        "meaning": "Cuma-cuma, sebagai pemberian.",
+        "theology": "Inisiatif pemberian Allah — kita hanya menerima dan meminta."
+      }
+    ],
+    "Yohanes 6:35": [
+      {
+        "original": "ἄρτος (artos)",
+        "language": "Yunani",
+        "strongs": "G740",
+        "root": "Artos",
+        "meaning": "Roti — makanan pokok kehidupan.",
+        "theology": "Kristus sebagai roti hidup — kecukupan dan identitas iman."
+      },
+      {
+        "original": "πεινάω (peinaō)",
+        "language": "Yunani",
+        "strongs": "G3983",
+        "root": "Peinao",
+        "meaning": "Lapar — kerinduan rohani yang jujur.",
+        "theology": "Datang kepada Kristus = memuaskan lapar jiwa yang paling dalam."
+      }
+    ],
+    "Yohanes 11:25": [
+      {
+        "original": "ἀνάστασις (anastasis)",
+        "language": "Yunani",
+        "strongs": "G386",
+        "root": "Anistēmi",
+        "meaning": "Kebangkitan — berdiri kembali dari kematian.",
+        "theology": "Kristus adalah sumber dan jamin hidup kekal sekarang dan nanti."
+      },
+      {
+        "original": "ζωή (zōē)",
+        "language": "Yunani",
+        "strongs": "G2222",
+        "root": "Zōē",
+        "meaning": "Hidup — kualitas hidup kekal dalam relasi dengan Allah.",
+        "theology": "Percaya = hidup meski tubuh mati — harapan eskatologis yang nyata."
+      }
+    ],
+    "Roma 8:18": [
+      {
+        "original": "δόξα (doxa)",
+        "language": "Yunani",
+        "strongs": "G1391",
+        "root": "Doxa",
+        "meaning": "Kemuliaan — berat kehadiran dan kehormatan ilahi.",
+        "theology": "Penderitaan sementara vs kemuliaan kekal yang akan dinyatakan."
+      },
+      {
+        "original": "πάθημα (pathēma)",
+        "language": "Yunani",
+        "strongs": "G3804",
+        "root": "Paschō",
+        "meaning": "Penderitaan — pengalaman sakit dan tekanan.",
+        "theology": "Paulus tidak mengecilkan penderitaan; ia memperbesar horizon eskatologi."
+      }
+    ],
+    "Roma 11:33": [
+      {
+        "original": "ὕψος (hypsos)",
+        "language": "Yunani",
+        "strongs": "G5311",
+        "root": "Hypsos",
+        "meaning": "Kedalaman/ketinggian — keluasan yang melampaui jangkauan manusia.",
+        "theology": "Hikmat Allah memanggil iman dan pujian, bukan frustrasi spekulatif."
+      },
+      {
+        "original": "ἀνεξεραύνητος (anexeraunētos)",
+        "language": "Yunani",
+        "strongs": "G419",
+        "root": "Anexeraunētos",
+        "meaning": "Tidak terselidiki — tidak bisa dipetakan sepenuhnya.",
+        "theology": "Misteri rencana Allah ≠ alasan acuh; panggilan percaya dan taat."
+      }
+    ],
+    "Matius 16:16": [
+      {
+        "original": "Χριστός (Christos)",
+        "language": "Yunani",
+        "strongs": "G5547",
+        "root": "Christos",
+        "meaning": "Mesias, Yang Diurapi.",
+        "theology": "Pengakuan Petrus — identitas Yesus sebagai Raja dan Juruselamat."
+      },
+      {
+        "original": "υἱὸς (huios)",
+        "language": "Yunani",
+        "strongs": "G5207",
+        "root": "Huios",
+        "meaning": "Anak — relasi kekal dengan Bapa.",
+        "theology": "Anak Allah yang hidup — bukan metafora saja."
+      }
+    ],
+    "1 Korintus 15:55": [
+      {
+        "original": "νῖκος (nikos)",
+        "language": "Yunani",
+        "strongs": "G3529",
+        "root": "Nikos",
+        "meaning": "Kemenangan — triumph over death.",
+        "theology": "Kristus bangkit = kemenangan eskatologis umat."
+      },
+      {
+        "original": "κέντρον (kentron)",
+        "language": "Yunani",
+        "strongs": "G2759",
+        "root": "Kentron",
+        "meaning": "Sengat — daya hancur maut.",
+        "theology": "Maut kehilangan kekuatan melalui kebangkitan."
+      }
+    ],
+    "Wahyu 21:4": [
+      {
+        "original": "πενθός (penthos)",
+        "language": "Yunani",
+        "strongs": "G3997",
+        "root": "Penthos",
+        "meaning": "Dukacita, ratap tangis.",
+        "theology": "Allah menghapus penderitaan — pengharapan langit baru."
+      },
+      {
+        "original": "θάνατος (thanatos)",
+        "language": "Yunani",
+        "strongs": "G2288",
+        "root": "Thanatos",
+        "meaning": "Maut — musuh terakhir.",
+        "theology": "Tidak ada lagi maut = pembebasan kosmis penuh."
+      }
+    ]
+  }
+}

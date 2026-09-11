@@ -1,0 +1,19 @@
+{
+  "id": "pkj-51",
+  "book": "PKJ",
+  "no": 51,
+  "title": "Gloria",
+  "key": "E",
+  "chord": "E · G · Am · F · C · G · F · E",
+  "progression": [
+    "G",
+    "D",
+    "Em",
+    "C",
+    "G",
+    "D",
+    "C",
+    "G"
+  ],
+  "lyrics": "Gloria, gloria, gloria, gloria.\nGloria, gloria, in excelsis Deo."
+}

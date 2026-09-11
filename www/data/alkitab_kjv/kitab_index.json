@@ -1,0 +1,271 @@
+{
+  "versi": "KJV",
+  "nama": "King James Version",
+  "catatan": "Public domain KJV \u2014 midvash/bible-data",
+  "kitab": [
+    {
+      "kode": "kej",
+      "nama": "Gen"
+    },
+    {
+      "kode": "kel",
+      "nama": "Exod"
+    },
+    {
+      "kode": "lev",
+      "nama": "Lev"
+    },
+    {
+      "kode": "bil",
+      "nama": "Num"
+    },
+    {
+      "kode": "ul",
+      "nama": "Deut"
+    },
+    {
+      "kode": "yos",
+      "nama": "Josh"
+    },
+    {
+      "kode": "hak",
+      "nama": "Judg"
+    },
+    {
+      "kode": "rut",
+      "nama": "Ruth"
+    },
+    {
+      "kode": "1sa",
+      "nama": "1Sam"
+    },
+    {
+      "kode": "2sa",
+      "nama": "2Sam"
+    },
+    {
+      "kode": "1ra",
+      "nama": "1Kgs"
+    },
+    {
+      "kode": "2ra",
+      "nama": "2Kgs"
+    },
+    {
+      "kode": "1ta",
+      "nama": "1Chr"
+    },
+    {
+      "kode": "2ta",
+      "nama": "2Chr"
+    },
+    {
+      "kode": "ezr",
+      "nama": "Ezra"
+    },
+    {
+      "kode": "neh",
+      "nama": "Neh"
+    },
+    {
+      "kode": "est",
+      "nama": "Esth"
+    },
+    {
+      "kode": "ayb",
+      "nama": "Job"
+    },
+    {
+      "kode": "mzm",
+      "nama": "Ps"
+    },
+    {
+      "kode": "ams",
+      "nama": "Prov"
+    },
+    {
+      "kode": "pkh",
+      "nama": "Eccl"
+    },
+    {
+      "kode": "kid",
+      "nama": "Song"
+    },
+    {
+      "kode": "yes",
+      "nama": "Isa"
+    },
+    {
+      "kode": "yer",
+      "nama": "Jer"
+    },
+    {
+      "kode": "rat",
+      "nama": "Lam"
+    },
+    {
+      "kode": "eze",
+      "nama": "Ezek"
+    },
+    {
+      "kode": "dan",
+      "nama": "Dan"
+    },
+    {
+      "kode": "hos",
+      "nama": "Hos"
+    },
+    {
+      "kode": "yoel",
+      "nama": "Joel"
+    },
+    {
+      "kode": "amos",
+      "nama": "Amos"
+    },
+    {
+      "kode": "oba",
+      "nama": "Obad"
+    },
+    {
+      "kode": "yun",
+      "nama": "Jonah"
+    },
+    {
+      "kode": "mik",
+      "nama": "Mic"
+    },
+    {
+      "kode": "nah",
+      "nama": "Nah"
+    },
+    {
+      "kode": "hab",
+      "nama": "Hab"
+    },
+    {
+      "kode": "zef",
+      "nama": "Zeph"
+    },
+    {
+      "kode": "hag",
+      "nama": "Hag"
+    },
+    {
+      "kode": "zak",
+      "nama": "Zech"
+    },
+    {
+      "kode": "mal",
+      "nama": "Mal"
+    },
+    {
+      "kode": "mat",
+      "nama": "Matt"
+    },
+    {
+      "kode": "mrk",
+      "nama": "Mark"
+    },
+    {
+      "kode": "luk",
+      "nama": "Luke"
+    },
+    {
+      "kode": "yoh",
+      "nama": "John"
+    },
+    {
+      "kode": "kis",
+      "nama": "Acts"
+    },
+    {
+      "kode": "rom",
+      "nama": "Rom"
+    },
+    {
+      "kode": "1ko",
+      "nama": "1Cor"
+    },
+    {
+      "kode": "2ko",
+      "nama": "2Cor"
+    },
+    {
+      "kode": "gal",
+      "nama": "Gal"
+    },
+    {
+      "kode": "ef",
+      "nama": "Eph"
+    },
+    {
+      "kode": "fil",
+      "nama": "Phil"
+    },
+    {
+      "kode": "kol",
+      "nama": "Col"
+    },
+    {
+      "kode": "1te",
+      "nama": "1Thess"
+    },
+    {
+      "kode": "2te",
+      "nama": "2Thess"
+    },
+    {
+      "kode": "1ti",
+      "nama": "1Tim"
+    },
+    {
+      "kode": "2ti",
+      "nama": "2Tim"
+    },
+    {
+      "kode": "tit",
+      "nama": "Titus"
+    },
+    {
+      "kode": "flm",
+      "nama": "Phlm"
+    },
+    {
+      "kode": "ibr",
+      "nama": "Heb"
+    },
+    {
+      "kode": "yak",
+      "nama": "Jas"
+    },
+    {
+      "kode": "1pe",
+      "nama": "1Pet"
+    },
+    {
+      "kode": "2pe",
+      "nama": "2Pet"
+    },
+    {
+      "kode": "1yo",
+      "nama": "1John"
+    },
+    {
+      "kode": "2yo",
+      "nama": "2John"
+    },
+    {
+      "kode": "3yo",
+      "nama": "3John"
+    },
+    {
+      "kode": "yud",
+      "nama": "Jude"
+    },
+    {
+      "kode": "why",
+      "nama": "Rev"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "id": "nkb-222",
+  "book": "NKB",
+  "no": 222,
+  "title": "Haleluya",
+  "key": "B",
+  "chord": "B · G · Am · F · C · G · F · B",
+  "progression": [
+    "F",
+    "C",
+    "Dm",
+    "Bb",
+    "F",
+    "C",
+    "Bb",
+    "F"
+  ],
+  "lyrics": "Haleluya, haleluya, haleluya."
+}

@@ -1,0 +1,62 @@
+# Dependencies & build
+node_modules/
+android/.gradle/
+android/app/build/
+android/build/
+android/local.properties
+android/keystore.properties
+android/capacitor-cordova-android-plugins/
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+
+# Signing
+release/
+*.keystore
+*.jks
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+
+# Artifacts
+*.apk
+*.aab
+*.dex
+*.class
+
+# Decompiled / extracted APK junk (root-level)
+decompiled/
+META-INF/
+okhttp3/
+org/
+kotlin/
+kotlinx/
+assets/
+res/
+tools/
+AndroidManifest.xml
+resources.arsc
+DebugProbesKt.bin
+classes*.dex
+*.properties
+!android/gradle.properties
+!android/gradle/wrapper/gradle-wrapper.properties
+!android/keystore.properties.example
+
+# Scripts cache & scrape HTML
+scripts/lyric_cache/
+scripts/*.html
+
+# Nested legal-site git repo
+legal-site/
+
+# OS & IDE
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+
+# Logs
+*.log

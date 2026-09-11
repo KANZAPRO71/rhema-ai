@@ -1,0 +1,149 @@
+================================================================================
+RHEMA AI — PLAY STORE LISTING (copy-paste ke Play Console)
+Package: id.rhema.alkitabvoice
+Version: 1.0.0 | targetSdk 36 | Format upload: AAB
+================================================================================
+
+--- CREATE APP (setelah verifikasi identitas + HP) ---
+
+Nama aplikasi (max 30 karakter):
+  Rhema AI
+
+Bahasa default:
+  Bahasa Indonesia
+
+Jenis:
+  Aplikasi
+
+Gratis / Berbayar:
+  Gratis
+
+Kategori:
+  Buku & Referensi  (alternatif: Gaya Hidup)
+
+--- DESKRIPSI SINGKAT (max 80 karakter) ---
+
+Pendamping ibadah · Alkitab TB · renungan AI · kidung · suara live
+
+--- DESKRIPSI LENGKAP (Bahasa Indonesia) ---
+
+Rhema AI menemani saat teduh Anda — Alkitab, renungan, doa, dan kidung gereja dalam satu aplikasi.
+
+📖 ALKITAB OFFLINE
+Baca dan cari ayat Terjemahan Baru (TB/LAI). Mode Global: King James Version (KJV). Highlight ayat, catatan pribadi, dan penjelasan AI lewat suara.
+
+🕊 RENUNGAN & DOA AI
+Renungan harian, Lectio Divina, doa terpandu, dan pendamping emosi — dengan suara live natural. AI menafsirkan firman ke konteks hidup nyata.
+
+🎵 KIDUNG LENGKAP
+Kidung Jemaat (478), PKJ (308), NKB (230), Buku Ende (864), dan lagu rohani populer — lirik & iringan.
+
+🌬 LATIHAN NAFAS DOA
+Relaksasi 4-4-4 dengan ayat dan musik harp lembut.
+
+🔑 BRING YOUR OWN KEY (BYOK)
+Fitur AI & suara live memakai API key Google Gemini milik Anda — gratis dari Google AI Studio. Key disimpan hanya di HP Anda, bukan di server Rhema. Alkitab & kidung tetap bisa dibaca tanpa key.
+
+🌏 INDONESIA & GLOBAL
+Pilih region ibadah saat pertama buka: Indonesia (TB, konteks nusantara) atau Global (KJV, English devotion).
+
+⚠️ PENTING
+Rhema AI bukan pengganti pendeta, konselor, atau doa pribadi dengan Tuhan. AI dapat keliru — selalu uji dengan Alkitab dan komunitas iman Anda.
+
+Kebijakan privasi: https://kanzapro71.github.io/rhema-ai-privacy/
+
+--- FULL DESCRIPTION (English — optional second locale) ---
+
+Rhema AI is your worship companion — Bible, devotion, prayer, and church hymns in one app.
+
+📖 OFFLINE BIBLE — TB/LAI (Indonesia) or KJV (Global)
+🕊 AI DEVOTION & PRAYER — daily reflection, Lectio Divina, guided prayer, live voice
+🎵 HYMNS — KJ, PKJ, NKB, Buku Ende, popular worship songs
+🔑 BYOK — Use your own free Google Gemini API key. Stored on device only.
+⚠️ Not a substitute for pastoral care or personal prayer.
+
+Privacy policy: https://kanzapro71.github.io/rhema-ai-privacy/
+
+--- PROMO TEXT (max 170 karakter, opsional) ---
+
+Saat teduh dengan Alkitab TB, renungan suara AI, dan ribuan kidung — key Gemini milik Anda, privasi di HP Anda.
+
+--- TAG / KATA KUNCI (internal notes, tidak semua muncul di listing) ---
+
+alkitab, renungan, doa, kidung jemaat, ibadah, gemini, ai rohani, tb lai, kjv, worship
+
+================================================================================
+ASET GRAFIS — UKURAN WAJIB
+================================================================================
+
+Ikon aplikasi high-res     : 512 x 512 px (PNG, 32-bit, max 1 MB)
+Grafik fitur (Feature)     : 1024 x 500 px (PNG/JPEG)
+Screenshot phone           : min 2, disarankan 4–8
+  - Rasio: 16:9 atau 9:16 (sesuai device uji Vivo Anda)
+  - Min short side: 320 px | Max 3840 px
+
+Layar yang DISARANKAN untuk screenshot:
+  1. Home / Beranda
+  2. Alkitab + ayat
+  3. Renungan harian (suara)
+  4. Kidung — detail lagu
+  5. Onboarding BYOK / Pengaturan region
+  6. Pengaturan + Privacy Policy
+
+Phone screenshot: Settings → About phone → ambil screenshot biasa di device.
+
+================================================================================
+DATA SAFETY (Play Console) — jawaban untuk Rhema AI
+================================================================================
+
+Apakah app mengumpulkan data?  YA
+
+Data types:
+  - Audio (microphone) — collected when user starts voice session → Shared with Google Gemini (user's API key) → Purpose: App functionality
+  - User-provided info (API key) — stored on device only → Not shared with developer server → Purpose: App functionality
+  - App activity (highlights, notes, prayer journal) — stored locally on device → Not shared → Purpose: App functionality
+
+Encryption in transit: YES (HTTPS/WSS)
+Users can request deletion: YES (uninstall app / clear app data / remove API key in Settings)
+Data not sold: YES
+
+================================================================================
+CONTENT RATING — petunjuk jawaban
+================================================================================
+
+Violence: No
+Sexual content: No
+Language: No
+Controlled substance: No
+User interaction / shares info: Yes (AI chat, optional)
+Religious themes: Yes
+
+Perkiraan rating: Everyone / PEGI 3 / 3+ (tergantung kuesioner IARC)
+
+================================================================================
+DEKLARASI AI (Generative AI)
+================================================================================
+
+App uses generative AI: YES (Google Gemini)
+User-facing AI features: devotion text, prayer, Bible explanation, voice conversation
+Content moderation: AI system prompts include spiritual guardrails; user BYOK to Google
+Not primarily an AI companion for unrestricted chat — worship-focused
+
+================================================================================
+PERMISSION DECLARATION
+================================================================================
+
+RECORD_AUDIO — "Untuk percakapan suara live dengan pendamping ibadah AI saat pengguna memulai sesi suara."
+INTERNET — "Untuk koneksi ke Google Gemini API (key milik pengguna)."
+
+================================================================================
+FILE UPLOAD
+================================================================================
+
+Path AAB (signed dengan upload keystore):
+  android/app/build/outputs/bundle/release/app-release.aab
+
+Build command:
+  npm run android:release:keystore
+
+================================================================================

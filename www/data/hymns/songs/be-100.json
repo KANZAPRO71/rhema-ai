@@ -1,0 +1,26 @@
+{
+  "id": "be-100",
+  "book": "BE",
+  "no": 100,
+  "title": "O Jesus Panondang",
+  "key": "F",
+  "chord": "F · Bb · C · Dm · Gm · C7 · F",
+  "progression": [
+    "F",
+    "Bb",
+    "C",
+    "F",
+    "Dm",
+    "Gm",
+    "C",
+    "F",
+    "Bb",
+    "F",
+    "Dm",
+    "Gm",
+    "C7",
+    "F",
+    "F"
+  ],
+  "lyrics": "O Jesus Panondang di portibi on\nSai sondangi rohangki na holom on\nArahon ma au tu dalan na tigor\nAsa sonang rohangki di lambung-Mi."
+}

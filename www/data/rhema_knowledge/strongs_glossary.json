@@ -1,0 +1,334 @@
+{
+  "meta": {
+    "versi": "1.0",
+    "catatan": "Glossary Strong's ringkas untuk lookup_strongs — melengkapi lexicon per ayat.",
+    "updated": "2026-08-16"
+  },
+  "entries": {
+    "G26": {
+      "language": "Yunani",
+      "transliteration": "agapē",
+      "lemma": "ἀγάπη",
+      "meaning": "Kasih ilahi — pengorbanan, bukan sekadar perasaan.",
+      "note": "Beda dari phileo (persahabatan) dan eros (romantis)."
+    },
+    "G25": {
+      "language": "Yunani",
+      "transliteration": "agapaō",
+      "lemma": "ἀγαπάω",
+      "meaning": "Mengasihi dengan kasih agape — inisiatif dan komitmen."
+    },
+    "G166": {
+      "language": "Yunani",
+      "transliteration": "aiōnios",
+      "lemma": "αἰώνιος",
+      "meaning": "Kekal — kualitas hidup dalam persekutuan dengan Allah."
+    },
+    "G714": {
+      "language": "Yunani",
+      "transliteration": "areskō",
+      "lemma": "ἀρέσκω",
+      "meaning": "Berkenan, menyenangkan — sering tentang hidup yang berkenan di hadapan Allah."
+    },
+    "G907": {
+      "language": "Yunani",
+      "transliteration": "baptizō",
+      "lemma": "βαπτίζω",
+      "meaning": "Membaptis — rendam, identifikasi dengan Kristus."
+    },
+    "G932": {
+      "language": "Yunani",
+      "transliteration": "basileia",
+      "lemma": "βασιλεία",
+      "meaning": "Kerajaan — pemerintahan Allah yang sudah dan belum sepenuhnya."
+    },
+    "G1343": {
+      "language": "Yunani",
+      "transliteration": "dikaiosynē",
+      "lemma": "δικαιοσύνη",
+      "meaning": "Keadilan/righteousness — kebenaran di hadapan Allah."
+    },
+    "G1381": {
+      "language": "Yunani",
+      "transliteration": "dokimazō",
+      "lemma": "δοκιμάζω",
+      "meaning": "Menguji, membuktikan — ujian iman yang membentuk karakter."
+    },
+    "G1411": {
+      "language": "Yunani",
+      "transliteration": "dynamis",
+      "lemma": "δύναμις",
+      "meaning": "Kekuatan, kuasa — sering tentang kuasa Roh Kudus."
+    },
+    "G1515": {
+      "language": "Yunani",
+      "transliteration": "eirēnē",
+      "lemma": "εἰρήνη",
+      "meaning": "Damai sejahtera — shalom Yunani; rekonsiliasi dengan Allah."
+    },
+    "G2089": {
+      "language": "Yunani",
+      "transliteration": "eti",
+      "lemma": "ἔτι",
+      "meaning": "Lagi, masih — penegasan kelanjutan."
+    },
+    "G2198": {
+      "language": "Yunani",
+      "transliteration": "zaō",
+      "lemma": "ζάω",
+      "meaning": "Hidup — hidup rohani yang nyata dalam Kristus."
+    },
+    "G2537": {
+      "language": "Yunani",
+      "transliteration": "kainos",
+      "lemma": "καινός",
+      "meaning": "Baru — kualitas baru (bukan hanya waktu)."
+    },
+    "G2590": {
+      "language": "Yunani",
+      "transliteration": "karpos",
+      "lemma": "καρπός",
+      "meaning": "Buah — buah Roh, hasil hidup yang diubahkan."
+    },
+    "G264": {
+      "language": "Yunani",
+      "transliteration": "hamartia",
+      "lemma": "ἁμαρτία",
+      "meaning": "Dosa — meleset dari sasaran, pelanggaran relasi dengan Allah."
+    },
+    "G2814": {
+      "language": "Yunani",
+      "transliteration": "klēros",
+      "lemma": "κλῆρος",
+      "meaning": "Bagian, warisan — milik Allah dalam Kristus."
+    },
+    "G2937": {
+      "language": "Yunani",
+      "transliteration": "ktisis",
+      "lemma": "κτίσις",
+      "meaning": "Ciptaan — seluruh alam yang menanti pembebasan."
+    },
+    "G2962": {
+      "language": "Yunani",
+      "transliteration": "kyrios",
+      "lemma": "κύριος",
+      "meaning": "Tuhan, Master — tituler Kristus yang dibangkitkan."
+    },
+    "G3100": {
+      "language": "Yunani",
+      "transliteration": "mathēteuō",
+      "lemma": "μαθητεύω",
+      "meaning": "Memuridkan — ajarkan dan bentuk pengikut."
+    },
+    "G3114": {
+      "language": "Yunani",
+      "transliteration": "makrothumeō",
+      "lemma": "μακροθυμέω",
+      "meaning": "Bersabar panjang — sabar dalam cinta."
+    },
+    "G3144": {
+      "language": "Yunani",
+      "transliteration": "martys",
+      "lemma": "μάρτυς",
+      "meaning": "Saksi — saksi iman dan kebenaran Injil."
+    },
+    "G3306": {
+      "language": "Yunani",
+      "transliteration": "menō",
+      "lemma": "μένω",
+      "meaning": "Tinggal, tetap — tinggal dalam Kristus (Yohanes 15)."
+    },
+    "G3339": {
+      "language": "Yunani",
+      "transliteration": "metamorphoō",
+      "lemma": "μεταμορφόω",
+      "meaning": "Berubah wujud — transformasi rohani (Roma 12:2)."
+    },
+    "G3439": {
+      "language": "Yunani",
+      "transliteration": "monogenēs",
+      "lemma": "μονογενής",
+      "meaning": "Anak tunggal, unik — kedudukan Kristus yang tak tertandingi."
+    },
+    "G3670": {
+      "language": "Yunani",
+      "transliteration": "homologeō",
+      "lemma": "ὁμολογέω",
+      "meaning": "Mengaku, memperakui — pengakuan iman dan dosa."
+    },
+    "G4102": {
+      "language": "Yunani",
+      "transliteration": "pistis",
+      "lemma": "πίστις",
+      "meaning": "Iman — percaya, mempercayai, kesetia."
+    },
+    "G4103": {
+      "language": "Yunani",
+      "transliteration": "pistos",
+      "lemma": "πιστός",
+      "meaning": "Setia, dapat dipercaya — karakter Allah dan umat-Nya."
+    },
+    "G4286": {
+      "language": "Yunani",
+      "transliteration": "prothesis",
+      "lemma": "πρόθεσις",
+      "meaning": "Maksud, rencana — rencana Allah yang dari kekekalan."
+    },
+    "G4903": {
+      "language": "Yunani",
+      "transliteration": "synergeō",
+      "lemma": "συνεργέω",
+      "meaning": "Bekerja sama — Allah dan manusia dalam rencana keselamatan."
+    },
+    "G4921": {
+      "language": "Yunani",
+      "transliteration": "symphyō",
+      "lemma": "συμφύω",
+      "meaning": "Tumbuh bersama — terikat dengan Kristus (Roma 6)."
+    },
+    "G4957": {
+      "language": "Yunani",
+      "transliteration": "systauroō",
+      "lemma": "συσταυρόω",
+      "meaning": "Disalibkan bersama — mati dengan Kristus terhadap dosa."
+    },
+    "G5302": {
+      "language": "Yunani",
+      "transliteration": "hēttēma",
+      "lemma": "ἥττημα",
+      "meaning": "Kekalahan — kontras kemenangan Kristus."
+    },
+    "G5485": {
+      "language": "Yunani",
+      "transliteration": "charis",
+      "lemma": "χάρις",
+      "meaning": "Kasih karunia — anugerah cuma-cuma dari Allah."
+    },
+    "G5590": {
+      "language": "Yunani",
+      "transliteration": "psychē",
+      "lemma": "ψυχή",
+      "meaning": "Jiwa, nyawa — keseluruhan manusia sebagai makhluk hidup."
+    },
+    "H1288": {
+      "language": "Ibrani",
+      "transliteration": "bārak",
+      "lemma": "בָּרַךְ",
+      "meaning": "Memberkati — memuji dan menganugerahkan kebaikan."
+    },
+    "H2398": {
+      "language": "Ibrani",
+      "transliteration": "ḥāṭā'",
+      "lemma": "חָטָא",
+      "meaning": "Berbuat dosa — meleset dari jalan Allah."
+    },
+    "H2617": {
+      "language": "Ibrani",
+      "transliteration": "ḥesed",
+      "lemma": "חֶסֶד",
+      "meaning": "Kasih setia — loyalitas perjanjian Allah."
+    },
+    "H2637": {
+      "language": "Ibrani",
+      "transliteration": "ḥāsēr",
+      "lemma": "חָסֵר",
+      "meaning": "Kekurangan — tidak kekurangan esensial (Mazmur 23)."
+    },
+    "H4941": {
+      "language": "Ibrani",
+      "transliteration": "mišpāṭ",
+      "lemma": "מִשְׁפָּט",
+      "meaning": "Keputusan, keadilan — standar dan penghakiman Allah."
+    },
+    "H5375": {
+      "language": "Ibrani",
+      "transliteration": "nāśā'",
+      "lemma": "נָשָׂא",
+      "meaning": "Memikul, mengangkat — mengangkat dosa (Isaiah 53)."
+    },
+    "H5927": {
+      "language": "Ibrani",
+      "transliteration": "ʿālāh",
+      "lemma": "עָלָה",
+      "meaning": "Naik — perjalanan ke Zion, naik ke gunung."
+    },
+    "H6800": {
+      "language": "Ibrani",
+      "transliteration": "ʿāṭam",
+      "lemma": "עָטַם",
+      "meaning": "Menutup — menutup mulut (Job 40:4)."
+    },
+    "H6960": {
+      "language": "Ibrani",
+      "transliteration": "qāwāh",
+      "lemma": "קָוָה",
+      "meaning": "Menantikan — menunggu dengan harap (Yesaya 40:31)."
+    },
+    "H7462": {
+      "language": "Ibrani",
+      "transliteration": "rāʿāh",
+      "lemma": "רָעָה",
+      "meaning": "Menggembalakan — Allah sebagai Gembala (Mazmur 23)."
+    },
+    "H7965": {
+      "language": "Ibrani",
+      "transliteration": "šālôm",
+      "lemma": "שָׁלוֹם",
+      "meaning": "Damai sejahtera — kesejahteraan utuh relasi dan hidup."
+    },
+    "G386": {
+      "language": "Yunani",
+      "transliteration": "anastasis",
+      "lemma": "ἀνάστασις",
+      "meaning": "Kebangkitan — berdiri kembali dari kematian."
+    },
+    "G419": {
+      "language": "Yunani",
+      "transliteration": "anexeraunētos",
+      "lemma": "ἀνεξεραύνητος",
+      "meaning": "Tidak terselidiki — melampaui jangkauan manusia."
+    },
+    "G740": {
+      "language": "Yunani",
+      "transliteration": "artos",
+      "lemma": "ἄρτος",
+      "meaning": "Roti — makanan pokok; roti hidup Kristus."
+    },
+    "G2288": {
+      "language": "Yunani",
+      "transliteration": "thanatos",
+      "lemma": "θάνατος",
+      "meaning": "Maut — musuh terakhir yang dikalahkan Kristus."
+    },
+    "G2759": {
+      "language": "Yunani",
+      "transliteration": "kentron",
+      "lemma": "κέντρον",
+      "meaning": "Sengat — kekuatan destruktif maut."
+    },
+    "G3529": {
+      "language": "Yunani",
+      "transliteration": "nikos",
+      "lemma": "νῖκος",
+      "meaning": "Kemenangan — khususnya atas maut."
+    },
+    "G3997": {
+      "language": "Yunani",
+      "transliteration": "penthos",
+      "lemma": "πενθός",
+      "meaning": "Dukacita — ratap tangis yang akan dihapus Allah."
+    },
+    "G5207": {
+      "language": "Yunani",
+      "transliteration": "huios",
+      "lemma": "υἱός",
+      "meaning": "Anak — relasi kekal dengan Bapa."
+    },
+    "G5547": {
+      "language": "Yunani",
+      "transliteration": "Christos",
+      "lemma": "Χριστός",
+      "meaning": "Mesias, Yang Diurapi."
+    }
+  }
+}

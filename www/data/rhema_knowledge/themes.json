@@ -1,0 +1,194 @@
+{
+  "meta": {
+    "versi": "1.1",
+    "catatan": "Indeks tema rohani → ayat TB populer untuk search_tb dan Khotbah AI — Fase 5.",
+    "updated": "2026-08-16"
+  },
+  "tema": {
+    "kasih_allah": {
+      "label": "Kasih Allah",
+      "keys": ["kasih allah", "kasih tuhan", "cinta allah"],
+      "refs": ["Yohanes 3:16", "Roma 5:8", "1 Yohanes 4:9", "Yeremia 31:3"]
+    },
+    "iman": {
+      "label": "Iman",
+      "keys": ["iman", "percaya", "kepercayaan"],
+      "refs": ["Ibrani 11:1", "Roma 4:20", "Markus 11:22", "Yakobus 2:17"]
+    },
+    "anugerah": {
+      "label": "Anugerah & Keselamatan",
+      "keys": ["anugerah", "kasih karunia", "keselamatan", "diberkati"],
+      "refs": ["Efesus 2:8-10", "Roma 3:23-24", "Titus 3:5", "Yohanes 1:12"]
+    },
+    "damai": {
+      "label": "Damai Sejahtera",
+      "keys": ["damai", "tenang", "cemas", "kuatir", "khawatir"],
+      "refs": ["Filipi 4:6-7", "Yohanes 14:27", "Yesaya 26:3", "1 Petrus 5:7"]
+    },
+    "penghiburan": {
+      "label": "Penghiburan",
+      "keys": ["penghiburan", "sedih", "duka", "patah hati", "lelah"],
+      "refs": ["Mazmur 23:1", "Mazmur 34:18", "Matius 11:28", "2 Korintus 1:3-4"]
+    },
+    "harapan": {
+      "label": "Harapan & Masa Depan",
+      "keys": ["harapan", "rencana tuhan", "masa depan", "tuhan memiliki rencana"],
+      "refs": ["Yeremia 29:11", "Roma 8:28", "Ratapan 3:22-23", "Yesaya 40:31"]
+    },
+    "kekuatan": {
+      "label": "Kekuatan dalam Kristus",
+      "keys": ["kuat", "kekuatan", "lemah", "mampu"],
+      "refs": ["Filipi 4:13", "Yesaya 40:31", "2 Korintus 12:9", "Nehemia 8:10"]
+    },
+    "doa": {
+      "label": "Doa",
+      "keys": ["doa", "berdoa", "permohonan"],
+      "refs": ["Matius 6:9-13", "Yakobus 5:16", "1 Tesalonika 5:17", "Filipi 4:6"]
+    },
+    "pengampunan": {
+      "label": "Pengampunan",
+      "keys": ["pengampunan", "ampuni", "dosa", "tobat"],
+      "refs": ["1 Yohanes 1:9", "Matius 6:14-15", "Mazmur 32:1", "Efesus 1:7"]
+    },
+    "keluarga": {
+      "label": "Keluarga & Pernikahan",
+      "keys": ["keluarga", "suami", "istri", "anak", "pernikahan"],
+      "refs": ["Efesus 5:22-33", "Kolose 3:18-21", "Amsal 22:6", "Mazmur 127:3"]
+    },
+    "pekerjaan": {
+      "label": "Pekerjaan & Kehidupan Praktis",
+      "keys": ["pekerjaan", "karier", "kantor", "usaha"],
+      "refs": ["Kolose 3:23", "Amsal 16:3", "Efesus 6:7", "Pengkhotbah 3:22"]
+    },
+    "keadilan": {
+      "label": "Keadilan & Integritas",
+      "keys": ["adil", "keadilan", "jujur", "integritas"],
+      "refs": ["Mikha 6:8", "Amsal 21:3", "Yesaya 1:17", "Matius 5:6"]
+    },
+    "pujian": {
+      "label": "Pujian & Penyembahan",
+      "keys": ["puji", "pujian", "syukur", "menyembah"],
+      "refs": ["Mazmur 100:4", "Mazmur 150:6", "1 Tesalonika 5:18", "Ibrani 13:15"]
+    },
+    "salib": {
+      "label": "Salib & Penebusan",
+      "keys": ["salib", "penebusan", "korban", "darah kristus"],
+      "refs": ["Yesaya 53:5", "1 Petrus 2:24", "Roma 5:8", "Galatia 2:20"]
+    },
+    "kerajaan_allah": {
+      "label": "Kerajaan Allah",
+      "keys": ["kerajaan allah", "kerajaan surga", "prioritas"],
+      "refs": ["Matius 6:33", "Lukas 17:21", "Roma 14:17", "Markus 1:15"]
+    },
+    "roh_kudus": {
+      "label": "Roh Kudus",
+      "keys": ["roh kudus", "urapan", "karunia rohani"],
+      "refs": ["Kisah Para Rasul 1:8", "Galatia 5:22-23", "Yohanes 14:26", "Roma 8:26"]
+    },
+    "misi": {
+      "label": "Misi & Injil",
+      "keys": ["misi", "injil", "memberitakan", "saksi"],
+      "refs": ["Matius 28:19-20", "Kisah Para Rasul 1:8", "Roma 10:14-15", "Markus 16:15"]
+    },
+    "hikmat": {
+      "label": "Hikmat",
+      "keys": ["hikmat", "bijaksana", "keputusan"],
+      "refs": ["Amsal 3:5-6", "Yakobus 1:5", "Amsal 9:10", "1 Korintus 1:30"]
+    },
+    "penderitaan": {
+      "label": "Penderitaan & Trials",
+      "keys": ["penderitaan", "trials", "cobaan", "sakit", "mengapa tuhan"],
+      "refs": ["Roma 8:18", "Yakobus 1:2-4", "1 Petrus 4:12-13", "Ayub 1:21"]
+    },
+    "transformasi": {
+      "label": "Hidup Baru",
+      "keys": ["baru", "transformasi", "perubahan", "ciptaan baru"],
+      "refs": ["2 Korintus 5:17", "Roma 12:2", "Efesus 4:22-24", "Galatia 6:15"]
+    },
+    "kasih_sesama": {
+      "label": "Kasih Sesama",
+      "keys": ["kasih sesama", "mengasihi", "saling mengasihi", "peduli"],
+      "refs": ["1 Korintus 13:4-7", "1 Yohanes 4:7", "Matius 22:39", "1 Petrus 4:8"]
+    },
+    "pemuridan": {
+      "label": "Pemuridan & Pertumbuhan",
+      "keys": ["murid", "pemuridan", "bertumbuh", "spiritual growth"],
+      "refs": ["Matius 28:19-20", "2 Timotius 2:2", "Kolose 1:10", "Efesus 4:15"]
+    },
+    "kematian_kebangkitan": {
+      "label": "Kematian & Kebangkitan",
+      "keys": ["kematian", "kebangkitan", "kubur", "hidup kekal", "easter"],
+      "refs": ["1 Korintus 15:55-57", "Yohanes 11:25", "Roma 6:4", "Wahyu 1:18"]
+    },
+    "perjanjian": {
+      "label": "Perjanjian Allah",
+      "keys": ["perjanjian", "janji allah", "covenant"],
+      "refs": ["Ulangan 29:29", "Yeremia 31:31-33", "Ibrani 8:6", "Kejadian 12:1-3"]
+    },
+    "keadilan_sosial": {
+      "label": "Keadilan & Belas Kasihan Sosial",
+      "keys": ["miskin", "yatim", "janda", "keadilan sosial", "belas kasihan"],
+      "refs": ["Mikha 6:8", "Yakobus 1:27", "Amos 5:24", "Yesaya 1:17"]
+    },
+    "puasa": {
+      "label": "Puasa & Disiplin Rohani",
+      "keys": ["puasa", "berpuasa", "fasting"],
+      "refs": ["Matius 6:16-18", "Yesaya 58:6", "Lukas 4:2", "Yakobus 4:8"]
+    },
+    "setia_pernikahan": {
+      "label": "Kesetiaan & Pernikahan",
+      "keys": ["setia", "perselingkuhan", "perceraian", "suami istri"],
+      "refs": ["Matius 19:6", "Ibrani 13:4", "Malachi 2:16", "Efesus 5:25"]
+    },
+    "perang_rohani": {
+      "label": "Perang Rohani",
+      "keys": ["iblis", "setan", "godaan", "perang rohani", "baju zirah"],
+      "refs": ["Efesus 6:10-18", "Yakobus 4:7", "1 Petrus 5:8", "1 Yohanes 4:4"]
+    },
+    "syukur_harian": {
+      "label": "Syukur & Contentment",
+      "keys": ["syukur", "bersyukur", "cukup", "contentment"],
+      "refs": ["1 Tesalonika 5:18", "Filipi 4:11-12", "Mazmur 100:4", "Kolose 3:15"]
+    },
+    "kasih_musuh": {
+      "label": "Mengasihi Musuh",
+      "keys": ["musuh", "memaafkan", "benci", "dendam"],
+      "refs": ["Matius 5:44", "Lukas 6:27-28", "Roma 12:20-21", "1 Petrus 3:9"]
+    },
+    "kepemimpinan": {
+      "label": "Kepemimpinan Gereja & Pelayanan",
+      "keys": ["pemimpin", "gembal", "pelayanan", "diakon", "elders"],
+      "refs": ["1 Timotius 3:1-7", "1 Petrus 5:2-3", "Kisah Para Rasul 20:28", "Yeremia 3:15"]
+    },
+    "kebangkitan": {
+      "label": "Kebangkitan & Hidup Kekal",
+      "keys": ["kebangkitan", "hidup kekal", "kematian", "kubur"],
+      "refs": ["Yohanes 11:25", "1 Korintus 15:20", "Wahyu 1:18", "Roma 6:23"]
+    },
+    "air_hidup": {
+      "label": "Air Hidup & Kerinduan akan Allah",
+      "keys": ["air hidup", "haus", "kerinduan", "hadirat allah"],
+      "refs": ["Yohanes 4:10", "Yohanes 7:37", "Mazmur 42:1", "Mazmur 63:1"]
+    },
+    "penderitaan_harapan": {
+      "label": "Penderitaan & Harapan Kemuliaan",
+      "keys": ["penderitaan", "sakit", "trials", "kemuliaan"],
+      "refs": ["Roma 8:18", "2 Korintus 4:17", "1 Petrus 1:6-7", "Wahyu 21:4"]
+    },
+    "eskatologi": {
+      "label": "Pengharapan Akhir Zaman",
+      "keys": ["langit baru", "akhir zaman", "kemenangan", "kristus datang"],
+      "refs": ["Wahyu 21:4", "Wahyu 22:13", "1 Korintus 15:55", "1 Tesalonika 4:16"]
+    },
+    "inkarnasi": {
+      "label": "Inkarnasi & Emmanuel",
+      "keys": ["emmanuel", "inkarnasi", "allah beserta kita", "kelahiran yesus"],
+      "refs": ["Matius 1:23", "Lukas 2:10", "Yohanes 1:14", "Yesaya 7:14"]
+    },
+    "godaan": {
+      "label": "Godaan & Jalan Keluar",
+      "keys": ["godaan", "cobaan", "pencobaan", "temptation"],
+      "refs": ["1 Korintus 10:13", "Yakobus 1:13", "Ibrani 4:15", "Matius 4:1"]
+    }
+  }
+}

@@ -1,0 +1,405 @@
+{
+  "meta": {
+    "versi": "1.0",
+    "catatan": "Pengantar 66 kitab TB untuk ORB — berlaku untuk SEMUA ayat via fallback tafsir."
+  },
+  "kitab": {
+    "kej": {
+      "nama": "Kejadian",
+      "bagian": "PL",
+      "ringkas": "Asal semesta, manusia, jatuh ke dosa, air bah, Abraham, Ishak, Yakub, Yusuf. Tema: Allah Pencipta yang berjanji.",
+      "mendalam": "Kitab fondasi Alkitab. Pasal 1–11 = sejarah awal umat. Pasal 12–50 = leluhur Israel. Perjanjian dengan Abraham menjadi garis besar sejarah keselamatan."
+    },
+    "kel": {
+      "nama": "Keluaran",
+      "bagian": "PL",
+      "ringkas": "Pembebasan Israel dari Mesir, hukum Taurat, perjanjian di Sinai, kemah suci. Tema: Allah Pembebas dan Perjanjian.",
+      "mendalam": "Musa sebagai pemimpin. Sepuluh perintah dan hukum ritual. Allah hadir di tengah umat-Nya."
+    },
+    "lev": {
+      "nama": "Imamat",
+      "bagian": "PL",
+      "ringkas": "Hukum ibadah, korban, imamat, kesucian. Tema: Allah kudus — umat dipanggil kudus.",
+      "mendalam": "Panduan praktis imamat Lewi. Korban dan hari raya. Landasan untuk memahami salib Kristus dalam PB."
+    },
+    "bil": {
+      "nama": "Bilangan",
+      "bagian": "PL",
+      "ringkas": "Perjalanan Israel di padang gurun, sensus, pemberontakan, persiapan masuk Kanaan.",
+      "mendalam": "Ujian iman generasi keluar Mesir. Generasi baru siap masuk tanah perjanjian."
+    },
+    "ul": {
+      "nama": "Ulangan",
+      "bagian": "PL",
+      "ringkas": "Pembaharuan perjanjian sebelum masuk Kanaan. Ulangan Musa — ulang hukum dan nasihat.",
+      "mendalam": "Sermon panjang Musa di Moab. Pasal 28–30 berkat/kutuk dan pilihan hidup. Pasal 29 penutup perjanjian (29:29 = rahasia vs wahyu)."
+    },
+    "yos": {
+      "nama": "Yosua",
+      "bagian": "PL",
+      "ringkas": "Masuk dan menaklukkan Kanaan di bawah Yosua. Tema: Allah setia pada janji-Nya.",
+      "mendalam": "Pembagian tanah suku-suku. Panggilan untuk setia, bukan kompromi dengan penyembahan berhala."
+    },
+    "hak": {
+      "nama": "Hakim-hakim",
+      "bagian": "PL",
+      "ringkas": "Siklus dosa → penindasan → hakim → damai. Israel sebelum raja.",
+      "mendalam": "Tidak ada raja — setiap orang berbuat sesuai kehendaknya. Hakim sebagai pembebas sementara."
+    },
+    "rut": {
+      "nama": "Rut",
+      "bagian": "PL",
+      "ringkas": "Kisah setia Rut Moab terhadap Naomi. Kasih dan redeemer (Boaz). Nenek moyang Daud.",
+      "mendalam": "Novella pendek tentang kemurahan Allah pada asing dan janda. Boaz sebagai bayangan redeemer."
+    },
+    "1sa": {
+      "nama": "1 Samuel",
+      "bagian": "PL",
+      "ringkas": "Samuel, Saul raja pertama, Daud muda. Transisi ke monarki.",
+      "mendalam": "Allah cari hati yang taat, bukan sekadar korban. Daud diurapi meski Saul masih raja."
+    },
+    "2sa": {
+      "nama": "2 Samuel",
+      "bagian": "PL",
+      "ringkas": "Daud raja, perjanjian Daud, dosa Bathseba, pemberontakan Absalom.",
+      "mendalam": "Puncak dan kejatuhan Daud. Janji tahta kekal — mengarah ke Mesias."
+    },
+    "1ra": {
+      "nama": "1 Raja-raja",
+      "bagian": "PL",
+      "ringkas": "Salomo, bait suci, kebijaksanaan, kerajaan terbelah.",
+      "mendalam": "Kemakmuran Salomo lalu kemunduran. Elijah muncul di akhir kitab."
+    },
+    "2ra": {
+      "nama": "2 Raja-raja",
+      "bagian": "PL",
+      "ringkas": "Elia, Elisa, jatuhnya Israel (Utara) dan Yehuda (Selatan).",
+      "mendalam": "Nabi-nabi vs raja jahat. Exile mengancam — umat setia di tengah kemurtadan."
+    },
+    "1ta": {
+      "nama": "1 Tawarikh",
+      "bagian": "PL",
+      "ringkas": "Genealogi dan sejarah dari Adam — fokus pada Daud dan ibadah.",
+      "mendalam": "Retrospektif pasca-exile. Menekankan bait suci, imamat, dan janji Daud."
+    },
+    "2ta": {
+      "nama": "2 Tawarikh",
+      "bagian": "PL",
+      "ringkas": "Salomo, bait suci, raja-raja Yehuda sampai pembuangan Babel.",
+      "mendalam": "Paralel 1–2 Raja-raja dengan sudut imam/worship. Koresh memulihkan — harapan."
+    },
+    "ezr": {
+      "nama": "Ezra",
+      "bagian": "PL",
+      "ringkas": "Kembali dari pembuangan, bangun kembali bait suci, reformasi Ezra.",
+      "mendalam": "Restorasi identitas Israel. Taurat dibaca ulang — umat menangis dan berjanji setia."
+    },
+    "neh": {
+      "nama": "Nehemia",
+      "bagian": "PL",
+      "ringkas": "Nehemia bangun kembali tembok Yerusalem. Pembaruan sosial dan iman.",
+      "mendalam": "Kerja dan doa bersama. Lawan dari luar dan dalam. Umat berjanji hidup menurut hukum."
+    },
+    "est": {
+      "nama": "Esther",
+      "bagian": "PL",
+      "ringkas": "Esther ratu Persia selamatkan Yahudi dari Haman. Allah bekerja di balik layar.",
+      "mendalam": "Nama Allah tidak disebut tapi providence jelas. Purim — perayaan deliverance."
+    },
+    "ayb": {
+      "nama": "Ayub",
+      "bagian": "PL",
+      "ringkas": "Ayub saleh menderita. Dialog soal penderitaan dan keadilan Allah.",
+      "mendalam": "Penting untuk teologi penderitaan: taat ≠ bebas tragedi. Allah tidak wajib memberi jawaban lengkap (kait Ul 29:29)."
+    },
+    "mzm": {
+      "nama": "Mazmur",
+      "bagian": "PL",
+      "ringkas": "Puisi doa, pujian, ratapan, percaya. Hati umat kepada Allah.",
+      "mendalam": "Mazmur ratapan (13, 88) valid dalam iman. Mesias banyak diramalkan (22, 110)."
+    },
+    "ams": {
+      "nama": "Amsal",
+      "bagian": "PL",
+      "ringkas": "Kebijaksanaan praktis hidup sehari-hari. Takut akan Tuhan = awal hikmat.",
+      "mendalam": "Kumpulan amsal Solomon dan lainnya. Bukan janji formula, tapi kecenderungan hidup bijak."
+    },
+    "pkh": {
+      "nama": "Pengkhotbah",
+      "bagian": "PL",
+      "ringkas": "Vanitas — makna hidup di bawah matahari. Takut Allah dan pegang perintah-Nya.",
+      "mendalam": "Eksistensialisme Ibrani. Kekayaan, kesenangan, hikmat — semua fana kecuali Allah."
+    },
+    "kid": {
+      "nama": "Kidung Agung",
+      "bagian": "PL",
+      "ringkas": "Puisi cinta antara mempelai. Metafora kasih — juga dibaca sebagai alegori Allah-Israel.",
+      "mendalam": "Sastra cinta Ibrani. Kasih mutual, keindahan, kesetiaan."
+    },
+    "yes": {
+      "nama": "Yesaya",
+      "bagian": "PL",
+      "ringkas": "Nabi besar — panggilan, penghakiman, Mesias, harapan restoration.",
+      "mendalam": "Yesaya 7:14, 9:6, 53 — Mesias Penderita. Kitab paling sering dikutip NT."
+    },
+    "yer": {
+      "nama": "Yeremia",
+      "bagian": "PL",
+      "ringkas": "Nabi penghakiman dan harapan. Pembuangan Babel, Perjanjian Baru (31:31).",
+      "mendalam": "Air mata nabi. Janji restore umat. Mesias Branch (Zerubabel/David)."
+    },
+    "rat": {
+      "nama": "Ratapan",
+      "bagian": "PL",
+      "ringkas": "Ratapan atas kehancuran Yerusalem. Duka yang jujur di hadapan Allah.",
+      "mendalam": "Lament liturgi. Model berduka — tidak melarang protes emosional kepada Allah."
+    },
+    "eze": {
+      "nama": "Yehezkiel",
+      "bagian": "PL",
+      "ringkas": "Visi kemuliaan Allah, penghakiman, tulang kering, bait suci baru.",
+      "mendalam": "Nabi di exile. Individual responsibility (18). Harapan restore Israel."
+    },
+    "dan": {
+      "nama": "Daniel",
+      "bagian": "PL",
+      "ringkas": "Daniel di Babel, visi kerajaan, kesetiaan di tengah tekanan.",
+      "mendalam": "Apocalyptic literature. Empat kerajaan — kerajaan Allah yang kekal."
+    },
+    "hos": {
+      "nama": "Hosea",
+      "bagian": "PL",
+      "ringkas": "Kasih Allah pada Israel yang tidak setia — metafora pernikahan.",
+      "mendalam": "Hosea dan Gomer. Kemurahan melampaui penghakiman."
+    },
+    "yoel": {
+      "nama": "Yoel",
+      "bagian": "PL",
+      "ringkas": "Kutukan belalang, hari TUHAN, outpouring Roh.",
+      "mendalam": "Dikutip di Kisah Para Rasul 2 — Pentecost."
+    },
+    "amos": {
+      "nama": "Amos",
+      "bagian": "PL",
+      "ringkas": "Keadilan sosial — Allah tolak ibadah tanpa keadilan.",
+      "mendalam": "Nabi gembala. Jeritan orang miskin didengar Allah."
+    },
+    "oba": {
+      "nama": "Obaja",
+      "bagian": "PL",
+      "ringkas": "Penghakiman Edom karena kekerasan pada Yehuda.",
+      "mendalam": "Kitab terpendek PL."
+    },
+    "yun": {
+      "nama": "Yunus",
+      "bagian": "PL",
+      "ringkas": "Yunus lari, ikan besar, Ninewe bertobat.",
+      "mendalam": "Kasih Allah pada bangsa bukan Israel. Yesus bandingkan dengan diri-Nya (Mat 12)."
+    },
+    "mik": {
+      "nama": "Mikha",
+      "bagian": "PL",
+      "ringkas": "Penghakiman dan harapan — Bethlehem, tuntutan keadilan.",
+      "mendalam": "Mikha 6:8 — berlaku adil, kasih setia, hidup rendah hati."
+    },
+    "nah": {
+      "nama": "Nahum",
+      "bagian": "PL",
+      "ringkas": "Kejatuhan Nineveh — Allah adil dan kuat.",
+      "mendalam": "Lanjutan tema Yunus — Nineveh akhirnya dihukum."
+    },
+    "hab": {
+      "nama": "Habakuk",
+      "bagian": "PL",
+      "ringkas": "Dialog nabi dengan Allah soal kejahatan. Hidup oleh iman.",
+      "mendalam": "Hab 2:4 — iman Paulus kutip (Rm 1)."
+    },
+    "zef": {
+      "nama": "Zefanya",
+      "bagian": "PL",
+      "ringkas": "Hari TUHAN — penghakiman dan sisa yang rendah hati.",
+      "mendalam": "Harapan restore umat yang rendah hati."
+    },
+    "hag": {
+      "nama": "Hagai",
+      "bagian": "PL",
+      "ringkas": "Dorong bangun kembali bait suci pasca-exile.",
+      "mendalam": "Prioritas rumah Allah. Zerubbabel — tanda Mesias."
+    },
+    "zak": {
+      "nama": "Zakharia",
+      "bagian": "PL",
+      "ringkas": "Visi malam, Mesias Raja dan Gembal, restore Yerusalem.",
+      "mendalam": "Zakharia 9:9 — Raja menderita. Banyak messianic prophecies."
+    },
+    "mal": {
+      "nama": "Maleakhi",
+      "bagian": "PL",
+      "ringkas": "Teguran imamat, janji Elijah, harapan sebelum 400 tahun hening.",
+      "mendalam": "Kitab penutup PL — mengarah ke Yohanes Pembaptis."
+    },
+    "mat": {
+      "nama": "Matius",
+      "bagian": "PB",
+      "ringkas": "Injil Yesus — Raja Mesias, khotbah di bukit, salib, kebangkitan.",
+      "mendalam": "Ditulis untuk Yahudi-Kristen. Yesus sebagai Mesias David dan Emmanuel."
+    },
+    "mrk": {
+      "nama": "Markus",
+      "bagian": "PB",
+      "ringkas": "Injil Yesus — pelayanan, mukjizat, salib (fokus pada Anak Allah yang menderita).",
+      "mendalam": "Injil paling ringkas. Tema: Yesus hamba yang melayani."
+    },
+    "luk": {
+      "nama": "Lukas",
+      "bagian": "PB",
+      "ringkas": "Injil Yesus — kasih pada yang terpinggirkan, perumpamaan, salib, kebangkitan.",
+      "mendalam": "Lukas dokter/historian. Volume 1 dari Kisah Para Rasul."
+    },
+    "yoh": {
+      "nama": "Yohanes",
+      "bagian": "PB",
+      "ringkas": "Injil Yesus — Anak Allah, tanda-tanda, kasih, kebangkitan.",
+      "mendalam": "Teologis dan reflektif. Yoh 3:16 — ringkasan injil. Ego eimi."
+    },
+    "kis": {
+      "nama": "Kisah Para Rasul",
+      "bagian": "PB",
+      "ringkas": "Gereja mula-mula, Roh Kudus, Paulus, misi ke bangsa-bangsa.",
+      "mendalam": "Lanjutan Lukas. Dari Yerusalem ke ujung bumi (1:8)."
+    },
+    "rom": {
+      "nama": "Roma",
+      "bagian": "PB",
+      "ringkas": "Surat Paulus — dosa, iman, pembenaran, hidup oleh Roh.",
+      "mendalam": "Teologi sistematis Paulus. Rm 8 — tidak ada yang dapat memisahkan."
+    },
+    "1ko": {
+      "nama": "1 Korintus",
+      "bagian": "PB",
+      "ringkas": "Masalah gereja Korintus — kasih (13), karunia, kebangkitan.",
+      "mendalam": "Koreksi dan pastoral care Paulus."
+    },
+    "2ko": {
+      "nama": "2 Korintus",
+      "bagian": "PB",
+      "ringkas": "Pelayanan Paulus, pengharapan, kemurahan hati.",
+      "mendalam": "Kerapuhan rasul — kekuatan dalam kelemahan."
+    },
+    "gal": {
+      "nama": "Galatia",
+      "bagian": "PB",
+      "ringkas": "Pembenaran oleh iman, bukan hukum Taurat saja.",
+      "mendalam": "Paulus vs yudaisers. Kebebasan di Kristus."
+    },
+    "ef": {
+      "nama": "Efesus",
+      "bagian": "PB",
+      "ringkas": "Berkat di Kristus, gereja, imamat, baju zirah Allah.",
+      "mendalam": "Ef 2:8-10 — kasih karunia. Persatuan Yahudi-Gentil."
+    },
+    "fil": {
+      "nama": "Filipi",
+      "bagian": "PB",
+      "ringkas": "Sukacita di Kristus — Paulus dari penjara.",
+      "mendalam": "Kristologi tinggi (Fil 2). Bersyukur dalam segala keadaan."
+    },
+    "kol": {
+      "nama": "Kolose",
+      "bagian": "PB",
+      "ringkas": "Keunggulan Kristus — penuh di dalam Dia.",
+      "mendalam": "Melawan syncretism. Kol 1:15-20 — hymn Kristus."
+    },
+    "1te": {
+      "nama": "1 Tessalonika",
+      "bagian": "PB",
+      "ringkas": "Kedatangan Yesus, hidup kudus, penghiburan.",
+      "mendalam": "Surat Paulus pertama? Eschatology pastoral."
+    },
+    "2te": {
+      "nama": "2 Tessalonika",
+      "bagian": "PB",
+      "ringkas": "Hari Tuhan, teguran orang malas, pengharapan.",
+      "mendalam": "Koreksi salah paham tentang kedatangan Yesus."
+    },
+    "1ti": {
+      "nama": "1 Timotius",
+      "bagian": "PB",
+      "ringkas": "Tugas Timotius — doktrin sehat, kepemimpinan gereja.",
+      "mendalam": "Pastoral epistle. 1 Ti 2:5 — satu pengantara."
+    },
+    "2ti": {
+      "nama": "2 Timotius",
+      "bagian": "PB",
+      "ringkas": "Paulus terakhir — setia sampai akhir, Alkitab ilham Allah.",
+      "mendalam": "2 Ti 3:16-17 — Scripture God-breathed."
+    },
+    "tit": {
+      "nama": "Titus",
+      "bagian": "PB",
+      "ringkas": "Tugas Titus di Kreta — tata gereja, hidup kudus.",
+      "mendalam": "Pastoral epistle singkat."
+    },
+    "flm": {
+      "nama": "Filemon",
+      "bagian": "PB",
+      "ringkas": "Paulus memohon Onesimus — rekonsiliasi master-budak.",
+      "mendalam": "Surat pribadi tentang kasih dan pengampunan."
+    },
+    "ibr": {
+      "nama": "Ibrani",
+      "bagian": "PB",
+      "ringkas": "Kristus lebih unggul — imam besar, perjanjian baru.",
+      "mendalam": "Ibr 11 — iman para leluhur. Dorongan umat yang lelah."
+    },
+    "yak": {
+      "nama": "Yakobus",
+      "bagian": "PB",
+      "ringkas": "Iman tanpa perbuatan mati. Hikmat praktis.",
+      "mendalam": "Adik Yesus. Amsal PB — keadilan sosial."
+    },
+    "1pe": {
+      "nama": "1 Petrus",
+      "bagian": "PB",
+      "ringkas": "Hidup sebagai orang asing — penderitaan, pengharapan.",
+      "mendalam": "Penghiburan umat teraniaya. Teladan Kristus dalam penderitaan."
+    },
+    "2pe": {
+      "nama": "2 Petrus",
+      "bagian": "PB",
+      "ringkas": "Pertumbuhan iman, pengajar palsu, hari Tuhan.",
+      "mendalam": "2 Pe 1:20-21 — nubuat asal Allah."
+    },
+    "1yo": {
+      "nama": "1 Yohanes",
+      "bagian": "PB",
+      "ringkas": "Allah adalah kasih — iman, kasih, ketaatan.",
+      "mendalam": "1 Yoh 4 — kasih Allah. Assurance of salvation."
+    },
+    "2yo": {
+      "nama": "2 Yohanes",
+      "bagian": "PB",
+      "ringkas": "Surat singkat — kasih dan kebenaran, waspada pengajar salah.",
+      "mendalam": "Epistle sangat pendek."
+    },
+    "3yo": {
+      "nama": "3 Yohanes",
+      "bagian": "PB",
+      "ringkas": "Gaius vs Diotrefes — hospitality dan kepemimpinan.",
+      "mendalam": "Contoh konflik gereja lokal."
+    },
+    "yud": {
+      "nama": "Yudas",
+      "bagian": "PB",
+      "ringkas": "Peringatan pengajar palsu — pertahankan iman.",
+      "mendalam": "Surat pendek urgent."
+    },
+    "why": {
+      "nama": "Wahyu",
+      "bagian": "PB",
+      "ringkas": "Visi Yohanes — penghakiman, victorius Kristus, Yerusalem baru.",
+      "mendalam": "Apocalyptic. Lamb menang. Harapan akhir — Allah mengeringkan air mata."
+    }
+  },
+  "prinsip_umum": "Tafsir TB (ORB): (1) Kutip teks ayat dari TB LAI — jangan parafrase seenaknya. (2) Baca ayat dalam konteks pasal & kitab. (3) Siapa pembicara & audiens? (4) Bedakan makna waktu penulisan vs aplikasi hari ini. (5) Jelaskan dengan bahasa sederhana — mudah dicerna. (6) Rendah hati — bukan pengganti pendeta/guru rohani."
+}
