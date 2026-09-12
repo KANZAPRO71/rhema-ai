@@ -1,7 +1,7 @@
 /**
  * Penyimpanan terpusat jurnal pokok doa — dipakai tab Doa & kartu Alkitab.
  */
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { getEffectiveUiLang, isGlobalUiLang } from "./localeProfile.js";
 import { PRAYER_CATEGORIES } from "./renunganData.js";
 import { t } from "./uiStrings.js";
 
@@ -124,11 +124,11 @@ export function buildSinglePrayerVoicePrompt(prayer) {
   const cat = PRAYER_CATEGORIES.find((c) => c.id === prayer.category);
   const catLabel = cat ? t(cat.nameKey) : t("prayer.cat.general");
   const detail = prayer.content?.trim()
-    ? getEffectiveUiLang() === "en"
+    ? isGlobalUiLang()
       ? ` Note: ${prayer.content.trim()}.`
       : ` Catatan: ${prayer.content.trim()}.`
     : "";
-  if (getEffectiveUiLang() === "en") {
+  if (isGlobalUiLang()) {
     return `Lead a deep, faith-filled intercession for this ${catLabel} prayer request: "${prayer.title}".${detail} Bring this petition before the Lord.`;
   }
   return `Pimpin doa syafaat yang mendalam dan penuh iman untuk pokok doa kategori ${catLabel}: "${prayer.title}".${detail} Bawa permohonan ini ke hadirat Tuhan.`;
@@ -140,7 +140,7 @@ export function buildAllActivePrayersVoicePrompt(prayers) {
   const prayerSummary = active
     .map((p, i) => `${i + 1}. ${p.title}${p.content ? ` (${p.content})` : ""}`)
     .join(". ");
-  if (getEffectiveUiLang() === "en") {
+  if (isGlobalUiLang()) {
     return `Lead a deep, faith-filled intercession for these prayer requests: ${prayerSummary}. Bring each petition before the Lord.`;
   }
   return `Pimpin doa syafaat yang mendalam dan penuh iman untuk pokok-pokok doa saya berikut ini: ${prayerSummary}. Bawa setiap permohonan ini ke hadirat Tuhan.`;

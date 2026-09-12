@@ -6,7 +6,7 @@ import { RHEMA_ADDRESS_RULE_SHORT } from "./rhemaAddressRule.js";
 import { markSermonStarted } from "./sermonLiveContinuer.js";
 import { buildSermonKnowledgePrompt, renderSermonKnowledgePanel } from "./sermonBibleContext.js";
 import { saveLastSermonMeta } from "./sermonExport.js";
-import { getEffectiveUiLang, isIndonesiaProfile } from "./localeProfile.js";
+import { getSpeechLocale, isIndonesiaProfile } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 
 const PERSONA_KEY = "rhema-persona-id";
@@ -297,7 +297,7 @@ export function initVoiceSermonBar(askVoiceFn) {
     recognition = SR;
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+    recognition.lang = getSpeechLocale();
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {

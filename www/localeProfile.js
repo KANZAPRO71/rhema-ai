@@ -112,13 +112,44 @@ export function isIndonesiaProfile() {
   return getEffectiveProfile().region === "indonesia";
 }
 
+/** @typedef {"id"|"en"|"es"|"pt"|"ko"|"zh"|"ja"} UiLang */
+
+/** @param {string} [locale] */
+export function mapDeviceLocaleToUiLang(locale) {
+  const loc = (locale || detectDeviceSignals().locale || "").toLowerCase();
+  if (loc.startsWith("id") || loc.startsWith("in")) return "id";
+  if (loc.startsWith("es")) return "es";
+  if (loc.startsWith("pt")) return "pt";
+  if (loc.startsWith("ko")) return "ko";
+  if (loc.startsWith("zh")) return "zh";
+  if (loc.startsWith("ja")) return "ja";
+  return "en";
+}
+
+/** UI non-Indonesia (en + es/pt/ko/zh/ja) — konten overlay English fallback. */
+export function isGlobalUiLang(lang = getEffectiveUiLang()) {
+  return lang !== "id";
+}
+
+/** Locale BCP-47 untuk speech, tanggal, dan formatter. */
+export function getSpeechLocale(lang = getEffectiveUiLang()) {
+  /** @type {Record<string, string>} */
+  const map = {
+    id: "id-ID",
+    en: "en-US",
+    es: "es-ES",
+    pt: "pt-BR",
+    ko: "ko-KR",
+    zh: "zh-CN",
+    ja: "ja-JP",
+  };
+  return map[lang] || "en-US";
+}
+
 /** Bahasa UI efektif: region tersimpan, atau deteksi locale HP sebelum onboarding. */
 export function getEffectiveUiLang() {
-  if (isLocaleProfileConfigured()) {
-    return isIndonesiaProfile() ? "id" : "en";
-  }
-  const loc = (detectDeviceSignals().locale || "").toLowerCase();
-  return loc.startsWith("id") ? "id" : "en";
+  if (isLocaleProfileConfigured() && isIndonesiaProfile()) return "id";
+  return mapDeviceLocaleToUiLang();
 }
 
 /** Saran region dari timezone + locale perangkat (setara deteksi Kotlin/JS di boot). */
@@ -151,13 +182,22 @@ export function getDefaultBibleVersion() {
 /** Alkitab efektif — profil tersimpan, atau selaras bahasa UI sebelum onboarding. */
 export function getEffectiveBibleVersion() {
   if (isLocaleProfileConfigured()) return getDefaultBibleVersion();
-  return getEffectiveUiLang() === "en" ? "kjv" : "tb";
+  return isGlobalUiLang() ? "kjv" : "tb";
 }
 
+const AI_LANG_RULES = {
+  id: "WAJIB: bahasa Indonesia sehari-hari hangat dan mudah dicerna.",
+  en: "REQUIRED: respond in natural, warm everyday English.",
+  es: "REQUIRED: respond in natural, warm everyday Spanish.",
+  pt: "REQUIRED: respond in natural, warm everyday Portuguese.",
+  ko: "REQUIRED: respond in natural, warm everyday Korean (존댓말).",
+  zh: "REQUIRED: respond in natural, warm everyday Chinese (简体中文).",
+  ja: "REQUIRED: respond in natural, warm everyday Japanese (丁寧語).",
+};
+
 export function getAiLanguageRule() {
-  return isIndonesiaProfile()
-    ? "WAJIB: bahasa Indonesia sehari-hari hangat dan mudah dicerna."
-    : "REQUIRED: respond in natural, warm everyday English.";
+  if (isIndonesiaProfile()) return AI_LANG_RULES.id;
+  return AI_LANG_RULES[getEffectiveUiLang()] ?? AI_LANG_RULES.en;
 }
 
 export function getAiLifeContextRule() {
@@ -178,7 +218,7 @@ export function getDevotionTimezone() {
 }
 
 export function getUiLocale() {
-  return isIndonesiaProfile() ? "id-ID" : "en-US";
+  return isIndonesiaProfile() ? "id-ID" : getSpeechLocale();
 }
 
 export function getTimeSuffix() {

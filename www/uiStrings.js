@@ -4,9 +4,11 @@
 import {
   getEffectiveUiLang,
   getPrimaryBibleLabel,
+  isGlobalUiLang,
   isIndonesiaProfile,
   isLocaleProfileConfigured,
 } from "./localeProfile.js";
+import { GLOBAL_UI_STRINGS } from "./i18nGlobalStrings.js";
 
 /** @type {Record<string, Record<string, string>>} */
 const STRINGS = {
@@ -1185,7 +1187,12 @@ const STRINGS = {
 /** @param {string} key @param {Record<string, string>} [vars] */
 export function t(key, vars) {
   const lang = getEffectiveUiLang();
-  let text = STRINGS[lang][key] ?? STRINGS.id[key] ?? key;
+  let text =
+    STRINGS[lang]?.[key] ??
+    GLOBAL_UI_STRINGS[lang]?.[key] ??
+    STRINGS.en?.[key] ??
+    STRINGS.id?.[key] ??
+    key;
   if (vars) {
     for (const [k, v] of Object.entries(vars)) {
       text = text.replace(`{${k}}`, v);
@@ -1211,7 +1218,7 @@ export function getGreetingPhrase(now = new Date()) {
 
 export function getHeroBibleSub() {
   const indonesia =
-    isLocaleProfileConfigured() ? isIndonesiaProfile() : getEffectiveUiLang() === "id";
+    isLocaleProfileConfigured() ? isIndonesiaProfile() : !isGlobalUiLang();
   return indonesia ? "Pendamping ibadah · TB LAI" : "Worship companion · KJV";
 }
 

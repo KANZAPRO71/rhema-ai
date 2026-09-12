@@ -4,7 +4,7 @@
 
 import { todayKey } from "./dailyRenunganEngine.js";
 import { BIBLE_QUIZ_POOL, DAILY_QUIZ_COUNT } from "./renunganData.js";
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { isGlobalUiLang } from "./localeProfile.js";
 import { QUIZ_EN } from "./quizPoolI18n.js";
 import { t } from "./uiStrings.js";
 
@@ -26,7 +26,7 @@ function dateFromKey(dateKey) {
 
 /** @param {typeof BIBLE_QUIZ_POOL[number]} q */
 export function localizeQuizItem(q) {
-  if (getEffectiveUiLang() !== "en") return q;
+  if (!isGlobalUiLang()) return q;
   const en = QUIZ_EN[q.id];
   if (!en) return q;
   return {

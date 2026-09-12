@@ -3,7 +3,7 @@
  * Terpisah dari Renungan / aiEmotionEngine.
  */
 
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { isGlobalUiLang } from "./localeProfile.js";
 import { THEMATIC_READING_PLANS_RAW } from "./thematicPlanData.js";
 import { THEMATIC_PLAN_EN } from "./thematicPlanI18n.js";
 
@@ -25,7 +25,7 @@ const PLANS = THEMATIC_READING_PLANS_RAW.map(normalizePlan);
 
 /** @param {ThematicPlan} plan */
 export function localizeThematicPlan(plan) {
-  if (getEffectiveUiLang() !== "en") return plan;
+  if (!isGlobalUiLang()) return plan;
   const en = THEMATIC_PLAN_EN[plan.id];
   if (!en) return plan;
   return {

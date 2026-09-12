@@ -3,7 +3,7 @@
  * Terpisah dari aiEmotionEngine / Renungan. Deterministik per hari: sama seharian, berganti besok.
  */
 
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { isGlobalUiLang } from "./localeProfile.js";
 import { MOOD_SCRIPTURE_EN } from "./moodScriptureI18n.js";
 import { t } from "./uiStrings.js";
 
@@ -237,7 +237,7 @@ export const MOOD_SCRIPTURE_BANK = {
  */
 /** @param {MoodScriptureEntry} entry @param {string} moodId @param {number} index */
 function localizeMoodEntry(entry, moodId, index) {
-  if (getEffectiveUiLang() !== "en") return entry;
+  if (!isGlobalUiLang()) return entry;
   const en = MOOD_SCRIPTURE_EN[moodId]?.[index];
   if (!en) return entry;
   return {

@@ -6,7 +6,7 @@
  */
 
 import { speakIndonesianText, stopSpeaking, ambientEngine } from "./ambientAudio.js";
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { isGlobalUiLang } from "./localeProfile.js";
 import { getDailyMoodScripture } from "./moodScriptureEngine.js";
 import { t } from "./uiStrings.js";
 import { formatMoodSummaryDate, localizedMoodChips } from "./worshipUiI18n.js";
@@ -159,7 +159,7 @@ function initMoodChips(onOpenVerse, onAskVoice) {
         e.stopPropagation();
         if (onAskVoice) {
           const lead =
-            getEffectiveUiLang() === "en"
+            isGlobalUiLang()
               ? `I feel ${item.label}. Read and reflect on ${item.verse}: "${item.text}". ${item.devotion}`
               : `Saya merasa ${item.label}. Bacakan dan renungkan ayat ${item.verse}: "${item.text}". ${item.devotion}`;
           onAskVoice(lead);
@@ -171,7 +171,7 @@ function initMoodChips(onOpenVerse, onAskVoice) {
         e.stopPropagation();
         if (onAskVoice) {
           const lead =
-            getEffectiveUiLang() === "en"
+            isGlobalUiLang()
               ? `I'm feeling ${item.label}. God's word from ${item.verse} says: "${item.text}". Give Scripture guidance and lead a comforting prayer for me.`
               : `Saya sedang merasa ${item.label}. Firman Tuhan dari ${item.verse} berkata: "${item.text}". Berikan bimbingan firman dan pimpinlah doa penghiburan bagi saya.`;
           onAskVoice(lead);
@@ -184,7 +184,7 @@ function initMoodChips(onOpenVerse, onAskVoice) {
 // ---------------- SLEEP STORIES ----------------
 /** @param {typeof SLEEP_STORIES[number]} story */
 function localizeSleepStory(story) {
-  if (getEffectiveUiLang() !== "en") return story;
+  if (!isGlobalUiLang()) return story;
   const en = SLEEP_STORY_EN[story.id];
   if (!en) return story;
   return {
@@ -204,7 +204,7 @@ function getLocalizedSleepStories() {
 
 /** @param {ReturnType<typeof localizeSleepStory>} story */
 function buildSleepVoicePrompt(story) {
-  if (getEffectiveUiLang() === "en") {
+  if (isGlobalUiLang()) {
     return `Read this bedtime Bible story in a soft, calm, slow voice — like a shepherd soothing the soul before sleep.
 
 Title: "${story.title}"

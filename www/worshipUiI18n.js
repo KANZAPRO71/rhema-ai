@@ -6,7 +6,7 @@ import { EMOTION_SESSION_PHASES } from "./emotionSessionEngine.js";
 import { GUIDED_PRAYER_SESSION_PHASES } from "./guidedPrayerSessionEngine.js";
 import { MOOD_CHIPS } from "./moodScriptureEngine.js";
 import { EMOTIONS, PRAYER_PRESETS } from "./homeWorshipData.js";
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { getSpeechLocale } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 
 /** @param {{ labelKey?: string, label?: string }} item */
@@ -72,12 +72,12 @@ export function devotionTimelineShortLabels() {
 
 /** @param {Date} [date] */
 export function formatDevotionDate(date = new Date()) {
-  const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+  const loc = getSpeechLocale();
   return date.toLocaleDateString(loc, { weekday: "long", day: "numeric", month: "short" });
 }
 
 /** @param {Date} [date] */
 export function formatMoodSummaryDate(date = new Date()) {
-  const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+  const loc = getSpeechLocale();
   return date.toLocaleDateString(loc, { weekday: "short", day: "numeric", month: "short" });
 }

@@ -29,7 +29,7 @@ import { unlockNativeElementAudio, warmupNativePlayback } from "./nativeAudioPla
 import { googleKeyConfigured, isGoogleKeyLiveValidated, validateGoogleKeyForVoice } from "./geminiConstants.js";
 import { openByokOnboarding } from "./byokOnboarding.js";
 import { formatVoiceError } from "./byokUx.js";
-import { getEffectiveBibleVersion, getEffectiveUiLang } from "./localeProfile.js";
+import { getEffectiveBibleVersion, getSpeechLocale, isGlobalUiLang } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 import { deliverVoiceOpenGreeting, deliverVoiceResumeContext, hasVoiceConversationHistory } from "./voiceGreeting.js";
 import { parseExplicitMemory, syncLocalSessionMemory } from "./memoryStore.js";
@@ -721,7 +721,7 @@ export async function refreshHomeEmbedBadge() {
     const meta = await knowledgeMeta();
     const count = meta.tbSearchIndex?.verseCount ?? 0;
     if (meta.tbSearchIndex?.ready && count > 0) {
-      const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+      const loc = getSpeechLocale();
       heroBadge.textContent = t("home.embed.semantic", { count: count.toLocaleString(loc) });
       heroBadge.classList.remove("hidden");
       return;
@@ -732,7 +732,7 @@ export async function refreshHomeEmbedBadge() {
   try {
     const st = await fetchTbSearchStatus();
     if (st.fullComplete) {
-      const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+      const loc = getSpeechLocale();
       heroBadge.textContent = t("home.embed.semantic", { count: st.fullCount.toLocaleString(loc) });
       heroBadge.classList.remove("hidden");
     }
@@ -742,7 +742,7 @@ export async function refreshHomeEmbedBadge() {
 }
 
 function voiceTimeLocale() {
-  return getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+  return getSpeechLocale();
 }
 
 function voiceEmptyStateHtml() {

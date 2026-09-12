@@ -28,7 +28,7 @@ import {
 } from "./dailyQuizEngine.js";
 import { awardDailyQuizXp } from "./quizProfileStore.js";
 import { isNativeQuizStoreAvailable, saveDailyQuizNative } from "./quizNativeStore.js";
-import { getEffectiveBibleVersion, getEffectiveUiLang } from "./localeProfile.js";
+import { getEffectiveBibleVersion, isGlobalUiLang } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 import {
   devotionTimelineShortLabels,
@@ -589,7 +589,7 @@ function saveThematicProgress(data) {
 /** @param {number} totalDays */
 function formatPlanWeeks(totalDays) {
   const weeks = Math.ceil(totalDays / 7);
-  if (getEffectiveUiLang() === "en") {
+  if (isGlobalUiLang()) {
     return weeks <= 1 ? t("plans.week.one") : t("plans.week.many", { n: String(weeks) });
   }
   return weeks <= 1 ? "1 minggu" : `${weeks} minggu`;
@@ -1000,7 +1000,7 @@ export function renderThematicPlans() {
       e.stopPropagation();
       if (homeBridge?.askVoice) {
         homeBridge.askVoice(
-          getEffectiveUiLang() === "en"
+          isGlobalUiLang()
             ? `Read and reflect on One-Year Bible day ${dayOfYear}: Old Testament from ${plan.pl}, New Testament from ${plan.pb}, and Psalms/Wisdom from ${plan.mazmur}. Lead a brief blessing prayer.`
             : `Bacakan dan berikan renungan untuk program baca Alkitab 1 Tahun hari ke-${dayOfYear}: Perjanjian Lama dari ${plan.pl}, Perjanjian Baru dari ${plan.pb}, serta Mazmur dari ${plan.mazmur}. Pimpin doa berkat.`,
         );
@@ -1208,7 +1208,7 @@ function renderThematicPlanDetail(planId) {
 
     if (homeBridge?.askVoice) {
       homeBridge.askVoice(
-        getEffectiveUiLang() === "en"
+        isGlobalUiLang()
           ? `Read day ${day} of "${plan.title}": ${title} (${ref}). ${desc}. Let's reflect on its meaning and lead a brief prayer.`
           : `Bacakan rencana baca hari ke-${day} dari "${plan.title}": ${title} (${ref}). ${desc}. Mari kita renungkan maknanya dan pimpin doa singkat.`,
       );
@@ -1262,7 +1262,7 @@ function renderThematicPlanDetail(planId) {
       const desc = btn.getAttribute("data-desc") || "";
       if (homeBridge?.askVoice) {
         homeBridge.askVoice(
-          getEffectiveUiLang() === "en"
+          isGlobalUiLang()
             ? `Read Scripture from ${ref}: "${title}". ${desc}. Offer a brief reflection and blessing.`
             : `Bacakan firman dari ${ref}: "${title}". ${desc}. Berikan renungan dan berkat.`,
         );
@@ -1563,7 +1563,7 @@ export function renderDailyBibleQuiz() {
 
   container.querySelector("#quiz-ask-voice-btn")?.addEventListener("click", () => {
     const prompt =
-      getEffectiveUiLang() === "en"
+      isGlobalUiLang()
         ? `Explain the theological and historical Bible context for this quiz question: "${q.question}" Reference: ${q.verseRef}. Correct answer: ${q.options[q.correctIndex]}.`
         : `Jelaskan konteks teologi dan sejarah Alkitab untuk pertanyaan kuis ini: "${q.question}" Referensi: ${q.verseRef}. Jawaban benarnya: ${q.options[q.correctIndex]}.`;
     homeBridge?.go?.("voice");
