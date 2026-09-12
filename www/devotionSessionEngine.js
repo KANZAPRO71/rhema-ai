@@ -16,7 +16,7 @@ import {
 } from "./localeProfile.js";
 
 /** Durasi hening merenung (detik). */
-export const MEDITATION_DURATION_SEC = 120;
+export const MEDITATION_DURATION_SEC = 60;
 
 /** Target durasi fase suara (menit). */
 export const OPENING_TARGET_MIN = 2;

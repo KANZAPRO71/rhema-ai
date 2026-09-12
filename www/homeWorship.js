@@ -394,7 +394,7 @@ function setDevotionPodcastUiPlaying(playing) {
   syncDevotionListenButton();
 }
 
-const DEVOTION_TIMELINE_TIMES = ["~2m", "2m", "5-6m", "2m"];
+const DEVOTION_TIMELINE_TIMES = ["~2m", "1m", "5-6m", "2m"];
 
 function renderSessionPhaseBar(activeIndex) {
   const el = document.getElementById("dpw-session-phases");
