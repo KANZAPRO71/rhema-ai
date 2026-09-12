@@ -6,7 +6,8 @@ import { RHEMA_ADDRESS_RULE_SHORT } from "./rhemaAddressRule.js";
 import { markSermonStarted } from "./sermonLiveContinuer.js";
 import { buildSermonKnowledgePrompt, renderSermonKnowledgePanel } from "./sermonBibleContext.js";
 import { saveLastSermonMeta } from "./sermonExport.js";
-import { isIndonesiaProfile } from "./localeProfile.js";
+import { getEffectiveUiLang, isIndonesiaProfile } from "./localeProfile.js";
+import { t } from "./uiStrings.js";
 
 const PERSONA_KEY = "rhema-persona-id";
 
@@ -269,13 +270,13 @@ export function initVoiceSermonBar(askVoiceFn) {
     else setPreacherPersona();
     markSermonStarted(selectedMinutes);
     saveLastSermonMeta(normalized, isExposition ? "exposition" : "khotbah");
-    setListenStatus("📖 Menyiapkan bahan firman TB…", true);
+    setListenStatus(t("sermon.ui.preparing"), true);
 
     const basePrompt = isExposition
       ? buildExpositionVoicePrompt({ minutes: selectedMinutes, passage: normalized })
       : buildSermonVoicePrompt({ minutes: selectedMinutes, passage: normalized });
     void buildSermonKnowledgePrompt(normalized, basePrompt).then(({ prompt }) => {
-      const label = isExposition ? "📖 Eksposisi" : "🎙️ Khotbah (ayat)";
+      const label = isExposition ? t("sermon.ui.exposition") : t("sermon.ui.sermonVerse");
       askVoiceFn(prompt, `${label} — ${normalized}`);
       setBarOpen(false);
       stopVerseListen();
@@ -288,7 +289,7 @@ export function initVoiceSermonBar(askVoiceFn) {
   function startVerseListen({ autoStart = false } = {}) {
     const SR = getSpeechRecognition();
     if (!SR) {
-      alert("Browser belum mendukung input suara. Ketik ayat manual atau gunakan Chrome/Safari terbaru.");
+      alert(t("sermon.ui.noSpeechRecognition"));
       return;
     }
     stopVerseListen();
@@ -296,13 +297,13 @@ export function initVoiceSermonBar(askVoiceFn) {
     recognition = SR;
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = "id-ID";
+    recognition.lang = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
     recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
       isListening = true;
       micBtn?.classList.add("listening");
-      setListenStatus(autoStart ? "🎤 Ucapkan ayat sekarang…" : "🎤 Mendengarkan…");
+      setListenStatus(autoStart ? t("sermon.ui.speakNow") : t("sermon.ui.listening"));
     };
 
     recognition.onresult = (event) => {
@@ -313,7 +314,7 @@ export function initVoiceSermonBar(askVoiceFn) {
       const normalized = normalizeSpokenPassage(transcript);
       if (normalized) verseInput.value = normalized;
       if (event.results[event.results.length - 1]?.isFinal && normalized) {
-        setListenStatus(`✓ ${normalized}`);
+        setListenStatus(t("sermon.ui.heard", { verse: normalized }));
         if (autoStartAfterSpeech) {
           autoStartAfterSpeech = false;
           launchSermon(normalized);
@@ -323,7 +324,7 @@ export function initVoiceSermonBar(askVoiceFn) {
 
     recognition.onerror = (event) => {
       if (event.error === "not-allowed") {
-        alert("Izin mikrofon diperlukan untuk menyebut ayat.");
+        alert(t("sermon.ui.micRequired"));
       }
       stopVerseListen();
       setListenStatus("");
@@ -334,7 +335,7 @@ export function initVoiceSermonBar(askVoiceFn) {
       isListening = false;
       micBtn?.classList.remove("listening");
       if (autoStartAfterSpeech && !verseInput.value.trim()) {
-        setListenStatus("Tidak terdengar — coba lagi atau ketik ayat.");
+        setListenStatus(t("sermon.ui.notHeard"));
         autoStartAfterSpeech = false;
       }
       recognition = null;
@@ -365,11 +366,8 @@ export function initVoiceSermonBar(askVoiceFn) {
     setBarOpen(willOpen);
     if (willOpen) {
       setPreacherPersona();
-      setListenStatus("🎙️ Rhema menanyakan ayat…");
-      askVoiceFn(
-        buildSermonInteractivePrompt(selectedMinutes),
-        "🎙️ Khotbah (ayat) — ayat apa yang mau dibawakan?",
-      );
+      setListenStatus(t("sermon.ui.askingVerse"));
+      askVoiceFn(buildSermonInteractivePrompt(selectedMinutes), t("sermon.ui.promptVerse"));
     }
   });
 
@@ -397,7 +395,7 @@ export function initVoiceSermonBar(askVoiceFn) {
         return;
       }
       verseInput.focus();
-      verseInput.placeholder = "Ketik atau ucapkan ayat — mis. Mazmur 23";
+      verseInput.placeholder = t("sermon.ui.placeholderHint");
       verseInput.classList.add("sermon-verse-input-error");
       setTimeout(() => verseInput.classList.remove("sermon-verse-input-error"), 1200);
       return;

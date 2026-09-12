@@ -1004,10 +1004,10 @@
       <!-- CHAT AGENT (stack) -->
       <section id="screen-chat" class="mobile-screen mobile-stack" data-title="Rhema Agent" data-title-key="screen.chat">
         <div class="stack-toolbar header-actions">
-          <button type="button" class="toolbar-back" data-rhema-back aria-label="Kembali">←</button>
-          <button id="btn-sessions" type="button" class="toolbar-icon" title="Riwayat chat" aria-label="Riwayat chat">☰</button>
-          <button id="btn-new" type="button" title="Chat baru">+</button>
-          <button id="btn-stop" type="button" title="Stop" disabled>■</button>
+          <button type="button" class="toolbar-back" data-rhema-back data-i18n-aria="back" aria-label="Kembali">←</button>
+          <button id="btn-sessions" type="button" class="toolbar-icon" data-i18n-title="chat.historyAria" data-i18n-aria="chat.historyAria" title="Riwayat chat" aria-label="Riwayat chat">☰</button>
+          <button id="btn-new" type="button" data-i18n-title="chat.newChat" title="Chat baru">+</button>
+          <button id="btn-stop" type="button" data-i18n-title="chat.stop" title="Stop" disabled>■</button>
           <button id="btn-voice-live" type="button" title="Voice IDE" class="hidden">🎙</button>
         </div>
         <div id="view-chat" class="view-panel chat-stack">
@@ -1020,11 +1020,11 @@
               <input id="image-input" type="file" accept="image/*" multiple hidden />
             </div>
             <div class="composer-row">
-              <textarea id="input" rows="2" placeholder="Tanya agent…"></textarea>
+              <textarea id="input" rows="2" data-i18n="chat.inputPlaceholder" placeholder="Tanya agent…"></textarea>
               <button id="btn-send" class="send" type="button">↵</button>
             </div>
             <div class="composer-bar">
-              <span id="hint" class="hint">Composer-class agent</span>
+              <span id="hint" class="hint" data-i18n="chat.hint.default">Composer-class agent</span>
             </div>
           </footer>
         </div>
@@ -1033,9 +1033,9 @@
       <!-- CLOUD (stack) -->
       <section id="screen-cloud" class="mobile-screen mobile-stack" data-title="Cloud" data-title-key="screen.cloud">
         <div class="cloud-toolbar">
-          <button type="button" class="toolbar-back" data-rhema-back aria-label="Kembali">←</button>
+          <button type="button" class="toolbar-back" data-rhema-back data-i18n-aria="back" aria-label="Kembali">←</button>
           <span id="cloud-meta" class="cloud-meta">—</span>
-          <button id="btn-cloud-refresh" type="button">↻</button>
+          <button id="btn-cloud-refresh" type="button" data-i18n-aria="refresh" aria-label="Refresh">↻</button>
         </div>
         <div id="cloud-list" class="cloud-list mobile-scroll"></div>
       </section>

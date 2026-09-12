@@ -139,14 +139,14 @@ export function initChatApp(transport, options = {}) {
       const headerActions = document.querySelector(".header-actions");
       headerActions?.insertAdjacentHTML(
         "afterbegin",
-        '<button id="btn-sessions" type="button" title="Riwayat chat">☰</button>',
+        `<button id="btn-sessions" type="button" title="${t("chat.historyAria")}" aria-label="${t("chat.historyAria")}">☰</button>`,
       );
     }
 
     app.insertAdjacentHTML(
       "afterbegin",
-      `<aside id="session-drawer" class="session-drawer hidden" aria-label="Riwayat chat">
-        <div class="session-drawer-head"><strong>Riwayat</strong><button id="btn-session-new" type="button">+ Baru</button></div>
+      `<aside id="session-drawer" class="session-drawer hidden" aria-label="${t("chat.historyAria")}">
+        <div class="session-drawer-head"><strong>${t("chat.history")}</strong><button id="btn-session-new" type="button">${t("chat.newSession")}</button></div>
         <ul id="session-list" class="session-list"></ul>
       </aside>`,
     );
@@ -388,6 +388,30 @@ export function initChatApp(transport, options = {}) {
 
   document.addEventListener("rhema-locale-changed", rerenderSettingsPanel);
 
+  function refreshChatLocaleUi() {
+    if (hintEl && !isRunning) hintEl.textContent = t("chat.hint.default");
+    const drawer = document.getElementById("session-drawer");
+    if (drawer) {
+      drawer.setAttribute("aria-label", t("chat.historyAria"));
+      const head = drawer.querySelector(".session-drawer-head strong");
+      if (head) head.textContent = t("chat.history");
+      const newBtn = document.getElementById("btn-session-new");
+      if (newBtn) newBtn.textContent = t("chat.newSession");
+    }
+    const btnSessions = document.getElementById("btn-sessions");
+    if (btnSessions) {
+      btnSessions.setAttribute("title", t("chat.historyAria"));
+      btnSessions.setAttribute("aria-label", t("chat.historyAria"));
+    }
+    const empty = document.getElementById("empty-state");
+    if (empty) {
+      empty.innerHTML = `<strong>${t("chat.empty.title")}</strong><br/>${t("chat.empty.body")}`;
+    }
+    if (!isRunning) setStatus("idle", t("chat.status.ready"));
+  }
+
+  document.addEventListener("rhema-locale-ui-applied", refreshChatLocaleUi);
+
   wireSettingsControls();
 
   function setStatus(mode, label) {
@@ -404,7 +428,7 @@ export function initChatApp(transport, options = {}) {
     if (sendBtn) sendBtn.disabled = running;
     if (stopBtn) stopBtn.disabled = !running;
     if (inputEl) inputEl.disabled = running;
-    setStatus(running ? "running" : "idle", running ? "Agent…" : "Siap");
+    setStatus(running ? "running" : "idle", running ? t("chat.status.running") : t("chat.status.ready"));
   }
 
   function updateUsageBar(usage) {
@@ -431,8 +455,7 @@ export function initChatApp(transport, options = {}) {
       const empty = document.createElement("div");
       empty.className = "empty-state";
       empty.id = "empty-state";
-      empty.innerHTML =
-        "<strong>Rhema Agent Chat</strong><br/>Paritas Composer: @file @Docs @Web @Codebase · markdown · riwayat · approval · diff inline.<br/><br/>Shift+Tab ganti mode.";
+      empty.innerHTML = `<strong>${t("chat.empty.title")}</strong><br/>${t("chat.empty.body")}`;
       messagesEl.appendChild(empty);
     }
   }
@@ -487,7 +510,7 @@ export function initChatApp(transport, options = {}) {
     for (const s of sessions) {
       const li = document.createElement("li");
       li.className = `session-item${s.id === currentSession.id ? " active" : ""}`;
-      li.innerHTML = `<span class="session-title">${escapeHtml(s.title || "Chat")}</span><span class="session-date">${new Date(s.updatedAt).toLocaleString()}</span>`;
+      li.innerHTML = `<span class="session-title">${escapeHtml(s.title || t("chat.session.defaultTitle"))}</span><span class="session-date">${new Date(s.updatedAt).toLocaleString()}</span>`;
       li.addEventListener("click", () => loadSession(s.id));
       sessionListEl.appendChild(li);
     }
@@ -499,7 +522,7 @@ export function initChatApp(transport, options = {}) {
     el.className = `msg voice-live ${m.role}`;
     const at = m.meta?.at || new Date().toISOString();
     const label = m.meta?.label || formatVoiceBubbleMeta(at);
-    el.innerHTML = `<div class="role">${m.role === "user" ? "Anda" : "Rhema (live)"}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${escapeHtml(at)}">${escapeHtml(label)}</div>`;
+    el.innerHTML = `<div class="role">${m.role === "user" ? t("chat.role.user") : t("chat.role.rhemaLive")}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${escapeHtml(at)}">${escapeHtml(label)}</div>`;
     el.querySelector(".body").textContent = m.text || "";
     messagesEl.appendChild(el);
   }
@@ -626,7 +649,7 @@ export function initChatApp(transport, options = {}) {
     removeEmptyState();
     const wrap = document.createElement("div");
     wrap.className = "msg user";
-    wrap.innerHTML = `<div class="msg-head"><span class="msg-role">Anda</span><span class="msg-actions"><button type="button" class="msg-act" data-act="edit">Edit</button><button type="button" class="msg-act" data-act="regen">Regenerate</button></span></div><div class="msg-body"></div>`;
+    wrap.innerHTML = `<div class="msg-head"><span class="msg-role">${t("chat.role.user")}</span><span class="msg-actions"><button type="button" class="msg-act" data-act="edit">${t("chat.action.edit")}</button><button type="button" class="msg-act" data-act="regen">${t("chat.action.regen")}</button></span></div><div class="msg-body"></div>`;
     if (images?.length) {
       wrap.innerHTML += `<div class="msg-images">${images.map((img) => `<img src="data:${img.mimeType};base64,${img.data}" alt="" />`).join("")}</div>`;
     }
@@ -659,7 +682,7 @@ export function initChatApp(transport, options = {}) {
     removeEmptyState();
     const el = document.createElement("div");
     el.className = "msg assistant";
-    el.innerHTML = '<div class="msg-role">Agent</div><div class="msg-body md-body cursor-blink"></div>';
+    el.innerHTML = `<div class="msg-role">${t("chat.role.agent")}</div><div class="msg-body md-body cursor-blink"></div>`;
     activeAssistant = { textEl: el.querySelector(".msg-body"), raw: "" };
     messagesEl.appendChild(el);
     scrollBottom();
@@ -693,7 +716,7 @@ export function initChatApp(transport, options = {}) {
       banner.className = "cloud-pr-banner";
       messagesEl.appendChild(banner);
     }
-    banner.innerHTML = `<span>☁ Cloud PR</span><button type="button" class="cloud-pr-open">Buka PR</button>`;
+    banner.innerHTML = `<span>☁ Cloud PR</span><button type="button" class="cloud-pr-open">${t("chat.cloud.openPr")}</button>`;
     banner.querySelector(".cloud-pr-open")?.addEventListener("click", () => {
       transport.post({ type: "openExternal", url: prUrl });
     });
@@ -706,27 +729,27 @@ export function initChatApp(transport, options = {}) {
     el.textContent = message;
     messagesEl.appendChild(el);
     scrollBottom();
-    setStatus("error", "Error");
+    setStatus("error", t("chat.status.error"));
   }
 
   function showBlockingApproval(req) {
     if (!approvalHost || approvalCards.has(req.callId)) return;
     approvalHost.classList.add("blocking");
-    setStatus("running", "Menunggu approval…");
-    hintEl.textContent = req.reason || "Konfirmasi tool sebelum dijalankan";
+    setStatus("running", t("chat.status.approval"));
+    hintEl.textContent = req.reason || t("chat.approval.toolConfirm");
 
     const card = document.createElement("div");
     card.className = "approval-card blocking-card";
     card.dataset.callId = req.callId;
     const autoRun = composerSettings.autoRun || "run-everything";
-    card.innerHTML = `<div class="approval-title">${autoRun === "auto-review" ? "Auto-review" : "Izinkan tool?"}</div>
-      <div class="approval-sub">${escapeHtml(req.reason || "Agent menunggu persetujuan Anda")}</div>
+    card.innerHTML = `<div class="approval-title">${autoRun === "auto-review" ? t("chat.approval.autoReview") : t("chat.approval.title")}</div>
+      <div class="approval-sub">${escapeHtml(req.reason || t("chat.approval.sub"))}</div>
       <div class="approval-tool">${escapeHtml(req.name || "tool")}</div>
       <pre class="approval-args">${escapeHtml(JSON.stringify(req.args || {}, null, 2))}</pre>
       <div class="approval-actions">
-        <button type="button" class="approval-allow">Allow</button>
-        <button type="button" class="approval-allow-all">Allow all for run</button>
-        <button type="button" class="approval-deny">Deny</button>
+        <button type="button" class="approval-allow">${t("chat.approval.allow")}</button>
+        <button type="button" class="approval-allow-all">${t("chat.approval.allowAll")}</button>
+        <button type="button" class="approval-deny">${t("chat.approval.deny")}</button>
       </div>`;
     card.querySelector(".approval-allow")?.addEventListener("click", () => {
       transport.post({ type: "toolApproval", callId: req.callId, approved: true });
@@ -748,9 +771,9 @@ export function initChatApp(transport, options = {}) {
     approvalCards.delete(callId);
     if (!approvalCards.size) {
       approvalHost?.classList.remove("blocking");
-      if (isRunning) setStatus("running", "Agent…");
+      if (isRunning) setStatus("running", t("chat.status.running"));
     }
-    if (!approved) hintEl.textContent = "Tool ditolak.";
+    if (!approved) hintEl.textContent = t("chat.tool.denied");
   }
 
   function upsertTool(event, isSubagent) {
@@ -966,7 +989,7 @@ export function initChatApp(transport, options = {}) {
       el.className = `msg voice-live ${role}${moduleId ? " voice-module" : ""}`;
       const at = new Date().toISOString();
       const modTag = moduleId ? ` · mod:${moduleId}` : "";
-      el.innerHTML = `<div class="role">${role === "user" ? "Anda" : "Rhema (live)"}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${at}">${formatVoiceBubbleMeta(at)}${modTag}</div>`;
+      el.innerHTML = `<div class="role">${role === "user" ? t("chat.role.user") : t("chat.role.rhemaLive")}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${at}">${formatVoiceBubbleMeta(at)}${modTag}</div>`;
       messagesEl.appendChild(el);
     }
 
@@ -1077,7 +1100,7 @@ export function initChatApp(transport, options = {}) {
         resolveApprovalUi(data.callId, !!data.approved);
         break;
       case "approvalAllEnabled":
-        hintEl.textContent = "Allow all aktif untuk run ini.";
+        hintEl.textContent = t("chat.allowAllActive");
         break;
       case "passiveContext":
         renderPassiveContext(data.snapshot);
@@ -1111,12 +1134,12 @@ export function initChatApp(transport, options = {}) {
           transport.post({ type: "lastResponse", text: activeAssistant.raw });
         }
         if (data.status === "error" && data.error) showError(data.error);
-        else if (data.status === "cancelled") hintEl.textContent = "Dibatalkan.";
+        else if (data.status === "cancelled") hintEl.textContent = t("chat.cancelled");
         else {
           const u = data.usage;
           let hint = data.durationMs
-            ? `Selesai (${Math.round(data.durationMs / 1000)}s) · ↑${u?.inputTokens ?? "?"} ↓${u?.outputTokens ?? "?"}`
-            : "Selesai.";
+            ? `${t("chat.done")} (${Math.round(data.durationMs / 1000)}s) · ↑${u?.inputTokens ?? "?"} ↓${u?.outputTokens ?? "?"}`
+            : t("chat.done");
           if (data.prUrl) {
             hint += " · PR siap";
             setStatus("idle", "Cloud PR");
@@ -1309,13 +1332,13 @@ export function initChatApp(transport, options = {}) {
     removeEmptyState();
     const el = document.createElement("div");
     el.className = "msg assistant";
-    el.innerHTML = `<div class="msg-role">Rhema</div><div class="msg-body"></div>`;
+    el.innerHTML = `<div class="msg-role">${t("chat.role.rhema")}</div><div class="msg-body"></div>`;
     el.querySelector(".msg-body").textContent = replyText;
     messagesEl.appendChild(el);
     transcript.push({ role: "assistant", text: replyText });
     persistSessionMeta();
     scrollBottom();
-    hintEl.textContent = "Selesai.";
+    hintEl.textContent = t("chat.done");
   }
 
   function sendMessage() {
@@ -1348,8 +1371,8 @@ export function initChatApp(transport, options = {}) {
       suppressVoiceUserEcho = text.trim().toLowerCase();
       appendUser(text, images);
       hintEl.textContent = transport.voice?.isLive?.()
-        ? "Mengirim ke sesi suara…"
-        : "Menyiapkan respons suara…";
+        ? t("chat.voice.sending")
+        : t("chat.voice.preparing");
       void transport.voice.sendTextOrStart(text);
       return;
     }
@@ -1376,9 +1399,8 @@ export function initChatApp(transport, options = {}) {
     removeEmptyState();
     const el = document.createElement("div");
     el.className = "msg assistant";
-    el.innerHTML = `<div class="msg-role">Rhema</div><div class="msg-body"></div>`;
-    el.querySelector(".msg-body").textContent =
-      `Baik, saya ingat (disimpan lokal di perangkat Anda): ${fact}`;
+    el.innerHTML = `<div class="msg-role">${t("chat.role.rhema")}</div><div class="msg-body"></div>`;
+    el.querySelector(".msg-body").textContent = t("chat.memory.saved", { fact });
     messagesEl.appendChild(el);
     transcript.push({ role: "assistant", text: el.querySelector(".msg-body").textContent });
     persistSessionMeta();

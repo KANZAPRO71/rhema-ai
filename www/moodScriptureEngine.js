@@ -3,6 +3,10 @@
  * Terpisah dari aiEmotionEngine / Renungan. Deterministik per hari: sama seharian, berganti besok.
  */
 
+import { getEffectiveUiLang } from "./localeProfile.js";
+import { MOOD_SCRIPTURE_EN } from "./moodScriptureI18n.js";
+import { t } from "./uiStrings.js";
+
 /** @returns {string} */
 export function moodTodayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -231,6 +235,19 @@ export const MOOD_SCRIPTURE_BANK = {
  * @param {string} moodId
  * @returns {({ id: string, emoji: string, label: string, title: string, verse: string, text: string, devotion: string, dateKey: string, poolSize: number, variationIndex: number } | null)}
  */
+/** @param {MoodScriptureEntry} entry @param {string} moodId @param {number} index */
+function localizeMoodEntry(entry, moodId, index) {
+  if (getEffectiveUiLang() !== "en") return entry;
+  const en = MOOD_SCRIPTURE_EN[moodId]?.[index];
+  if (!en) return entry;
+  return {
+    title: en.title ?? entry.title,
+    verse: en.verse ?? entry.verse,
+    text: en.text ?? entry.text,
+    devotion: en.devotion ?? entry.devotion,
+  };
+}
+
 export function getDailyMoodScripture(moodId) {
   const meta = MOOD_CHIPS.find((m) => m.id === moodId);
   const pool = MOOD_SCRIPTURE_BANK[moodId];
@@ -238,10 +255,11 @@ export function getDailyMoodScripture(moodId) {
 
   const salt = `alkitab-mood-${moodId}`;
   const variationIndex = moodDailyPickIndex(salt, pool.length);
-  const entry = pool[variationIndex];
+  const entry = localizeMoodEntry(pool[variationIndex], moodId, variationIndex);
 
   return {
     ...meta,
+    label: meta.labelKey ? t(meta.labelKey) : meta.label || "",
     ...entry,
     dateKey: moodTodayKey(),
     poolSize: pool.length,
