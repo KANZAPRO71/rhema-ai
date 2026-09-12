@@ -2,7 +2,7 @@
  * Speech-to-Speech client — mode direct (browser → Gemini WS) atau proxy (extension).
  */
 
-import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260819-1509";
+import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260911-nolive";
 import { speakModuleReply, stopModuleSpeech, warmupModuleSpeech } from "./voiceModuleSpeech.js";
 import { speakIndonesianText } from "./ambientAudio.js";
 import { loadLocalMemory } from "./memoryStore.js";

@@ -95,9 +95,9 @@ export const BIBLE_QUIZ_POOL = [
 export const DAILY_BIBLE_QUIZ = BIBLE_QUIZ_POOL;
 
 export const PRAYER_CATEGORIES = [
-  { id: "keluarga", name: "Keluarga & Rumah Tangga", icon: "🏡" },
-  { id: "kesehatan", name: "Kesehatan & Kesembuhan", icon: "🩺" },
-  { id: "pekerjaan", name: "Pekerjaan, Studi & Usaha", icon: "💼" },
-  { id: "rohani", name: "Pertumbuhan Rohani & Pelayanan", icon: "🕊️" },
-  { id: "syukur", name: "Ucapan Syukur & Pujian", icon: "🙌" },
+  { id: "keluarga", nameKey: "prayer.cat.keluarga", icon: "🏡" },
+  { id: "kesehatan", nameKey: "prayer.cat.kesehatan", icon: "🩺" },
+  { id: "pekerjaan", nameKey: "prayer.cat.pekerjaan", icon: "💼" },
+  { id: "rohani", nameKey: "prayer.cat.rohani", icon: "🕊️" },
+  { id: "syukur", nameKey: "prayer.cat.syukur", icon: "🙌" },
 ];

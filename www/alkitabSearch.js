@@ -91,12 +91,12 @@ export function renderSearchHistory(container, onPick) {
     return;
   }
   container.classList.remove("hidden");
-  container.innerHTML = `
-    <span class="search-history-label">Terakhir dicari</span>
-    <div class="search-history-chips">
-      ${items.map((q) => `<button type="button" class="search-history-chip" data-q="${esc(q)}">${esc(q)}</button>`).join("")}
-    </div>
-  `;
+  container.innerHTML = items
+    .map(
+      (q) =>
+        `<button type="button" class="alkitab-quick-btn search-history-chip" data-q="${esc(q)}" title="Terakhir dicari">${esc(q)}</button>`,
+    )
+    .join("");
   container.querySelectorAll("[data-q]").forEach((btn) => {
     btn.addEventListener("click", () => onPick(btn.getAttribute("data-q") || ""));
   });

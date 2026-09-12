@@ -5,6 +5,7 @@
 import {
   ambientEngine,
   forceStopAmbientAndSpeech,
+  initBreathingPrayerUI,
   speakIndonesianText,
   warmupSpeechVoices,
 } from "./ambientAudio.js";
@@ -19,11 +20,16 @@ import {
 import {
   DAILY_QUIZ_COUNT,
   getDailyQuizQuestions,
+  getDailyQuizTopic,
   isDailyQuizComplete,
   loadQuizState,
   saveQuizAnswer,
   scoreDailyQuiz,
 } from "./dailyQuizEngine.js";
+import { awardDailyQuizXp } from "./quizProfileStore.js";
+import { isNativeQuizStoreAvailable, saveDailyQuizNative } from "./quizNativeStore.js";
+import { getEffectiveUiLang } from "./localeProfile.js";
+import { t } from "./uiStrings.js";
 import {
   PRAYER_CATEGORIES,
   THEMATIC_READING_PLANS,
@@ -87,7 +93,7 @@ import {
   loadPrayerJournal,
   togglePrayerAnswered,
 } from "./prayerJournalStore.js";
-import { openVisionLensModal } from "./visionLens.js";
+import { openVisionLensModal } from "./visionLens.js?v=20260911-play";
 import { openWorshipSongwriterModal } from "./worshipSongwriter.js";
 import { openKidungHubModal } from "./laguPanel.js";
 import { renderLectioJournalList } from "./lectioDivina.js";
@@ -381,9 +387,27 @@ function setDevotionPodcastUiPlaying(playing) {
   syncDevotionListenButton();
 }
 
+const DEVOTION_TIMELINE_SHORT = ["Prolog", "Renungkan", "Refleksi", "Doa"];
+const DEVOTION_TIMELINE_TIMES = ["~2m", "2m", "5-6m", "2m"];
+
 function renderSessionPhaseBar(activeIndex) {
   const el = document.getElementById("dpw-session-phases");
   if (!el) return;
+  const useTimeline = el.classList.contains("devotion-audio-timeline");
+  if (useTimeline) {
+    el.innerHTML = DEVOTION_SESSION_PHASES.map((phase, idx) => {
+      const state = idx < activeIndex ? "is-done" : idx === activeIndex ? "is-active" : "";
+      const short = DEVOTION_TIMELINE_SHORT[idx] || phase.label;
+      const timeLbl = DEVOTION_TIMELINE_TIMES[idx] || "";
+      const dotChar = idx <= activeIndex && activeIndex >= 0 ? "●" : "○";
+      return `<div class="dat-step ${state}" title="${escapeHtml(phase.label)}">
+        <span class="dat-dot-char" aria-hidden="true">${dotChar}</span>
+        <span class="dat-label">${escapeHtml(short)}</span>
+        <span class="dat-time">${escapeHtml(timeLbl)}</span>
+      </div>`;
+    }).join("");
+    return;
+  }
   el.innerHTML = DEVOTION_SESSION_PHASES.map((phase, idx) => {
     const state = idx < activeIndex ? "done" : idx === activeIndex ? "active" : "";
     return `<span class="dpw-phase-pill ${state}" title="${escapeHtml(phase.label)}"><span class="dpw-phase-icon">${phase.icon}</span><span class="dpw-phase-label">${escapeHtml(phase.label)}</span></span>`;
@@ -612,6 +636,19 @@ function renderStreakBar() {
   const streak = loadStreak();
   const count = streak.count || 0;
   const activeToday = streak.lastDate === todayKey();
+  const isSplit = el.classList.contains("renungan-streak-split");
+
+  if (isSplit) {
+    el.innerHTML = `
+      <div class="wellness-split-card wellness-split-card--streak">
+        <span class="wellness-split-icon" aria-hidden="true">${count > 0 ? "🔥" : "✨"}</span>
+        <p class="wellness-split-value">${count} Hari</p>
+        <p class="wellness-split-label">Berturut-turut</p>
+        <p class="wellness-split-hint">${activeToday ? "✓ Sudah beribadah hari ini" : "Baca atau dengar firman hari ini"}</p>
+      </div>`;
+    return;
+  }
+
   const dots = Array.from({ length: 7 }, (_, i) => {
     const filled = i < Math.min(count, 7);
     const todayDot = i === count % 7 && activeToday && count > 0;
@@ -663,66 +700,73 @@ export function renderDevotionCard(devotion, actions = {}) {
   const formattedDate = devotion.formattedDate || new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" });
 
   const sourceBadge = devotion.source === "gemini" ? "Saat Teduh AI" : "Saat Teduh Hari Ini";
-  const meditationMin = Math.round(MEDITATION_DURATION_SEC / 60);
 
   el.innerHTML = `
-    <div class="devotion-theme-badge">
-      <span class="theme-star">✦</span>
-      <span class="theme-text">${escapeHtml(theme)}</span>
-    </div>
-    <span class="quote-deco" aria-hidden="true">&ldquo;</span>
-    <p class="devotion-badge">${escapeHtml(sourceBadge)} · ${escapeHtml(formattedDate)}</p>
-    <blockquote class="devotion-verse">&ldquo;${escapeHtml(verseText)}&rdquo;</blockquote>
-    <cite class="devotion-ref">${escapeHtml(verseRef)} · Terjemahan Baru (LAI)</cite>
-    
-    <div class="devotion-reflection-box">
-      <div class="reflection-head"><span class="reflection-icon">💡</span><strong>Refleksi Firman</strong></div>
-      <p class="devotion-reflection">${escapeHtml(reflection)}</p>
+    <div class="devotion-paper-hero">
+      <p class="devotion-hero-kicker">✦ ${escapeHtml(sourceBadge)} · ${escapeHtml(formattedDate).toUpperCase()}</p>
+      <h3 class="devotion-hero-theme">${escapeHtml(theme)}</h3>
+      <div class="devotion-silk-panel">
+        <span class="devotion-paper-quote" aria-hidden="true">&ldquo;</span>
+        <blockquote class="devotion-verse devotion-verse--paper">&ldquo;${escapeHtml(verseText)}&rdquo;</blockquote>
+        <cite class="devotion-ref devotion-ref--silk">${escapeHtml(verseRef)} · Terjemahan Baru (LAI)</cite>
+      </div>
     </div>
 
-    ${practicalAction ? `
-      <div class="devotion-action-box">
-        <div class="action-head"><span class="action-icon">🎯</span><strong>Langkah Iman Hari Ini</strong></div>
+    <div class="devotion-accordion-stack">
+      <details class="devotion-accordion">
+        <summary class="devotion-accordion-summary">
+          <span class="devotion-accordion-row">
+            <span class="devotion-accordion-icon">💡</span>
+            <span class="devotion-accordion-label">Refleksi Firman</span>
+          </span>
+        </summary>
+        <p class="devotion-reflection">${escapeHtml(reflection)}</p>
+      </details>
+      ${practicalAction ? `
+      <details class="devotion-accordion">
+        <summary class="devotion-accordion-summary">
+          <span class="devotion-accordion-row">
+            <span class="devotion-accordion-icon">🎯</span>
+            <span class="devotion-accordion-label">Langkah Iman Hari Ini</span>
+          </span>
+        </summary>
         <p class="devotion-action-text">${escapeHtml(practicalAction)}</p>
-      </div>
-    ` : ""}
-
-    ${guidedPrayer ? `
-      <div class="devotion-prayer-box">
-        <div class="prayer-head"><span class="prayer-icon">🙏</span><strong>Doa Penutup</strong></div>
+      </details>` : ""}
+      ${guidedPrayer ? `
+      <details class="devotion-accordion">
+        <summary class="devotion-accordion-summary">
+          <span class="devotion-accordion-row">
+            <span class="devotion-accordion-icon">🙏</span>
+            <span class="devotion-accordion-label">Doa Penutup</span>
+          </span>
+        </summary>
         <p class="devotion-prayer-text">${escapeHtml(guidedPrayer)}</p>
-      </div>
-    ` : ""}
+      </details>` : ""}
+    </div>
 
-    <div class="devotion-podcast-widget" id="devotion-podcast-widget">
-      <div class="dpw-head">
-        <div class="dpw-icon-pulse">🎧</div>
-        <div class="dpw-info">
-          <span class="dpw-badge">Sesi Saat Teduh · ~${SESSION_ESTIMATED_MINUTES} menit · 4 fase</span>
-          <div class="dpw-title">${escapeHtml(theme)}</div>
-        </div>
-        <div class="dpw-controls">
-          <button type="button" class="btn-dpw-play" id="btn-dpw-play-toggle" title="Mulai saat teduh hari ini" aria-label="Mulai saat teduh">
-            <span id="dpw-play-icon" aria-hidden="true">▶</span>
-          </button>
-          <button type="button" class="btn-dpw-stop hidden" id="btn-dpw-stop" title="Hentikan saat teduh" aria-label="Hentikan saat teduh">⏹</button>
-        </div>
+    <div class="devotion-audio-card devotion-podcast-widget devotion-podcast-widget--timeline" id="devotion-podcast-widget">
+      <div class="devotion-audio-head">
+        <span class="devotion-audio-kicker">🎧 Sesi Saat Teduh · ~${SESSION_ESTIMATED_MINUTES} Menit</span>
+        <span class="devotion-audio-badge">Suara live</span>
       </div>
-      <div class="dpw-session-phases" id="dpw-session-phases" aria-label="Progres saat teduh"></div>
+      <div class="dpw-session-phases devotion-audio-timeline" id="dpw-session-phases" aria-label="Progres saat teduh 4 fase"></div>
       <div class="dpw-meditation-overlay hidden" id="dpw-meditation-overlay" aria-live="polite">
         <span class="dpw-meditation-icon">🕊️</span>
         <p class="dpw-meditation-label">Renungkan firman yang baru didengar…</p>
         <p class="dpw-meditation-hint">Diam sejenak — biarkan Roh Kudus berbicara</p>
         <p class="dpw-meditation-timer" id="dpw-meditation-timer">${formatMeditationTime(MEDITATION_DURATION_SEC)}</p>
       </div>
-      <div class="dpw-equalizer" id="dpw-equalizer">
-        <span></span><span></span><span></span><span></span><span></span>
+      <div class="dpw-equalizer dpw-equalizer--compact hidden" id="dpw-equalizer" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </div>
-      <p class="dpw-phase-hint">Prolog &amp; ayat (~${OPENING_TARGET_MIN} m) → Renungkan (${meditationMin} m) → Refleksi (${REFLECTION_TARGET_MIN}–${REFLECTION_TARGET_MAX} m) → Doa (${PRAYER_TARGET_MIN}–${PRAYER_TARGET_MAX} m)</p>
-    </div>
-
-    <button type="button" class="btn-pill primary glow btn-devotion-listen-full" id="btn-devotion-listen">🎙️ Mulai Saat Teduh</button>`;
+      <div class="dpw-controls dpw-controls--inline">
+        <button type="button" class="btn-dpw-play hidden" id="btn-dpw-play-toggle" title="Mulai saat teduh" aria-label="Mulai saat teduh">
+          <span id="dpw-play-icon" aria-hidden="true">▶</span>
+        </button>
+        <button type="button" class="btn-dpw-stop hidden" id="btn-dpw-stop" title="Hentikan saat teduh" aria-label="Hentikan saat teduh">⏹</button>
+      </div>
+      <button type="button" class="btn-devotion-listen-full btn-devotion-listen-gold" id="btn-devotion-listen">🎙️ Mulai Saat Teduh</button>
+    </div>`;
 
   renderSessionPhaseBar(-1);
   syncDevotionPodcastUi();
@@ -766,9 +810,10 @@ function renderEmotions() {
   const el = document.getElementById("renungan-emotion-chips");
   if (!el) return;
 
+  const compact = el.classList.contains("emotion-grid--compact");
   el.innerHTML = EMOTIONS.map(
     (e) =>
-      `<button type="button" class="emotion-chip tone-${escapeHtml(e.id)}" data-id="${escapeHtml(e.id)}" data-ref="${escapeHtml(e.ref)}" aria-pressed="false">
+      `<button type="button" class="emotion-chip tone-${escapeHtml(e.id)}${compact ? " emotion-chip--tile" : ""}" data-id="${escapeHtml(e.id)}" data-ref="${escapeHtml(e.ref)}" aria-pressed="false" aria-label="${escapeHtml(e.label)}">
         <span class="emotion-emoji">${e.emoji}</span>
         <span class="emotion-label">${escapeHtml(e.label)}</span>
       </button>`,
@@ -823,9 +868,11 @@ function renderPrayers() {
   const el = document.getElementById("renungan-prayer-grid");
   if (!el) return;
 
+  const bento = el.classList.contains("prayer-grid--bento");
   el.innerHTML = PRAYER_PRESETS.map(
     (p) =>
-      `<button type="button" class="prayer-card tone-${escapeHtml(p.id)}" data-id="${escapeHtml(p.id)}" aria-pressed="false">
+      `<button type="button" class="prayer-card tone-${escapeHtml(p.id)}${bento ? " prayer-card--bento" : ""}" data-id="${escapeHtml(p.id)}" aria-pressed="false">
+        <span class="prayer-card-bg" aria-hidden="true"></span>
         <span class="prayer-emoji">${p.emoji}</span>
         <div class="prayer-info">
           <span class="prayer-title">${escapeHtml(p.title || p.label || "Doa")}</span>
@@ -891,61 +938,40 @@ export function renderThematicPlans() {
     const calPct = getCalendarPercent(dayOfYear);
 
     oneYearCard.innerHTML = `
-      <div class="oy-head">
-        <div class="oy-badge-wrap">
-          <span class="oy-icon">📅</span>
-          <div class="oy-head-text">
-            <span class="oy-kicker">PROGRAM ALKITAB 1 TAHUN · ${year}</span>
-            <h3 class="oy-title">Hari ke-${dayOfYear} dari ${totalDays || ONE_YEAR_TOTAL_DAYS}</h3>
-            <p class="oy-theme">${escapeHtml(plan.theme)}</p>
+      <div class="oy-split-card">
+        <div class="oy-split-left">
+          <div class="oy-progress-ring" style="--oy-pct:${readPct}" role="progressbar" aria-valuenow="${readPct}" aria-valuemin="0" aria-valuemax="100">
+            <span class="oy-ring-inner">
+              <strong>${doneCount}</strong>
+              <small>/${totalDays}</small>
+            </span>
+          </div>
+          <p class="oy-split-kicker">1 Tahun · ${year}</p>
+          <p class="oy-split-day">Hari ${dayOfYear}</p>
+          <p class="oy-split-cal">${calPct}% tahun</p>
+        </div>
+        <div class="oy-split-right">
+          <p class="oy-split-theme">${escapeHtml(plan.theme)}</p>
+          <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.pl)}">
+            <span class="oy-tag-lbl">PL</span> ${escapeHtml(plan.pl)}
+          </button>
+          <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.pb)}">
+            <span class="oy-tag-lbl">PB</span> ${escapeHtml(plan.pb)}
+          </button>
+          <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.mazmur)}">
+            <span class="oy-tag-lbl">Hikmat</span> ${escapeHtml(plan.mazmur)}
+          </button>
+          <div class="oy-split-actions">
+            <button type="button" class="oy-split-play" id="btn-oy-listen" aria-label="Putar audio firman hari ini">▶</button>
+            <button type="button" class="oy-split-check ${isDone ? "is-done" : ""}" id="btn-oy-check">
+              ${isDone ? "✓ Selesai" : "Tandai selesai"}
+            </button>
           </div>
         </div>
-      </div>
-
-      <div class="oy-stats-row" aria-label="Progres baca Alkitab 1 tahun">
-        <div class="oy-stat">
-          <div class="oy-stat-top">
-            <span class="oy-stat-label">Sudah dibaca</span>
-            <span class="oy-stat-val">${doneCount}/${totalDays}</span>
-          </div>
-          <div class="oy-stat-bar" role="progressbar" aria-valuenow="${readPct}" aria-valuemin="0" aria-valuemax="100">
-            <div class="oy-stat-fill oy-stat-fill-read" style="width:${readPct}%"></div>
-          </div>
-        </div>
-        <div class="oy-stat">
-          <div class="oy-stat-top">
-            <span class="oy-stat-label">Posisi tahun</span>
-            <span class="oy-stat-val">Hari ${dayOfYear}</span>
-          </div>
-          <div class="oy-stat-bar" role="progressbar" aria-valuenow="${calPct}" aria-valuemin="0" aria-valuemax="100">
-            <div class="oy-stat-fill oy-stat-fill-cal" style="width:${calPct}%"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="oy-passages-row">
-        <button type="button" class="oy-passage-pill" data-ref="${escapeHtml(plan.pl)}">
-          <span class="oy-tag-lbl">📜 PL:</span> ${escapeHtml(plan.pl)} ↗
-        </button>
-        <button type="button" class="oy-passage-pill" data-ref="${escapeHtml(plan.pb)}">
-          <span class="oy-tag-lbl">📖 PB:</span> ${escapeHtml(plan.pb)} ↗
-        </button>
-        <button type="button" class="oy-passage-pill" data-ref="${escapeHtml(plan.mazmur)}">
-          <span class="oy-tag-lbl">🕊️ Hikmat:</span> ${escapeHtml(plan.mazmur)} ↗
-        </button>
-      </div>
-
-      <div class="oy-actions-row">
-        <button type="button" class="btn-pill primary glow" id="btn-oy-listen">
-          🎙️ Putar Audio Firman Hari Ini
-        </button>
-        <button type="button" class="btn-pill btn-soft ${isDone ? "active" : ""}" id="btn-oy-check">
-          ${isDone ? "✓ Hari Ini Selesai Dibaca" : "○ Tandai Selesai Dibaca"}
-        </button>
       </div>
     `;
 
-    oneYearCard.querySelectorAll(".oy-passage-pill").forEach((btn) => {
+    oneYearCard.querySelectorAll(".oy-split-passage").forEach((btn) => {
       btn.addEventListener("click", () => {
         const ref = btn.getAttribute("data-ref");
         if (ref) document.dispatchEvent(new CustomEvent("rhema-open-verse", { detail: ref }));
@@ -1235,6 +1261,8 @@ function toggleThematicDay(planId, day) {
 
 /* --- PRAYER JOURNAL & ANSWERED PRAYERS --- */
 let currentPrayerFilter = "all"; // 'all' | 'active' | 'answered'
+/** @type {(() => void) | null} */
+let syncPrayerCategoryPillFn = null;
 
 export function renderPrayerJournal() {
   const listEl = document.getElementById("renungan-prayer-journal-list");
@@ -1246,18 +1274,18 @@ export function renderPrayerJournal() {
 
   if (statsEl) {
     statsEl.innerHTML = `
-      <div class="prayer-stats-grid">
-        <div class="prayer-stat-card">
-          <span class="prayer-stat-num">${stats.total}</span>
-          <span class="prayer-stat-label">Total Pokok Doa</span>
+      <div class="prayer-stats-bento">
+        <div class="prayer-stat-bento">
+          <span class="prayer-stat-bento-num">${stats.total}</span>
+          <span class="prayer-stat-bento-label">${escapeHtml(t("prayer.stats.total"))}</span>
         </div>
-        <div class="prayer-stat-card">
-          <span class="prayer-stat-num">${stats.active}</span>
-          <span class="prayer-stat-label">Permohonan Aktif</span>
+        <div class="prayer-stat-bento">
+          <span class="prayer-stat-bento-num">${stats.active}</span>
+          <span class="prayer-stat-bento-label">${escapeHtml(t("prayer.stats.active"))}</span>
         </div>
-        <div class="prayer-stat-card answered">
-          <span class="prayer-stat-num">${stats.answered}</span>
-          <span class="prayer-stat-label">Doa Terjawab</span>
+        <div class="prayer-stat-bento prayer-stat-bento--answered">
+          <span class="prayer-stat-bento-num">${stats.answered}</span>
+          <span class="prayer-stat-bento-label">${escapeHtml(t("prayer.stats.answered"))}</span>
         </div>
       </div>`;
   }
@@ -1271,14 +1299,14 @@ export function renderPrayerJournal() {
   if (!filtered.length) {
     const emptyHint =
       currentPrayerFilter === "answered"
-        ? "Belum ada doa yang ditandai terjawab. Syukur kepada Tuhan saat jawaban-Nya datang."
+        ? t("prayer.empty.answered")
         : currentPrayerFilter === "active"
-          ? "Semua pokok doa sudah ditandai terjawab, atau belum ada doa tersimpan."
-          : "Mulai catat permohonan doa Anda — judul singkat sudah cukup; catatan opsional.";
+          ? t("prayer.empty.active")
+          : t("prayer.empty.all");
     listEl.innerHTML = `
-      <div class="prayer-journal-empty">
-        <span class="empty-icon">🕊️</span>
-        <p class="prayer-empty-title">Belum ada pokok doa di kategori ini</p>
+      <div class="prayer-journal-empty prayer-empty-dashed">
+        <span class="empty-icon prayer-empty-icon" aria-hidden="true">🕊️</span>
+        <p class="prayer-empty-title">${escapeHtml(t("prayer.empty.title"))}</p>
         <p class="prayer-empty-note">${escapeHtml(emptyHint)}</p>
       </div>`;
     return;
@@ -1287,13 +1315,15 @@ export function renderPrayerJournal() {
   listEl.innerHTML = filtered
     .map((p) => {
       const isAnswered = p.status === "answered";
-      const cat = PRAYER_CATEGORIES.find((c) => c.id === p.category) || { name: "Umum", icon: "🕊️" };
+      const cat = PRAYER_CATEGORIES.find((c) => c.id === p.category);
+      const catLabel = cat ? t(cat.nameKey) : t("prayer.cat.general");
+      const catIcon = cat?.icon ?? "🕊️";
       return `
       <div class="prayer-journal-card glass-card ${isAnswered ? "answered-card" : ""}">
         <div class="pj-head">
           <div class="pj-head-left">
-            <span class="pj-badge">${cat.icon} ${escapeHtml(cat.name)}</span>
-            <span class="pj-status-badge ${isAnswered ? "badge-answered" : "badge-active"}">${isAnswered ? "🎉 Terjawab" : "⏳ Aktif"}</span>
+            <span class="pj-badge">${catIcon} ${escapeHtml(catLabel)}</span>
+            <span class="pj-status-badge ${isAnswered ? "badge-answered" : "badge-active"}">${isAnswered ? escapeHtml(t("prayer.status.answered")) : escapeHtml(t("prayer.status.active"))}</span>
           </div>
           <span class="pj-date">${escapeHtml(p.date || "")}</span>
         </div>
@@ -1301,18 +1331,18 @@ export function renderPrayerJournal() {
         ${p.content ? `<p class="pj-content">${escapeHtml(p.content)}</p>` : ""}
         ${isAnswered ? `
           <div class="pj-answered-box">
-            <span class="answered-badge">✨ Dijawab Tuhan${p.answeredDate ? ` · ${escapeHtml(p.answeredDate)}` : ""}</span>
+            <span class="answered-badge">${escapeHtml(t("prayer.answeredBy"))}${p.answeredDate ? ` · ${escapeHtml(p.answeredDate)}` : ""}</span>
             ${p.testimony ? `<p class="answered-testimony">${escapeHtml(p.testimony)}</p>` : ""}
           </div>
         ` : ""}
         <div class="pj-actions">
           <button type="button" class="btn-pj-action btn-support-prayer" data-prayer-id="${p.id}">
-            🙏 Doakan Bersama AI (${p.prayerCount || 1})
+            ${escapeHtml(t("prayer.prayWithAi"))} (${p.prayerCount || 1})
           </button>
           <button type="button" class="btn-pj-action btn-mark-answered" data-prayer-id="${p.id}">
-            ${isAnswered ? "↩ Batalkan Terjawab" : "🎉 Tandai Terjawab"}
+            ${isAnswered ? escapeHtml(t("prayer.unmarkAnswered")) : escapeHtml(t("prayer.markAnswered"))}
           </button>
-          <button type="button" class="btn-pj-action btn-delete-prayer" data-prayer-id="${p.id}">Hapus</button>
+          <button type="button" class="btn-pj-action btn-delete-prayer" data-prayer-id="${p.id}">${escapeHtml(t("prayer.delete"))}</button>
         </div>
       </div>`;
     })
@@ -1342,107 +1372,205 @@ export function renderPrayerJournal() {
   listEl.querySelectorAll(".btn-delete-prayer").forEach((btn) => {
     btn.addEventListener("click", () => {
       const id = btn.getAttribute("data-prayer-id");
-      if (!id || !confirm("Hapus pokok doa ini?")) return;
+      if (!id || !confirm(t("prayer.deleteConfirm"))) return;
       deletePrayer(id);
       renderPrayerJournal();
     });
   });
 }
 
-/* --- DAILY BIBLE QUIZ CHALLENGE --- */
+/* --- DAILY BIBLE QUIZ CHALLENGE (interactive slide module) --- */
+/** @type {number | null} */
+let quizViewIndex = null;
+
+/** @type {Set<string>} */
+const quizHintOpen = new Set();
+
 export function openHomeQuizSection() {
-  const el = document.getElementById("home-quiz-section");
-  if (el instanceof HTMLDetailsElement) {
-    el.open = true;
-  }
+  /* Kuis sudah terbuka di Beranda — jangan auto-scroll saat loadHome. */
 }
 
 export function closeHomeQuizSection() {
-  const el = document.getElementById("home-quiz-section");
-  if (el instanceof HTMLDetailsElement) {
-    el.open = false;
+  quizViewIndex = null;
+}
+
+/** @param {Array<{ id: string }>} dailyQuestions @param {Record<string, number>} answers */
+function resolveQuizViewIndex(dailyQuestions, answers) {
+  const firstOpenIdx = dailyQuestions.findIndex((q) => typeof answers[q.id] !== "number");
+  if (quizViewIndex == null || quizViewIndex < 0 || quizViewIndex >= dailyQuestions.length) {
+    return firstOpenIdx >= 0 ? firstOpenIdx : Math.max(0, dailyQuestions.length - 1);
   }
+  return quizViewIndex;
 }
 
 export function renderDailyBibleQuiz() {
   const container = document.getElementById("daily-quiz-container");
   const scoreBadge = document.getElementById("quiz-score-badge");
-  const chipCount = document.getElementById("home-quiz-chip-count");
   const chipScore = document.getElementById("home-quiz-chip-score");
   if (!container) return;
 
   const dailyQuestions = getDailyQuizQuestions();
-  const { answers: quizUserAnswers } = loadQuizState();
+  const { dateKey, answers: quizUserAnswers } = loadQuizState();
+  const dailyTopic = getDailyQuizTopic(dateKey);
+  const topicChip = document.getElementById("home-quiz-topic-chip");
+  if (topicChip) topicChip.textContent = dailyTopic.label;
+
+  if (container.dataset.quizDate !== dateKey) {
+    container.dataset.quizDate = dateKey;
+    quizViewIndex = null;
+    quizHintOpen.clear();
+    container.dataset.quizFinish = "0";
+  }
+
   const { correct: correctCount, answered: totalAnswered, total } = scoreDailyQuiz(dailyQuestions, quizUserAnswers);
   const allComplete = isDailyQuizComplete(dailyQuestions, quizUserAnswers);
+  const showIdx = resolveQuizViewIndex(dailyQuestions, quizUserAnswers);
+  quizViewIndex = showIdx;
 
-  if (chipCount) {
-    chipCount.textContent = `${DAILY_QUIZ_COUNT} pertanyaan / hari · rotasi`;
-  }
   if (chipScore) {
-    if (allComplete) {
-      chipScore.textContent = `Selesai · ${correctCount}/${total} benar`;
+    if (allComplete && container.dataset.quizFinish === "1") {
+      chipScore.textContent = t("quiz.done", { correct: String(correctCount), total: String(total) });
     } else if (totalAnswered > 0) {
-      chipScore.textContent = `Progres ${totalAnswered}/${total}`;
+      chipScore.textContent = `${showIdx + 1} / ${total}`;
     } else {
-      chipScore.textContent = "Belum dimulai hari ini";
+      chipScore.textContent = t("home.quiz.notStarted");
     }
   }
 
-  container.innerHTML = dailyQuestions.map((q, qIdx) => {
-    const userChoice = quizUserAnswers[q.id];
-    const isAnswered = typeof userChoice === "number";
+  if (allComplete && container.dataset.quizFinish === "1") {
+    const { xpEarned, profile } = awardDailyQuizXp(correctCount, total, dateKey, dailyTopic.key);
+    void persistDailyQuizCompletion(dateKey, total, correctCount, xpEarned);
 
-    const optionsHtml = q.options.map((opt, optIdx) => {
-      let btnClass = "quiz-opt-btn";
-      if (isAnswered) {
-        if (optIdx === q.correctIndex) btnClass += " correct";
-        else if (optIdx === userChoice) btnClass += " wrong";
-      }
-      return `
-        <button type="button" class="${btnClass}" data-qid="${q.id}" data-opt="${optIdx}" ${isAnswered ? "disabled" : ""}>
-          <span class="opt-index">${String.fromCharCode(65 + optIdx)}</span>
-          <span class="opt-text">${escapeHtml(opt)}</span>
-        </button>
-      `;
-    }).join("");
-
-    return `
-      <div class="quiz-question-card glass-card">
-        <div class="quiz-card-top">
-          <span class="quiz-qnum">Pertanyaan ${qIdx + 1} dari ${dailyQuestions.length}</span>
-          <span class="quiz-ref-badge">${escapeHtml(q.verseRef)}</span>
-        </div>
-        <h4 class="quiz-qtext">${escapeHtml(q.question)}</h4>
-        <div class="quiz-options-list">${optionsHtml}</div>
-        ${isAnswered ? `
-          <div class="quiz-explanation ${userChoice === q.correctIndex ? "success" : "review"}">
-            <span class="exp-icon">${userChoice === q.correctIndex ? "✓ Benar!" : "ℹ️ Penjelasan:"}</span>
-            <p class="exp-text">${escapeHtml(q.explanation)}</p>
-          </div>
-        ` : ""}
+    container.innerHTML = `
+      <div class="quiz-finish-card glass-card quiz-slide-in">
+        <span class="quiz-finish-icon" aria-hidden="true">${correctCount === total ? "🏆" : "✨"}</span>
+        <h4 class="quiz-finish-title">${escapeHtml(t("quiz.finish.title"))}</h4>
+        <p class="quiz-finish-sub">${escapeHtml(t("quiz.finish.sub", { correct: String(correctCount), total: String(total) }))}</p>
+        ${xpEarned > 0 ? `<p class="quiz-xp-earned">+${xpEarned} XP · Level <strong>${escapeHtml(profile.levelTitle)}</strong></p>` : `<p class="quiz-xp-earned">Level <strong>${escapeHtml(profile.levelTitle)}</strong> · ${profile.xp} XP</p>`}
+        <button type="button" class="quiz-btn-secondary" id="quiz-review-btn">${escapeHtml(t("quiz.review"))}</button>
       </div>
+    `;
+    container.querySelector("#quiz-review-btn")?.addEventListener("click", () => {
+      container.dataset.quizFinish = "0";
+      quizViewIndex = 0;
+      renderDailyBibleQuiz();
+    });
+    bindQuizSlideAnimation(container);
+    updateQuizScoreBadge(scoreBadge, correctCount, total, totalAnswered);
+    return;
+  }
+
+  container.dataset.quizFinish = "0";
+  const q = dailyQuestions[showIdx];
+  const userChoice = quizUserAnswers[q.id];
+  const isAnswered = typeof userChoice === "number";
+  const hintVisible = quizHintOpen.has(q.id);
+  const hintText = q.hint || q.explanation;
+
+  const optionsHtml = q.options.map((opt, optIdx) => {
+    let btnClass = "quiz-opt-btn";
+    if (isAnswered) {
+      if (optIdx === q.correctIndex) btnClass += " correct";
+      else if (optIdx === userChoice) btnClass += " wrong";
+    }
+    return `
+      <button type="button" class="${btnClass}" data-qid="${q.id}" data-opt="${optIdx}" ${isAnswered ? "disabled" : ""}>
+        <span class="opt-index">${String.fromCharCode(65 + optIdx)}</span>
+        <span class="opt-text">${escapeHtml(opt)}</span>
+      </button>
     `;
   }).join("");
 
-  if (allComplete) {
-    container.innerHTML += `
-      <div class="quiz-finish-card glass-card">
-        <span class="quiz-finish-icon" aria-hidden="true">${correctCount === total ? "🏆" : "✨"}</span>
-        <h4 class="quiz-finish-title">Kuis Hari Ini Selesai</h4>
-        <p class="quiz-finish-sub">Skor: <strong>${correctCount} / ${total} benar</strong> — soal baru besok pagi.</p>
-      </div>
-    `;
-  }
+  const dotsHtml = dailyQuestions.map((item, idx) => {
+    const answered = typeof quizUserAnswers[item.id] === "number";
+    let cls = "quiz-carousel-dot";
+    if (idx === showIdx) cls += " is-active";
+    else if (answered) cls += " is-done";
+    return `<button type="button" class="${cls}" data-quiz-idx="${idx}" aria-label="${escapeHtml(t("quiz.progressAria", { n: String(idx + 1) }))}"></button>`;
+  }).join("");
 
-  if (scoreBadge) {
-    if (totalAnswered > 0) {
-      scoreBadge.classList.remove("hidden");
-      scoreBadge.innerHTML = `Skor Harian: <strong>${correctCount} / ${total} Benar</strong> (${Math.round((correctCount / total) * 100)}%)`;
-    } else {
-      scoreBadge.classList.add("hidden");
+  const canGoNext = isAnswered && showIdx < dailyQuestions.length - 1;
+  const isLastAnswered = isAnswered && showIdx === dailyQuestions.length - 1;
+
+  container.innerHTML = `
+    <article class="quiz-interactive-card glass-card quiz-slide-in">
+      <header class="quiz-interactive-head">
+        <span class="quiz-progress-fraction" aria-live="polite">${showIdx + 1} / ${dailyQuestions.length}</span>
+        <span class="quiz-ref-badge">${escapeHtml(q.verseRef)}</span>
+      </header>
+      ${q.visualEmoji ? `
+        <div class="quiz-visual-banner" aria-hidden="true">
+          <span class="quiz-visual-emoji">${q.visualEmoji}</span>
+          <span class="quiz-visual-label">${escapeHtml(q.visualLabel || dailyTopic.label)}</span>
+        </div>
+      ` : ""}
+      <h4 class="quiz-qtext">${escapeHtml(q.question)}</h4>
+      <div class="quiz-options-list">${optionsHtml}</div>
+      ${hintVisible ? `
+        <div class="quiz-hint-panel" role="note">
+          <span class="quiz-hint-label">${escapeHtml(t("quiz.hint.label"))}</span>
+          <p class="quiz-hint-text">${escapeHtml(hintText)}</p>
+        </div>
+      ` : ""}
+      ${isAnswered ? `
+        <div class="quiz-explanation ${userChoice === q.correctIndex ? "success" : "review"}">
+          <span class="exp-icon">${userChoice === q.correctIndex ? escapeHtml(t("quiz.correct")) : escapeHtml(t("quiz.explainLabel"))}</span>
+          <p class="exp-text">${escapeHtml(q.explanation)}</p>
+        </div>
+        ${userChoice !== q.correctIndex ? `
+          <button type="button" class="quiz-btn-voice" id="quiz-ask-voice-btn">${escapeHtml(t("quiz.askVoice"))}</button>
+        ` : ""}
+      ` : ""}
+      <footer class="quiz-interactive-foot">
+        <button type="button" class="quiz-btn-ghost" id="quiz-hint-btn" ${isAnswered ? "disabled" : ""}>
+          ${hintVisible ? escapeHtml(t("quiz.hint.hide")) : escapeHtml(t("quiz.hint.show"))}
+        </button>
+        <button type="button" class="quiz-btn-next" id="quiz-next-btn" ${canGoNext || (isLastAnswered && allComplete) ? "" : "disabled"}>
+          ${isLastAnswered ? (allComplete ? escapeHtml(t("quiz.seeScore")) : escapeHtml(t("quiz.next"))) : escapeHtml(t("quiz.next"))}
+        </button>
+      </footer>
+    </article>
+    <div class="quiz-carousel-dots" role="tablist" aria-label="${escapeHtml(t("quiz.progressList"))}">${dotsHtml}</div>
+  `;
+
+  updateQuizScoreBadge(scoreBadge, correctCount, total, totalAnswered);
+  bindQuizSlideAnimation(container);
+
+  container.querySelector("#quiz-ask-voice-btn")?.addEventListener("click", () => {
+    const prompt =
+      getEffectiveUiLang() === "en"
+        ? `Explain the theological and historical Bible context for this quiz question: "${q.question}" Reference: ${q.verseRef}. Correct answer: ${q.options[q.correctIndex]}.`
+        : `Jelaskan konteks teologi dan sejarah Alkitab untuk pertanyaan kuis ini: "${q.question}" Referensi: ${q.verseRef}. Jawaban benarnya: ${q.options[q.correctIndex]}.`;
+    homeBridge?.go?.("voice");
+    homeBridge?.askVoice?.(prompt);
+  });
+
+  container.querySelector("#quiz-hint-btn")?.addEventListener("click", () => {
+    if (quizHintOpen.has(q.id)) quizHintOpen.delete(q.id);
+    else quizHintOpen.add(q.id);
+    renderDailyBibleQuiz();
+  });
+
+  container.querySelector("#quiz-next-btn")?.addEventListener("click", () => {
+    if (isLastAnswered && allComplete) {
+      container.dataset.quizFinish = "1";
+      renderDailyBibleQuiz();
+      return;
     }
-  }
+    if (canGoNext) {
+      quizViewIndex = showIdx + 1;
+      renderDailyBibleQuiz();
+    }
+  });
+
+  container.querySelectorAll("[data-quiz-idx]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = Number(btn.getAttribute("data-quiz-idx"));
+      if (isNaN(idx)) return;
+      quizViewIndex = idx;
+      renderDailyBibleQuiz();
+    });
+  });
 
   container.querySelectorAll(".quiz-opt-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -1450,13 +1578,43 @@ export function renderDailyBibleQuiz() {
       const opt = Number(btn.getAttribute("data-opt"));
       if (!qid || isNaN(opt)) return;
 
-      const state = saveQuizAnswer(qid, opt);
+      saveQuizAnswer(qid, opt);
       renderDailyBibleQuiz();
-      if (isDailyQuizComplete(dailyQuestions, state.answers)) {
-        markTodayRead();
-      }
     });
   });
+}
+
+/** @param {HTMLElement | null} scoreBadge @param {number} correctCount @param {number} total @param {number} totalAnswered */
+function updateQuizScoreBadge(scoreBadge, correctCount, total, totalAnswered) {
+  if (!scoreBadge) return;
+  if (totalAnswered > 0) {
+    scoreBadge.classList.remove("hidden");
+    scoreBadge.innerHTML = `Skor Harian: <strong>${correctCount} / ${total} Benar</strong> (${Math.round((correctCount / total) * 100)}%)`;
+  } else {
+    scoreBadge.classList.add("hidden");
+  }
+}
+
+/** @param {HTMLElement} container */
+function bindQuizSlideAnimation(container) {
+  const quizCard = container.querySelector(".quiz-slide-in");
+  quizCard?.addEventListener("animationend", () => quizCard.classList.remove("quiz-slide-in"), { once: true });
+}
+
+/** @param {string} dateKey @param {number} total @param {number} correctCount @param {number} xpEarned */
+async function persistDailyQuizCompletion(dateKey, total, correctCount, xpEarned) {
+  const nativeSaved = await saveDailyQuizNative({
+    dateKey,
+    totalQuestions: total,
+    correctAnswers: correctCount,
+    xpEarned,
+    isCompleted: true,
+  });
+  if (!nativeSaved && !isNativeQuizStoreAvailable()) {
+    markTodayRead();
+  } else {
+    renderHomeStreakMini();
+  }
 }
 
 /* --- SUB-TAB SWITCHER (Rencana Baca di tab Alkitab) --- */
@@ -1484,6 +1642,19 @@ export function renderAlkitabProgramShell() {
 
 export function renderRenunganShell() {
   try { renderStreakBar(); } catch (e) { console.warn("[rhema] renderStreakBar:", e); }
+  try {
+    const breathingHost = document.getElementById("breathing-prayer-host");
+    if (breathingHost) {
+      const needsCompact = breathingHost.dataset.compact === "1";
+      const hasCompact = Boolean(breathingHost.querySelector(".wellness-split-card--breath"));
+      if (breathingHost.dataset.bound !== "1" || (needsCompact && !hasCompact)) {
+        breathingHost.dataset.bound = "1";
+        initBreathingPrayerUI(breathingHost);
+      }
+    }
+  } catch (e) {
+    console.warn("[rhema] initBreathingPrayerUI:", e);
+  }
   try { renderEmotions(); } catch (e) { console.warn("[rhema] renderEmotions:", e); }
   try { renderPrayers(); } catch (e) { console.warn("[rhema] renderPrayers:", e); }
   try { renderHomeStreakMini(); } catch (e) { console.warn("[rhema] renderHomeStreakMini:", e); }
@@ -1497,10 +1668,7 @@ export function renderHomeStreakMini() {
   const count = streak.count || 0;
   el.innerHTML = `
     <span class="mini-streak-fire">${count > 0 ? "🔥" : "✨"}</span>
-    <span class="mini-streak-text">
-      <strong>${count} hari</strong> streak firman
-    </span>
-    <span class="mini-streak-arrow">→</span>`;
+    <span class="mini-streak-text"><strong>${count}</strong> ${t("home.streak.unit")}</span>`;
 }
 
 /** @deprecated use renderRenunganShell */
@@ -1516,6 +1684,13 @@ export function initHomeWorship(transport, api) {
   homeBridge = api;
   voiceTransport = transport;
   warmupSpeechVoices();
+
+  document.addEventListener("rhema-locale-home-refresh", () => {
+    try { renderHomeStreakMini(); } catch { /* ignore */ }
+    try { renderDailyBibleQuiz(); } catch { /* ignore */ }
+    try { renderPrayerJournal(); } catch { /* ignore */ }
+    try { syncPrayerCategoryPillFn?.(); } catch { /* ignore */ }
+  });
 
   if (!transport.__devotionPodcastHook) {
     transport.__devotionPodcastHook = true;
@@ -1674,7 +1849,7 @@ export function initHomeWorship(transport, api) {
   renderLectioJournalList();
   document.addEventListener("rhema-lectio-journal-updated", renderLectioJournalList);
   document.addEventListener("rhema-screen", (e) => {
-    if (/** @type {CustomEvent} */ (e).detail?.screen === "renungan") renderLectioJournalList();
+    if (/** @type {CustomEvent} */ (e).detail?.screen === "alkitab") renderLectioJournalList();
   });
 
   document.getElementById("btn-open-vision-lens")?.addEventListener("click", () => {
@@ -1721,8 +1896,12 @@ export function initHomeWorship(transport, api) {
 
     doaScreen.querySelectorAll(".prayer-filter-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        doaScreen.querySelectorAll(".prayer-filter-btn").forEach((b) => b.classList.remove("active"));
+        doaScreen.querySelectorAll(".prayer-filter-btn").forEach((b) => {
+          b.classList.remove("active");
+          b.setAttribute("aria-selected", "false");
+        });
         btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
         currentPrayerFilter = btn.getAttribute("data-prayer-filter") || "all";
         renderPrayerJournal();
       });
@@ -1732,6 +1911,21 @@ export function initHomeWorship(transport, api) {
     const titleInput = /** @type {HTMLInputElement | null} */ (document.getElementById("input-prayer-title"));
     const catSelect = /** @type {HTMLSelectElement | null} */ (document.getElementById("select-prayer-category"));
     const contentInput = /** @type {HTMLTextAreaElement | null} */ (document.getElementById("input-prayer-content"));
+    const catEmojiEl = document.getElementById("prayer-category-emoji");
+    const catLabelEl = document.getElementById("prayer-category-label");
+
+    const syncPrayerCategoryPill = () => {
+      const value = catSelect?.value || "keluarga";
+      const cat = PRAYER_CATEGORIES.find((c) => c.id === value) || PRAYER_CATEGORIES[0];
+      const shortKey = `${cat.nameKey}.short`;
+      const shortName = t(shortKey);
+      if (catEmojiEl) catEmojiEl.textContent = cat.icon;
+      if (catLabelEl) catLabelEl.textContent = shortName;
+    };
+
+    catSelect?.addEventListener("change", syncPrayerCategoryPill);
+    syncPrayerCategoryPill();
+    syncPrayerCategoryPillFn = syncPrayerCategoryPill;
 
     form?.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -1743,13 +1937,13 @@ export function initHomeWorship(transport, api) {
       if (titleInput) titleInput.value = "";
       if (contentInput) contentInput.value = "";
       renderPrayerJournal();
-      alert("Pokok doa berhasil disimpan ke jurnal!");
+      alert(t("prayer.savedAlert"));
     });
 
     document.getElementById("btn-pray-all-journal")?.addEventListener("click", () => {
       const activePrayers = loadPrayerJournal().filter((p) => p.status === "active");
       if (!activePrayers.length) {
-        alert("Belum ada pokok doa aktif. Tuliskan permohonan doa Anda terlebih dahulu.");
+        alert(t("prayer.noActiveAlert"));
         return;
       }
       api.askVoice(buildAllActivePrayersVoicePrompt(activePrayers));

@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/icons/icon-512.svg" />
   <link rel="stylesheet" href="/styles.css?v=20260911-byok" />
   <link rel="stylesheet" href="/apple-intelligence.css?v=20260911-byok" />
-  <link rel="stylesheet" href="/mobile.css?v=20260911-byok" />
+  <link rel="stylesheet" href="/mobile.css?v=20260911-font" />
   <title>rhema ai</title>
   <style id="rhema-launch-splash-critical">
     @keyframes rhema-splash-in {
@@ -175,16 +175,19 @@
 
     <main class="mobile-main">
       <!-- BERANDA -->
-      <section id="screen-home" class="mobile-screen active" data-title="Beranda" data-title-key="screen.home">
+      <section id="screen-home" class="mobile-screen active beranda-premium" data-title="Beranda" data-title-key="screen.home">
         <div class="mobile-scroll">
-          <div class="beranda-hero">
-            <div class="beranda-hero-main">
-              <span class="beranda-hero-icon" aria-hidden="true">✨</span>
-              <div class="beranda-hero-text">
+          <div class="beranda-hero beranda-hero--editorial beranda-hero--split">
+            <div class="beranda-hero-top">
+              <div class="beranda-hero-main">
                 <p class="beranda-kicker" data-i18n="hero.kicker">Rhema AI Voice</p>
                 <h2 class="beranda-hero-title" id="home-greeting">Selamat datang</h2>
-                <p class="beranda-hero-sub">Pendamping ibadah · TB LAI</p>
+                <p class="beranda-hero-sub" data-i18n="hero.sub">Pendamping ibadah · TB LAI</p>
               </div>
+              <button type="button" id="home-streak-mini" class="home-streak-badge" aria-label="Streak firman — buka Renungan" data-i18n-aria="home.streak.aria">
+                <span class="mini-streak-fire">✨</span>
+                <span class="mini-streak-text"><strong>0</strong> Hari</span>
+              </button>
             </div>
             <div class="beranda-summary">
               <span class="beranda-chip beranda-chip--live beranda-chip--voice-tag">
@@ -195,31 +198,34 @@
             </div>
           </div>
 
-          <div class="beranda-pillars" aria-label="Three worship paths">
-            <div class="beranda-pillar">
+          <div class="beranda-pillars beranda-pillars--bento" role="group" aria-label="Tiga jalur ibadah" data-i18n-aria="home.pillars.aria">
+            <button type="button" class="beranda-pillar beranda-pillar--read" id="pillar-goto-read" data-pillar="read">
+              <span class="beranda-pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </span>
               <strong data-i18n="pillar.read">Baca</strong>
-              <span data-i18n="pillar.read.desc">Alkitab TB &amp; kidung offline</span>
-            </div>
-            <div class="beranda-pillar">
+              <span class="beranda-pillar-tag" data-i18n="pillar.tag.offline">Offline</span>
+            </button>
+            <button type="button" class="beranda-pillar beranda-pillar--speak" id="pillar-goto-speak" data-pillar="speak">
+              <span class="beranda-pillar-icon beranda-pillar-icon--glow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 1 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/></svg>
+              </span>
               <strong data-i18n="pillar.speak">Bicara</strong>
-              <span data-i18n="pillar.speak.desc">Suara live full duplex</span>
-            </div>
-            <div class="beranda-pillar">
+              <span class="beranda-pillar-tag" data-i18n="pillar.tag.fullDuplex">Full Duplex</span>
+            </button>
+            <button type="button" class="beranda-pillar beranda-pillar--pray" id="pillar-goto-pray" data-pillar="pray">
+              <span class="beranda-pillar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="M6 8c0 3.3 2.7 6 6 6s6-2.7 6-6"/><path d="M12 14v8"/><path d="M8 22h8"/></svg>
+              </span>
               <strong data-i18n="pillar.pray">Berdoa</strong>
-              <span data-i18n="pillar.pray.desc">Renungan &amp; doa terpandu</span>
-            </div>
+              <span class="beranda-pillar-tag" data-i18n="pillar.tag.guided">Terpandu</span>
+            </button>
           </div>
 
           <button type="button" id="byok-home-banner" class="byok-home-banner hidden" aria-hidden="true">
             <span class="byok-home-banner-kicker">Bring Your Own Key</span>
             <span class="byok-home-banner-title" data-i18n="byok.banner.title">Aktifkan suara &amp; AI</span>
             <span class="byok-home-banner-sub" data-i18n="byok.banner.sub">Tempel Gemini API key gratis dari Google AI Studio</span>
-          </button>
-
-          <button type="button" id="home-streak-mini" class="home-streak-mini bento-tile-streak" aria-label="Streak firman — buka Renungan">
-            <span class="mini-streak-fire">✨</span>
-            <span class="mini-streak-text"><strong>0 hari</strong> streak firman</span>
-            <span class="mini-streak-arrow" aria-hidden="true">→</span>
           </button>
 
           <!-- Firman Hari Ini -->
@@ -233,31 +239,49 @@
                 </div>
               </div>
               <div class="beranda-section-chips">
-                <span class="beranda-section-chip">Ayat Rhema</span>
-                <span class="beranda-section-chip beranda-section-chip--voice">Suara live</span>
+                <span class="beranda-section-chip" data-i18n="firman.chip.verse">Ayat Rhema</span>
+                <span class="beranda-section-chip beranda-section-chip--voice" data-i18n="firman.chip.voice">Suara live</span>
               </div>
             </div>
             <div class="beranda-section-body beranda-firman-grid">
             <div class="bento-tile bento-tile-voice">
               <button id="btn-alkitab-voice-hero" type="button" class="card-voice-cta card-goto-voice-hub">
                 <span class="cta-sacred-mini" aria-hidden="true"><span class="cta-sacred-core"></span></span>
-                <span class="cta-title">Rhema Intelligence</span>
-                <span class="cta-hint">Ngobrol langsung · suara live dua arah · tap untuk mulai</span>
+                <span class="cta-title" data-i18n="home.voice.cta.title">Rhema Intelligence</span>
+                <span class="cta-hint" data-i18n="home.voice.cta.hint">Ngobrol langsung · suara live dua arah · tap untuk mulai</span>
                 <span class="cta-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
               </button>
             </div>
 
-            <article class="bento-tile bento-tile-verse" id="bento-today-verse">
+            <article class="bento-tile bento-tile-verse bento-tile-verse--hero" id="bento-today-verse">
               <div class="bento-verse-header">
-                <p class="bento-kicker">Ayat Hari Ini</p>
-                <span class="bento-verse-badge">Rhema</span>
+                <p class="bento-kicker" data-i18n="home.verse.kicker">Ayat Hari Ini</p>
+                <span class="bento-verse-badge" data-i18n="home.verse.badge">Rhema</span>
               </div>
-              <p class="bento-verse-text alkitab-loading">Memuat firman…</p>
+              <div class="firman-glass-panel">
+                <span class="firman-quote-mark" aria-hidden="true">&ldquo;</span>
+                <p class="bento-verse-text alkitab-loading" data-i18n="home.verse.loading">Memuat firman…</p>
+              </div>
               <p class="bento-verse-ref">—</p>
-              <div class="bento-verse-actions" id="home-today-actions">
-                <button type="button" class="btn-micro-bento" id="btn-home-listen-today">🔊 Dengar</button>
-                <button type="button" class="btn-micro-bento primary" id="btn-home-explain-today">✨ Jelaskan</button>
-                <button type="button" class="btn-micro-bento" id="btn-home-open-today">📖 Buka TB</button>
+              <div class="bento-verse-actions bento-verse-actions--round" id="home-today-actions">
+                <button type="button" class="btn-firman-round" id="btn-home-listen-today" aria-label="Dengar ayat" data-i18n-aria="home.verse.listenAria">
+                  <span class="btn-firman-round-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  </span>
+                  <span class="btn-firman-round-label" data-i18n="home.verse.listen">Dengar</span>
+                </button>
+                <button type="button" class="btn-firman-round btn-firman-round--primary" id="btn-home-explain-today" aria-label="Jelaskan ayat" data-i18n-aria="home.verse.explainAria">
+                  <span class="btn-firman-round-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"/><path d="M5 19h14"/></svg>
+                  </span>
+                  <span class="btn-firman-round-label" data-i18n="home.verse.explain">Jelaskan</span>
+                </button>
+                <button type="button" class="btn-firman-round" id="btn-home-open-today" aria-label="Buka Alkitab TB" data-i18n-aria="home.verse.openAria">
+                  <span class="btn-firman-round-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                  </span>
+                  <span class="btn-firman-round-label" data-i18n="home.verse.openBible">Buka TB</span>
+                </button>
               </div>
             </article>
 
@@ -275,78 +299,90 @@
                 </div>
               </div>
               <div class="beranda-section-chips">
-                <span class="beranda-section-chip">10 alat AI</span>
-                <span class="beranda-section-chip beranda-section-chip--story">Daily Story</span>
+                <span class="beranda-section-chip" data-i18n="explore.chip.tools">10 alat AI</span>
+                <span class="beranda-section-chip beranda-section-chip--story" data-i18n="explore.chip.story">Daily Story</span>
               </div>
             </div>
             <div class="beranda-section-body">
             <div class="intro-actions-wrap home-explore-actions">
               <button type="button" id="btn-open-daily-story" class="btn-story-banner">
                 <span class="story-ring">✨</span>
-                <span>Daily Story</span>
+                <span data-i18n="explore.chip.story">Daily Story</span>
               </button>
             </div>
-            <div class="gemini-innovations-grid">
-              <button type="button" class="innovation-card glow-sermon" id="btn-open-khotbah-topik">
+            <div class="home-explore-carousel" aria-label="Alat eksplorasi AI — geser ke kanan" data-i18n-aria="explore.carousel.aria">
+              <div class="gemini-innovations-grid gemini-innovations-carousel">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-khotbah-topik">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Khotbah (topik)</span>
-                  <span class="inno-sub">Kerangka khotbah &amp; bahan komsel</span>
+                  <span class="inno-label" data-i18n="explore.sermon.label">Khotbah (topik)</span>
+                  <span class="inno-sub" data-i18n="explore.sermon.sub">Kerangka khotbah &amp; bahan komsel</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-detector" id="btn-open-sermon-detector">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-sermon-detector">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Detektor Khotbah</span>
-                  <span class="inno-sub">Deteksi ayat live di gereja</span>
+                  <span class="inno-label" data-i18n="explore.detector.label">Detektor Khotbah</span>
+                  <span class="inno-sub" data-i18n="explore.detector.sub">Deteksi ayat live di gereja</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-genealogy" id="btn-open-genealogy">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-genealogy">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/><path d="M12 7v4M8 15l4-4 4 4"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Silsilah Tokoh</span>
-                  <span class="inno-sub">Peta silsilah Mesianik</span>
+                  <span class="inno-label" data-i18n="explore.genealogy.label">Silsilah Tokoh</span>
+                  <span class="inno-sub" data-i18n="explore.genealogy.sub">Peta silsilah Mesianik</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-persona" id="btn-open-personas">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-personas">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Tokoh Alkitab</span>
-                  <span class="inno-sub">Suara Daud, Paulus &amp; Musa</span>
+                  <span class="inno-label" data-i18n="explore.personas.label">Tokoh Alkitab</span>
+                  <span class="inno-sub" data-i18n="explore.personas.sub">Suara Daud, Paulus &amp; Musa</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-arch" id="btn-open-archaeology">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-archaeology">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 21h18"/><path d="M6 21V7l6-4 6 4v14"/><path d="M9 21v-6h6v6"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Wisata Kota Suci</span>
-                  <span class="inno-sub">Bait Salomo &amp; Yerusalem</span>
+                  <span class="inno-label" data-i18n="explore.arch.label">Wisata Kota Suci</span>
+                  <span class="inno-sub" data-i18n="explore.arch.sub">Bait Salomo &amp; Yerusalem</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-time" id="btn-open-timeline">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-timeline">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M3 12h18"/><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Garis Waktu</span>
-                  <span class="inno-sub">8 Era sejarah Alkitab</span>
+                  <span class="inno-label" data-i18n="explore.timeline.label">Garis Waktu</span>
+                  <span class="inno-sub" data-i18n="explore.timeline.sub">8 Era sejarah Alkitab</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-pod" id="btn-open-night-pod">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-night-pod">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Renungan Malam</span>
-                  <span class="inno-sub">Firman pengantar tidur lelap</span>
+                  <span class="inno-label" data-i18n="explore.night.label">Renungan Malam</span>
+                  <span class="inno-sub" data-i18n="explore.night.sub">Firman pengantar tidur lelap</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-vision" id="btn-open-vision-lens">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-vision-lens">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Kamera Pewahyuan</span>
-                  <span class="inno-sub">Foto situasi · ayat &amp; doa AI</span>
+                  <span class="inno-label" data-i18n="explore.vision.label">Kamera Pewahyuan</span>
+                  <span class="inno-sub" data-i18n="explore.vision.sub">Foto situasi · ayat &amp; doa AI</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-kidung" id="btn-open-kidung">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-kidung">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Kidung Jemaat</span>
-                  <span class="inno-sub">KJ · PKJ · NKB · lirik &amp; chord</span>
+                  <span class="inno-label" data-i18n="explore.hymns.label">Kidung Jemaat</span>
+                  <span class="inno-sub" data-i18n="explore.hymns.sub">KJ · PKJ · NKB · lirik &amp; chord</span>
                 </div>
               </button>
-              <button type="button" class="innovation-card glow-songwriter" id="btn-open-worship-songwriter">
+              <button type="button" class="innovation-card innovation-card--mono" id="btn-open-worship-songwriter">
+                <span class="inno-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3v10"/><path d="M8 7l4-4 4 4"/><path d="M4 21h16"/><path d="M6 17h12"/></svg></span>
                 <div class="inno-text-wrap">
-                  <span class="inno-label">Studio Kidung Baru</span>
-                  <span class="inno-sub">Ciptakan lagu pujian dengan AI</span>
+                  <span class="inno-label" data-i18n="explore.songwriter.label">Studio Kidung Baru</span>
+                  <span class="inno-sub" data-i18n="explore.songwriter.sub">Ciptakan lagu pujian dengan AI</span>
                 </div>
               </button>
+              </div>
             </div>
             </div>
           </div>
@@ -357,13 +393,13 @@
               <div class="beranda-section-hero-main">
                 <span class="beranda-section-icon" aria-hidden="true">📜</span>
                 <div>
-                  <h3 class="beranda-section-title">Ayat Terakhir</h3>
-                  <p class="beranda-section-sub">Riwayat ayat TB yang baru Anda buka</p>
+                  <h3 class="beranda-section-title" data-i18n="home.recent.title">Ayat Terakhir</h3>
+                  <p class="beranda-section-sub" data-i18n="home.recent.sub">Riwayat ayat TB yang baru Anda buka</p>
                 </div>
               </div>
             </div>
             <div class="beranda-section-body">
-              <ul id="alkitab-recent-list" class="home-recent-list" aria-label="Ayat terakhir dibaca"></ul>
+              <ul id="alkitab-recent-list" class="home-recent-list home-recent-capsules" aria-label="Ayat terakhir dibaca" data-i18n-aria="home.recent.aria"></ul>
             </div>
           </div>
 
@@ -373,12 +409,12 @@
               <div class="beranda-section-hero-main">
                 <span class="beranda-section-icon" aria-hidden="true">⚡</span>
                 <div>
-                  <h3 class="beranda-section-title">Akses Cepat</h3>
-                  <p class="beranda-section-sub">Loncat ke rencana baca, doa &amp; renungan</p>
+                  <h3 class="beranda-section-title" data-i18n="home.access.title">Akses Cepat</h3>
+                  <p class="beranda-section-sub" data-i18n="home.access.sub">Loncat ke rencana baca, doa &amp; renungan</p>
                 </div>
               </div>
               <div class="beranda-section-chips">
-                <span class="beranda-section-chip">3 pintasan</span>
+                <span class="beranda-section-chip" data-i18n="home.access.chip">3 pintasan</span>
               </div>
             </div>
             <div class="beranda-section-body home-bento home-bento-access">
@@ -386,8 +422,8 @@
               <button type="button" class="card-goto-bento-action">
                 <span class="goto-icon blue" aria-hidden="true">📖</span>
                 <span class="goto-body">
-                  <span class="goto-title">Rencana Baca</span>
-                  <span class="goto-sub">1 tahun &amp; tematik</span>
+                  <span class="goto-title" data-i18n="home.access.plans.title">Rencana Baca</span>
+                  <span class="goto-sub" data-i18n="home.access.plans.sub">1 tahun &amp; tematik</span>
                 </span>
                 <span class="goto-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
               </button>
@@ -397,8 +433,8 @@
               <button type="button" class="card-goto-bento-action">
                 <span class="goto-icon gold" aria-hidden="true">✍️</span>
                 <span class="goto-body">
-                  <span class="goto-title">Jurnal Doa</span>
-                  <span class="goto-sub">Syafaat &amp; syukur</span>
+                  <span class="goto-title" data-i18n="home.access.journal.title">Jurnal Doa</span>
+                  <span class="goto-sub" data-i18n="home.access.journal.sub">Syafaat &amp; syukur</span>
                 </span>
                 <span class="goto-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
               </button>
@@ -408,8 +444,8 @@
               <button type="button" id="btn-goto-renungan" class="card-goto-bento-action card-renungan-wide">
                 <span class="goto-icon purple" aria-hidden="true">🕊️</span>
                 <span class="goto-body">
-                  <span class="goto-title">Pusat Renungan &amp; Ibadah</span>
-                  <span class="goto-sub">Saat teduh, perasaan &amp; doa terpandu</span>
+                  <span class="goto-title" data-i18n="home.access.devotion.title">Pusat Renungan &amp; Ibadah</span>
+                  <span class="goto-sub" data-i18n="home.access.devotion.sub">Saat teduh, perasaan &amp; doa terpandu</span>
                 </span>
                 <span class="goto-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>
               </button>
@@ -417,36 +453,31 @@
             </div>
           </div>
 
-          <!-- Kuis Alkitab — trivia firman harian (terbuka default di Beranda) -->
-          <details id="home-quiz-section" class="home-quiz-section" open>
-            <summary class="home-quiz-hero home-quiz-toggle">
-              <div class="home-quiz-hero-row">
-                <div class="home-quiz-hero-main">
-                  <span class="home-quiz-hero-icon" aria-hidden="true">💡</span>
-                  <div class="home-quiz-hero-text">
-                    <h3 class="home-quiz-hero-title">Kuis Alkitab</h3>
-                    <p class="home-quiz-hero-sub">Trivia firman harian — uji pemahaman Alkitabmu</p>
-                  </div>
+          <!-- Kuis Alkitab — modul interaktif slide (1/3 per kartu) -->
+          <section id="home-quiz-section" class="home-quiz-section home-quiz-interactive" aria-label="Kuis Alkitab harian" data-i18n-aria="home.quiz.aria">
+            <div class="home-quiz-interactive-head">
+              <div class="home-quiz-hero-main">
+                <span class="home-quiz-hero-icon" aria-hidden="true">💡</span>
+                <div class="home-quiz-hero-text">
+                  <h3 class="home-quiz-hero-title" data-i18n="home.quiz.title">Kuis Teologi</h3>
+                  <p class="home-quiz-hero-sub" data-i18n="home.quiz.sub">Trivia firman harian — satu pertanyaan per slide</p>
                 </div>
-                <span class="home-quiz-chevron" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-                </span>
               </div>
-              <div class="home-quiz-summary">
-                <span class="home-quiz-chip" id="home-quiz-chip-count">3 pertanyaan / hari</span>
-                <span class="home-quiz-chip home-quiz-chip--score" id="home-quiz-chip-score">Belum dimulai hari ini</span>
+              <div class="home-quiz-head-badges">
+                <span class="home-quiz-chip home-quiz-chip--topic" id="home-quiz-topic-chip">Campuran Firman</span>
+                <span class="home-quiz-chip home-quiz-chip--score" id="home-quiz-chip-score">Belum dimulai</span>
               </div>
-            </summary>
-            <div class="home-quiz-body">
-              <div id="quiz-score-badge" class="quiz-score-badge hidden"></div>
-              <div id="daily-quiz-container" class="daily-quiz-container"></div>
             </div>
-          </details>
+            <div class="home-quiz-body home-quiz-body--interactive">
+              <div id="quiz-score-badge" class="quiz-score-badge hidden"></div>
+              <div id="daily-quiz-container" class="daily-quiz-container daily-quiz-container--interactive"></div>
+            </div>
+          </section>
         </div>
       </section>
 
       <!-- ALKITAB -->
-      <section id="screen-alkitab" class="mobile-screen" data-title="Alkitab" data-title-key="screen.bible">
+      <section id="screen-alkitab" class="mobile-screen alkitab-premium" data-title="Alkitab" data-title-key="screen.bible">
         <div class="mobile-scroll">
           <!-- 1. Baca dan Cari Firman -->
           <div id="alkitab-section-read" class="alkitab-section alkitab-section--read">
@@ -455,78 +486,102 @@
                 <span class="alkitab-section-icon" aria-hidden="true">📜</span>
                 <div>
                   <p class="alkitab-section-kicker">Alkitab TB · Terjemahan Baru</p>
-                  <h3 class="alkitab-section-title">Baca dan Cari Firman</h3>
-                  <p class="alkitab-section-sub">Cari ayat, topik kebutuhan hidup &amp; pelajari firman interaktif</p>
+                  <h3 class="alkitab-section-title" data-i18n="bible.read.title">Baca dan Cari Firman</h3>
+                  <p class="alkitab-section-sub" data-i18n="bible.read.sub">Cari ayat, topik kebutuhan hidup &amp; pelajari firman interaktif</p>
                 </div>
               </div>
               <div class="alkitab-section-chips">
-                <span class="alkitab-section-chip">66 kitab</span>
-                <span class="alkitab-section-chip">Offline</span>
-                <span class="alkitab-section-chip alkitab-section-chip--search">Cari ayat &amp; topik</span>
-                <span class="alkitab-section-chip alkitab-section-chip--topics">8 laci kebutuhan hidup</span>
+                <span class="alkitab-section-chip" data-i18n="bible.read.chip.books">66 kitab</span>
+                <span class="alkitab-section-chip" data-i18n="bible.read.chip.offline">Offline</span>
+                <span class="alkitab-section-chip alkitab-section-chip--search" data-i18n="bible.read.chip.search">Cari ayat &amp; topik</span>
+                <span class="alkitab-section-chip alkitab-section-chip--topics" data-i18n="bible.read.chip.topics">8 laci kebutuhan hidup</span>
               </div>
             </div>
 
             <div class="alkitab-section-body alkitab-read-body">
-          <div id="alkitab-khotbah-hub" class="alkitab-khotbah-hub">
-            <div class="alkitab-khotbah-head">
-              <span class="alkitab-khotbah-icon" aria-hidden="true">🎙️</span>
-              <div>
-                <h4 class="alkitab-khotbah-title">Khotbah &amp; Renungan Live</h4>
-                <p class="mobile-note">Dari ayat yang dibuka atau topik pelayanan — suara live dua arah</p>
-              </div>
+          <div class="alkitab-read-top">
+            <div class="search-bar search-bar-premium search-bar--alkitab-top">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input id="alkitab-search" type="search" placeholder="Cari ayat atau topik kehidupan…" autocomplete="off" data-i18n="bible.search.placeholder" />
+              <button id="btn-alkitab-search" type="button" class="search-btn" data-i18n="bible.search.btn">Cari</button>
             </div>
-            <div class="verse-action-row alkitab-khotbah-actions">
-              <button type="button" id="btn-alkitab-khotbah-verse" class="btn-pill primary verse-action-disabled" disabled aria-disabled="true">🎙️ Khotbah (ayat)</button>
-              <button type="button" id="btn-alkitab-khotbah-topik" class="btn-pill btn-soft">📝 Khotbah (topik)</button>
-              <button type="button" id="btn-alkitab-renungan-live" class="btn-pill btn-soft verse-action-disabled" disabled aria-disabled="true">✨ Renungan Live</button>
-              <button type="button" id="btn-alkitab-goto-voice" class="btn-pill btn-soft">↗ Voice Hub</button>
+            <div id="alkitab-search-mode" class="alkitab-search-mode-wrap"></div>
+
+            <div id="alkitab-khotbah-hub" class="alkitab-voice-bento" aria-label="Voice Hub &amp; Khotbah Live">
+              <button type="button" id="btn-alkitab-khotbah-verse" class="alkitab-voice-bento-btn verse-action-disabled" disabled aria-disabled="true">
+                <span class="avb-icon" aria-hidden="true">🎙️</span>
+                <span class="avb-label" data-i18n="bible.voice.sermonVerse">Khotbah (ayat)</span>
+              </button>
+              <button type="button" id="btn-alkitab-khotbah-topik" class="alkitab-voice-bento-btn">
+                <span class="avb-icon" aria-hidden="true">📝</span>
+                <span class="avb-label" data-i18n="bible.voice.sermonTopic">Khotbah (topik)</span>
+              </button>
+              <button type="button" id="btn-alkitab-renungan-live" class="alkitab-voice-bento-btn verse-action-disabled" disabled aria-disabled="true">
+                <span class="avb-icon" aria-hidden="true">✨</span>
+                <span class="avb-label" data-i18n="bible.voice.devotionLive">Renungan Live</span>
+              </button>
+              <button type="button" id="btn-alkitab-goto-voice" class="alkitab-voice-bento-btn alkitab-voice-bento-btn--hub">
+                <span class="avb-icon" aria-hidden="true">↗</span>
+                <span class="avb-label" data-i18n="bible.voice.hub">Voice Hub</span>
+              </button>
+            </div>
+
+            <div class="alkitab-capsules-wrap">
+              <div id="alkitab-quick" class="alkitab-capsule-scroll" aria-label="Ayat populer dan terakhir dibuka"></div>
+              <div id="alkitab-search-history" class="alkitab-capsule-scroll search-history-row hidden"></div>
             </div>
           </div>
 
-          <div class="search-bar search-bar-premium">
-            <span class="search-icon" aria-hidden="true">🔍</span>
-            <input id="alkitab-search" type="search" placeholder="Cari ayat… Mazmur 23:1, cemas, rezeki, kesembuhan…" autocomplete="off" />
-            <button id="btn-alkitab-search" type="button" class="search-btn">Cari</button>
-          </div>
-          <div id="alkitab-quick" class="alkitab-quick" aria-label="Ayat populer dan terakhir dibuka"></div>
-          <div id="alkitab-search-mode" class="alkitab-search-mode-wrap"></div>
           <div id="alkitab-search-results" class="alkitab-search-results hidden" aria-live="polite"></div>
-          <div id="alkitab-search-history" class="search-history-row hidden"></div>
 
           <!-- Laci Topik Semantik Kebutuhan Hidup -->
           <details class="alkitab-semantic-drawer">
             <summary class="semantic-drawer-summary">
               <span class="drawer-icon">🕊️</span>
-              <span class="drawer-title">Laci Topik Firman Sesuai Kebutuhan Hidup</span>
+              <span class="drawer-title" data-i18n="bible.semantic.title">Laci Topik Firman Sesuai Kebutuhan Hidup</span>
               <span class="drawer-chevron">▼</span>
             </summary>
             <div id="alkitab-semantic-topics" class="semantic-topics-grid">
-              <button type="button" class="semantic-topic-chip" data-query="kecemasan ketenangan damai" data-ref="Filipi 4:6-7">🌿 Ketenangan &amp; Cemas</button>
-              <button type="button" class="semantic-topic-chip" data-query="kesembuhan sakit pertolongan" data-ref="Yesaya 53:4-5">🩺 Kesembuhan &amp; Sakit</button>
-              <button type="button" class="semantic-topic-chip" data-query="rezeki pekerjaan kebutuhan" data-ref="Filipi 4:19">💼 Rezeki &amp; Pekerjaan</button>
-              <button type="button" class="semantic-topic-chip" data-query="keluarga anak rumah tangga" data-ref="Yosua 24:15">🏡 Keluarga &amp; Anak</button>
-              <button type="button" class="semantic-topic-chip" data-query="patah hati duka nestapa" data-ref="Mazmur 34:19">💔 Patah Hati &amp; Duka</button>
-              <button type="button" class="semantic-topic-chip" data-query="pengampunan dosa tobat" data-ref="1 Yohanes 1:9">🕊️ Pengampunan Dosa</button>
-              <button type="button" class="semantic-topic-chip" data-query="hikmat petunjuk jalan" data-ref="Amsal 3:5-6">👑 Petunjuk &amp; Hikmat</button>
-              <button type="button" class="semantic-topic-chip" data-query="letih lelah kekuatan baru" data-ref="Yesaya 40:31">⚡ Letih &amp; Kehabisan Tenaga</button>
+              <button type="button" class="semantic-topic-chip" data-query="kecemasan ketenangan damai" data-ref="Filipi 4:6-7" data-i18n="bible.topic.peace">🌿 Ketenangan &amp; Cemas</button>
+              <button type="button" class="semantic-topic-chip" data-query="kesembuhan sakit pertolongan" data-ref="Yesaya 53:4-5" data-i18n="bible.topic.healing">🩺 Kesembuhan &amp; Sakit</button>
+              <button type="button" class="semantic-topic-chip" data-query="rezeki pekerjaan kebutuhan" data-ref="Filipi 4:19" data-i18n="bible.topic.work">💼 Rezeki &amp; Pekerjaan</button>
+              <button type="button" class="semantic-topic-chip" data-query="keluarga anak rumah tangga" data-ref="Yosua 24:15" data-i18n="bible.topic.family">🏡 Keluarga &amp; Anak</button>
+              <button type="button" class="semantic-topic-chip" data-query="patah hati duka nestapa" data-ref="Mazmur 34:19" data-i18n="bible.topic.grief">💔 Patah Hati &amp; Duka</button>
+              <button type="button" class="semantic-topic-chip" data-query="pengampunan dosa tobat" data-ref="1 Yohanes 1:9" data-i18n="bible.topic.forgiveness">🕊️ Pengampunan Dosa</button>
+              <button type="button" class="semantic-topic-chip" data-query="hikmat petunjuk jalan" data-ref="Amsal 3:5-6" data-i18n="bible.topic.wisdom">👑 Petunjuk &amp; Hikmat</button>
+              <button type="button" class="semantic-topic-chip" data-query="letih lelah kekuatan baru" data-ref="Yesaya 40:31" data-i18n="bible.topic.strength">⚡ Letih &amp; Kehabisan Tenaga</button>
             </div>
           </details>
 
           <div id="alkitab-verse-card" class="card-verse-full" aria-live="polite">
-            <p class="alkitab-verse-placeholder">Cari atau pilih ayat dari Beranda.</p>
+            <p class="alkitab-verse-placeholder" data-i18n="bible.verse.placeholder">Cari atau pilih ayat dari Beranda.</p>
           </div>
           <div id="alkitab-explain-banner" class="explain-banner hidden">
             <span>✨</span>
-            <span>Tap <strong>Jelaskan Arti</strong> — AI jelaskan makna ayat lewat suara live</span>
+            <span data-i18n="bible.explainBanner">Tap Jelaskan Arti — AI jelaskan makna ayat lewat suara live</span>
           </div>
           <div id="alkitab-verse-actions" class="verse-action-row">
-            <button type="button" id="btn-alkitab-listen" class="btn-pill verse-action-disabled" disabled aria-disabled="true">🔊 Dengar Live</button>
-            <button type="button" id="btn-alkitab-explain" class="btn-pill primary verse-action-disabled" disabled aria-disabled="true">✨ Jelaskan</button>
-            <button type="button" id="btn-alkitab-lectio" class="btn-pill verse-action-disabled" disabled aria-disabled="true">Lectio Divina</button>
-            <button type="button" id="btn-alkitab-share-image" class="btn-pill">🎨 Rhema Studio</button>
+            <button type="button" id="btn-alkitab-listen" class="btn-pill verse-action-disabled" disabled aria-disabled="true" data-i18n="bible.listen">🔊 Dengar Live</button>
+            <button type="button" id="btn-alkitab-explain" class="btn-pill primary verse-action-disabled" disabled aria-disabled="true" data-i18n="bible.explain">✨ Jelaskan</button>
+            <button type="button" id="btn-alkitab-lectio" class="btn-pill verse-action-disabled" disabled aria-disabled="true" data-i18n="bible.lectio">Lectio Divina</button>
+            <button type="button" id="btn-alkitab-share-image" class="btn-pill" data-i18n="bible.studio">🎨 Rhema Studio</button>
           </div>
           <p id="alkitab-related" class="mobile-note hidden"></p>
+
+          <section class="alkitab-lectio-journal" id="lectio-journal-section">
+            <div class="section-head section-head--compact">
+              <span class="section-icon gold">📓</span>
+              <div>
+                <h2 class="section-title" data-i18n="bible.lectio.title">Jurnal Lectio Divina</h2>
+                <p class="section-sub" data-i18n="bible.lectio.sub">Catatan hening dari saat teduh Anda</p>
+              </div>
+            </div>
+            <ul id="lectio-journal-list" class="lectio-journal-list" aria-label="Riwayat Lectio Divina"></ul>
+            <div id="lectio-journal-empty" class="lectio-empty-dashed" role="status">
+              <p class="lectio-empty-title" data-i18n="bible.lectio.empty.title">Belum ada catatan</p>
+              <p class="lectio-empty-hint" data-i18n="bible.lectio.empty.hint">Pilih ayat, lalu tap Lectio Divina.</p>
+            </div>
+          </section>
             </div>
           </div>
 
@@ -536,16 +591,16 @@
               <div class="alkitab-section-hero-main">
                 <span class="alkitab-section-icon" aria-hidden="true">💛</span>
                 <div>
-                  <h3 class="alkitab-section-title">Firman Sesuai Suasana Hati</h3>
-                  <p class="alkitab-section-sub">Pilih perasaanmu — temukan janji firman &amp; penghiburan</p>
+                  <h3 class="alkitab-section-title" data-i18n="bible.mood.title">Firman Sesuai Suasana Hati</h3>
+                  <p class="alkitab-section-sub" data-i18n="bible.mood.sub">Pilih perasaanmu — temukan janji firman &amp; penghiburan</p>
                 </div>
               </div>
               <div id="mood-scripture-summary" class="alkitab-section-chips mood-scripture-summary" aria-live="polite"></div>
             </div>
             <div class="alkitab-section-body">
             <div class="alkitab-power-card mood-power-card" id="card-alkitab-mood">
-              <p class="mood-chips-hint">Ketuk perasaan yang paling dekat dengan hatimu hari ini</p>
-              <div id="alkitab-mood-chips" class="mood-chips-scroll"></div>
+              <p class="mood-chips-hint" data-i18n="bible.mood.hint">Ketuk perasaan yang paling dekat dengan hatimu hari ini</p>
+              <div id="alkitab-mood-chips" class="mood-grid-squircle"></div>
               <div id="alkitab-mood-result" class="mood-result-card hidden"></div>
             </div>
             </div>
@@ -557,26 +612,28 @@
               <div class="alkitab-section-hero-main">
                 <span class="alkitab-section-icon" aria-hidden="true">📖</span>
                 <div>
-                  <h3 class="alkitab-section-title">Rencana Baca Firman</h3>
-                  <p class="alkitab-section-sub">Program Alkitab 1 tahun &amp; rencana tematik — bangun kebiasaan baca firman setiap hari</p>
+                  <h3 class="alkitab-section-title" data-i18n="bible.plans.title">Rencana Baca Firman</h3>
+                  <p class="alkitab-section-sub" data-i18n="bible.plans.sub">Program Alkitab 1 tahun &amp; rencana tematik — bangun kebiasaan baca firman setiap hari</p>
                 </div>
               </div>
               <div id="reading-plans-summary" class="alkitab-section-chips reading-plans-summary" aria-live="polite"></div>
             </div>
             <div class="alkitab-section-body">
-            <div id="one-year-bible-card" class="one-year-plan-card glass-card"></div>
+            <div id="one-year-bible-card" class="one-year-plan-card one-year-split-card glass-card"></div>
             <div class="thematic-plans-section">
-              <div class="plan-selector-head">
+              <div class="plan-selector-head plan-selector-head--compact">
                 <div class="plan-selector-head-main">
                   <span class="plan-selector-icon" aria-hidden="true">📚</span>
                   <div class="plan-selector-text">
-                    <h4 class="plan-selector-title">Pilih Rencana Baca Tematik</h4>
-                    <p class="plan-selector-sub">Topik iman untuk dibaca bertahap minggu demi minggu</p>
+                    <h4 class="plan-selector-title" data-i18n="bible.thematic.title">Rencana Baca Tematik</h4>
+                    <p class="plan-selector-sub" data-i18n="bible.thematic.sub">Geser untuk melihat program lain →</p>
                   </div>
                 </div>
                 <div id="thematic-plans-summary" class="plan-selector-summary" aria-live="polite"></div>
               </div>
-              <div id="thematic-plans-grid" class="thematic-plans-grid"></div>
+              <div class="thematic-plans-carousel">
+                <div id="thematic-plans-grid" class="thematic-plans-grid thematic-plans-grid--carousel"></div>
+              </div>
               <div id="thematic-plan-detail" class="thematic-plan-detail hidden">
                 <div class="plan-detail-card">
                   <div class="plan-detail-head">
@@ -600,13 +657,13 @@
               <div class="alkitab-section-hero-main">
                 <span class="alkitab-section-icon" aria-hidden="true">🌙</span>
                 <div>
-                  <h3 class="alkitab-section-title">Cerita Alkitab Pengantar Tidur</h3>
-                  <p class="alkitab-section-sub">Narasi teduh dengan musik latar — tenangkan jiwa sebelum tidur</p>
+                  <h3 class="alkitab-section-title" data-i18n="bible.sleep.title">Cerita Alkitab Pengantar Tidur</h3>
+                  <p class="alkitab-section-sub" data-i18n="bible.sleep.sub">Narasi teduh dengan musik latar — tenangkan jiwa sebelum tidur</p>
                 </div>
               </div>
             </div>
             <div class="alkitab-section-body">
-              <div id="alkitab-sleep-list" class="alkitab-sleep-list"></div>
+              <div id="alkitab-sleep-list" class="alkitab-sleep-list alkitab-sleep-carousel"></div>
               <div id="alkitab-sleep-player" class="alkitab-sleep-player hidden" aria-live="polite"></div>
             </div>
           </div>
@@ -615,44 +672,33 @@
       </section>
 
       <!-- RENUNGAN — fokus harian di atas, program & eksplorasi di bawah -->
-      <section id="screen-renungan" class="mobile-screen" data-title="Renungan &amp; Ibadah" data-title-key="screen.devotionFull">
+      <section id="screen-renungan" class="mobile-screen renungan-premium" data-title="Renungan &amp; Ibadah" data-title-key="screen.devotionFull">
         <div class="mobile-scroll">
           <!-- === FOKUS: RENUNGAN HARIAN === -->
           <div class="renungan-daily-focus">
-            <div class="screen-intro">
-              <h2 class="screen-intro-title">Renungan Harian</h2>
-              <p class="screen-intro-sub">Tiga jalur saat teduh — firman hari ini, perasaan, &amp; doa terpandu</p>
+            <header class="renungan-editorial-header">
+              <h2 class="renungan-editorial-title" data-i18n="devotion.daily.title">Renungan Harian</h2>
+              <p class="renungan-editorial-sub" data-i18n="devotion.daily.sub">Saat teduh · perasaan · doa terpandu</p>
+            </header>
+
+            <div class="renungan-wellness-split" aria-label="Progres rohani dan latihan nafas">
+              <div id="renungan-streak-bar" class="renungan-streak-split" aria-live="polite"></div>
+              <section id="breathing-prayer-section" class="renungan-breath-split">
+                <div id="breathing-prayer-host" data-compact="1"></div>
+              </section>
             </div>
 
-            <section class="mobile-section" id="lectio-journal-section">
-              <div class="section-head">
-                <span class="section-icon gold">📓</span>
-                <div>
-                  <h2 class="section-title">Jurnal Lectio Divina</h2>
-                  <p class="section-sub">Catatan hening, firman, dan doa yang Anda simpan</p>
-                </div>
-              </div>
-              <ul id="lectio-journal-list" class="lectio-journal-list" aria-label="Riwayat Lectio Divina"></ul>
-              <p id="lectio-journal-empty" class="mobile-note">Belum ada jurnal. Buka ayat di Alkitab, lalu tap Lectio Divina.</p>
-            </section>
-
-            <section class="mobile-section" id="breathing-prayer-section">
-              <div id="breathing-prayer-host"></div>
-            </section>
-
-            <div id="renungan-streak-bar" class="streak-bar" aria-live="polite"></div>
-
             <section class="mobile-section renungan-lane-section">
-              <div class="section-head">
+              <div class="section-head section-head--compact">
                 <span class="section-icon gold">✦</span>
                 <div>
-                  <h2 class="section-title">Saat Teduh Hari Ini</h2>
-                  <p class="section-sub">Firman &amp; refleksi kehidupan · sesi ~12 menit</p>
+                  <h2 class="section-title" data-i18n="devotion.quiet.title">Saat Teduh Hari Ini</h2>
+                  <p class="section-sub" data-i18n="devotion.quiet.sub">Firman hari ini · sesi ~12 menit</p>
                 </div>
               </div>
 
               <div id="renungan-today-card" class="card-devotion" aria-live="polite">
-                <p class="alkitab-loading">Memuat saat teduh…</p>
+                <p class="alkitab-loading" data-i18n="devotion.quiet.loading">Memuat saat teduh…</p>
               </div>
 
               <details class="prayer-usage-guide saat-teduh-usage-guide">
@@ -669,20 +715,20 @@
             </section>
 
             <section class="mobile-section renungan-lane-section">
-              <div class="section-head">
+              <div class="section-head section-head--compact">
                 <span class="section-icon rose">💛</span>
                 <div>
-                  <h2 class="section-title">Ayat untuk Perasaanmu</h2>
-                  <p class="section-sub">Tap perasaan — sesi ~6–7 menit: sapa &amp; ayat, refleksi hidup &amp; doa</p>
+                  <h2 class="section-title" data-i18n="devotion.emotion.title">Ayat untuk Perasaanmu</h2>
+                  <p class="section-sub" data-i18n="devotion.emotion.sub">Ketuk perasaan · sesi ~6 menit</p>
                 </div>
               </div>
 
-              <div id="renungan-emotion-chips" class="emotion-grid"></div>
+              <div id="renungan-emotion-chips" class="emotion-grid emotion-grid--compact"></div>
               <div id="emotion-preview-card" class="emotion-preview-card hidden" aria-live="polite"></div>
               <div id="emotion-session-bar" class="inline-session-bar hidden" aria-live="polite">
                 <div class="inline-session-head">
-                  <span class="inline-session-badge">Sesi Perasaan · ~6–7 menit</span>
-                  <button type="button" id="btn-emotion-session-stop" class="btn-inline-session-stop" aria-label="Hentikan sesi perasaan">⏹</button>
+                  <span class="inline-session-badge" data-i18n="devotion.session.emotion">Sesi Perasaan · ~6–7 menit</span>
+                  <button type="button" id="btn-emotion-session-stop" class="btn-inline-session-stop" aria-label="Hentikan sesi perasaan" data-i18n-aria="devotion.stop.emotion">⏹</button>
                 </div>
                 <div class="dpw-session-phases" id="emotion-session-phases"></div>
               </div>
@@ -710,20 +756,20 @@
             </section>
 
             <section class="mobile-section renungan-lane-section">
-              <div class="section-head">
+              <div class="section-head section-head--compact">
                 <span class="section-icon purple">🕊</span>
                 <div>
-                  <h2 class="section-title">Doa Terpandu Singkat</h2>
-                  <p class="section-sub">Pagi, malam &amp; situasi hidup — sesi ~4–5 menit: sapa &amp; doa hidup</p>
+                  <h2 class="section-title" data-i18n="devotion.guided.title">Doa Terpandu Singkat</h2>
+                  <p class="section-sub" data-i18n="devotion.guided.sub">Pagi · malam · keluarga · ketenangan</p>
                 </div>
               </div>
 
-              <div id="renungan-prayer-grid" class="prayer-grid"></div>
+              <div id="renungan-prayer-grid" class="prayer-grid prayer-grid--bento"></div>
               <div id="prayer-preview-card" class="prayer-preview-card hidden" aria-live="polite"></div>
               <div id="prayer-session-bar" class="inline-session-bar hidden" aria-live="polite">
                 <div class="inline-session-head">
-                  <span class="inline-session-badge">Doa Terpandu · ~4–5 menit</span>
-                  <button type="button" id="btn-prayer-session-stop" class="btn-inline-session-stop" aria-label="Hentikan doa terpandu">⏹</button>
+                  <span class="inline-session-badge" data-i18n="devotion.session.guided">Doa Terpandu · ~4–5 menit</span>
+                  <button type="button" id="btn-prayer-session-stop" class="btn-inline-session-stop" aria-label="Hentikan doa terpandu" data-i18n-aria="devotion.stop.guided">⏹</button>
                 </div>
                 <div class="dpw-session-phases" id="prayer-session-phases"></div>
               </div>
@@ -753,42 +799,60 @@
       </section>
 
       <!-- DOA -->
-      <section id="screen-doa" class="mobile-screen" data-title="Doa" data-title-key="screen.prayer">
+      <section id="screen-doa" class="mobile-screen doa-premium" data-title="Doa" data-title-key="screen.prayer">
         <div class="mobile-scroll">
-          <div class="screen-intro-row">
-            <div class="screen-intro">
-              <h2 class="screen-intro-title">Jurnal Doa</h2>
-              <p class="screen-intro-sub">Catat permohonan, syafaat bersama AI &amp; tandai doa terjawab</p>
-            </div>
+          <header class="doa-editorial-header">
+            <p class="doa-editorial-kicker" data-i18n="prayer.journal.kicker">📓 Jurnal Doa</p>
+            <h2 class="doa-editorial-title" data-i18n="prayer.journal.title">Ruang Doa Personal</h2>
+            <p class="doa-editorial-sub" data-i18n="prayer.journal.sub">Catat permohonan, syafaat bersama AI &amp; tandai doa terjawab</p>
+          </header>
+
+          <div id="prayer-journal-stats" class="prayer-journal-stats prayer-stats-bento-wrap" aria-live="polite"></div>
+
+          <div class="prayer-hero-cta-wrap">
+            <button type="button" id="btn-pray-all-journal" class="btn-prayer-syafaat-hero" data-i18n="prayer.syafaat.btn">🕊️ Pimpin Doa Syafaat Bersama AI</button>
           </div>
 
-          <div class="prayer-filter-tabs">
-            <button type="button" class="prayer-filter-btn active" data-prayer-filter="all">Semua Pokok Doa</button>
-            <button type="button" class="prayer-filter-btn" data-prayer-filter="active">Permohonan Aktif</button>
-            <button type="button" class="prayer-filter-btn" data-prayer-filter="answered">🎉 Doa Terjawab</button>
-          </div>
-
-          <form id="form-add-prayer" class="prayer-form glass-card">
-            <div class="prayer-form-head">
-              <span class="prayer-form-title">✍️ Tuliskan Permohonan Doa Baru</span>
+          <form id="form-add-prayer" class="prayer-form prayer-form--integrated glass-card">
+            <p class="prayer-form-kicker" data-i18n="prayer.form.kicker">✍️ Tuliskan Permohonan Doa Baru</p>
+            <input id="input-prayer-title" type="text" class="prayer-input-underline" placeholder="Pokok doa (mis. Kesembuhan orang tua, ujian…)" required autocomplete="off" data-i18n="prayer.form.titlePlaceholder" />
+            <div class="prayer-input-divider" aria-hidden="true"></div>
+            <textarea id="input-prayer-content" class="prayer-input-underline prayer-input-underline--note" rows="2" placeholder="Catatan permohonan / ayat pegangan iman…" data-i18n="prayer.form.notePlaceholder"></textarea>
+            <div class="prayer-input-divider" aria-hidden="true"></div>
+            <div class="prayer-form-foot">
+              <label class="prayer-category-pill" for="select-prayer-category">
+                <span id="prayer-category-emoji" class="prayer-category-emoji" aria-hidden="true">🏡</span>
+                <span id="prayer-category-label" class="prayer-category-label">Keluarga</span>
+                <span class="prayer-category-chevron" aria-hidden="true">▼</span>
+                <select id="select-prayer-category" class="prayer-select-overlay" aria-label="Kategori doa" data-i18n-aria="prayer.form.categoryAria">
+                  <option value="keluarga" data-i18n="prayer.cat.keluarga.short">Keluarga</option>
+                  <option value="kesehatan" data-i18n="prayer.cat.kesehatan.short">Kesehatan</option>
+                  <option value="pekerjaan" data-i18n="prayer.cat.pekerjaan.short">Pekerjaan</option>
+                  <option value="rohani" data-i18n="prayer.cat.rohani.short">Rohani</option>
+                  <option value="syukur" data-i18n="prayer.cat.syukur.short">Syukur</option>
+                </select>
+              </label>
+              <button type="submit" class="btn-prayer-save" data-i18n="prayer.form.save">+ Simpan Pokok Doa</button>
             </div>
-            <input id="input-prayer-title" type="text" placeholder="Pokok doa (mis. Kesembuhan orang tua, ujian akhir)" required />
-            <select id="select-prayer-category" class="prayer-select-category">
-              <option value="keluarga">🏡 Keluarga &amp; Rumah Tangga</option>
-              <option value="kesehatan">🩺 Kesehatan &amp; Kesembuhan</option>
-              <option value="pekerjaan">💼 Pekerjaan, Studi &amp; Usaha</option>
-              <option value="rohani">🕊️ Pertumbuhan Rohani</option>
-              <option value="syukur">🙌 Ucapan Syukur</option>
-            </select>
-            <textarea id="input-prayer-content" rows="2" placeholder="Catatan permohonan / ayat pegangan iman…"></textarea>
-            <button type="submit" class="btn-pill primary full">+ Simpan Pokok Doa</button>
           </form>
 
-          <div class="prayer-journal-toolbar">
-            <button type="button" id="btn-pray-all-journal" class="btn-pill btn-soft full">🕊 Pimpin Doa Syafaat Bersama AI</button>
+          <div class="prayer-filter-scroll" role="tablist" aria-label="Filter jurnal doa" data-i18n-aria="prayer.filter.aria">
+            <div class="prayer-filter-tabs prayer-filter-tabs--inline">
+              <button type="button" role="tab" class="prayer-filter-btn active" data-prayer-filter="all" aria-selected="true">
+                <span class="prayer-filter-label" data-i18n="prayer.filter.all">Semua Pokok Doa</span>
+                <span class="prayer-filter-indicator" aria-hidden="true"></span>
+              </button>
+              <button type="button" role="tab" class="prayer-filter-btn" data-prayer-filter="active" aria-selected="false">
+                <span class="prayer-filter-label" data-i18n="prayer.filter.active">Permohonan Aktif</span>
+                <span class="prayer-filter-indicator" aria-hidden="true"></span>
+              </button>
+              <button type="button" role="tab" class="prayer-filter-btn" data-prayer-filter="answered" aria-selected="false">
+                <span class="prayer-filter-label" data-i18n="prayer.filter.answered">🎉 Doa Terjawab</span>
+                <span class="prayer-filter-indicator" aria-hidden="true"></span>
+              </button>
+            </div>
           </div>
 
-          <div id="prayer-journal-stats" class="prayer-journal-stats" aria-live="polite"></div>
           <div id="renungan-prayer-journal-list" class="prayer-journal-list"></div>
 
           <details class="prayer-usage-guide">
@@ -960,15 +1024,6 @@
             <p class="mobile-note">Untuk lansia &amp; mata lelah. Pinch-to-zoom browser juga didukung.</p>
           </section>
 
-          <section id="server-settings-section" class="mobile-section hidden" aria-labelledby="server-label">
-            <h2 id="server-label" class="section-label">URL server Rhema (Android)</h2>
-            <p id="server-url-hint" class="mobile-note">Di app Android, arahkan ke PC/server yang menjalankan <code>npm run web</code>.</p>
-            <div class="search-bar search-bar-premium server-url-bar">
-              <input id="input-server-url" type="url" inputmode="url" placeholder="http://192.168.1.10:8765" autocomplete="off" />
-            </div>
-            <button id="btn-save-server-url" type="button" class="btn-pill primary full">Simpan URL server</button>
-          </section>
-
           <div class="card-menu">
             <button type="button" id="btn-open-chat" class="menu-item">
               <span>💬</span><span>Rhema Agent Chat</span><span class="chev">›</span>
@@ -1086,9 +1141,8 @@
     </div>
   </div>
 
-  <script src="/rhema-build.js?v=20260911-byok"></script>
-  <script src="/preview-bootstrap.js?v=20260911-byok"></script>
+  <script src="/dev-localhost.js"></script>
   <script src="/navBootstrap.js?v=20260911-byok"></script>
-  <script src="/main.js?v=20260911-i18n" type="module"></script>
+  <script src="/main.js?v=20260911-play" type="module"></script>
 </body>
 </html>

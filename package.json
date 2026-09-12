@@ -2,31 +2,16 @@
   "name": "rhema-ai",
   "version": "1.0.0",
   "private": true,
-  "description": "Rhema AI — pendamping ibadah TB LAI · suara live (extracted from APK)",
+  "description": "Rhema AI — pendamping ibadah · suara live BYOK",
+  "type": "module",
   "scripts": {
-    "web": "npx serve www -l 8765",
-    "web:dev": "npx serve www -l 8765 --cors",
-    "cap:sync": "npx cap sync android",
-    "cap:open": "npx cap open android",
-    "android:build": "cd android && .\\gradlew assembleDebug",
-    "android:release": "powershell -ExecutionPolicy Bypass -File scripts/build-play-release.ps1",
-    "android:release:keystore": "powershell -ExecutionPolicy Bypass -File scripts/build-play-release.ps1 -CreateKeystore",
-    "privacy:deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy-privacy-github.ps1"
+    "dev": "node dev/server.mjs",
+    "start": "node dev/server.mjs"
   },
   "dependencies": {
-    "@capacitor/android": "^6.2.0",
-    "@capacitor/core": "^6.2.0",
-    "@capacitor/splash-screen": "^6.0.0",
-    "@capacitor/status-bar": "^6.0.0",
     "smplr": "^1.0.0",
     "tone": "^15.1.22",
     "webaudio-tinysynth": "^1.1.3",
     "webaudiofont": "^3.0.4"
-  },
-  "devDependencies": {
-    "@capacitor/cli": "^6.2.0"
-  },
-  "capacitor": {
-    "webDir": "www"
   }
 }

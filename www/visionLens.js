@@ -2,43 +2,27 @@
  * AI Vision Spiritual Lens (Kamera Pewahyuan AI) — Memotret Situasi Hidup & Menghasilkan Rhema Firman Serta Doa Nubuat.
  */
 
-import { geminiGenerateContentUrl } from "./geminiConstants.js";
+import { geminiGenerateContentUrl, getStoredGoogleKey, GOOGLE_KEY_STORAGE } from "./geminiConstants.js";
+import { isSecureKeyStorageAvailable, secureGetItem } from "./secureKeyStorage.js";
 import { openVerseShareModal } from "./verseCardRenderer.js";
 
 /**
- * Analisis gambar menggunakan Gemini Multimodal Vision API
+ * Analisis gambar — langsung ke Google Gemini dengan key BYOK di perangkat.
+ * Tidak mengirim foto atau API key ke server Rhema.
  * @param {string} base64Data
  * @param {string} mimeType
  * @returns {Promise<{ success: boolean, result?: any, error?: string }>}
  */
 export async function analyzeVisionPhoto(base64Data, mimeType = "image/jpeg") {
-  const localKey = localStorage.getItem("rhema-google-key") || "";
-
-  // 1. Coba lewat backend server (/api/gemini/analyze-vision)
-  try {
-    const serverResp = await fetch("/api/gemini/analyze-vision", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        imageBase64: base64Data,
-        mimeType,
-        apiKey: localKey,
-      }),
-    });
-
-    if (serverResp.ok) {
-      const data = await serverResp.json();
-      if (data.result) return { success: true, result: data.result };
-    }
-  } catch {
-    /* fallback */
+  let apiKey = getStoredGoogleKey();
+  if (!apiKey && isSecureKeyStorageAvailable()) {
+    apiKey = await secureGetItem(GOOGLE_KEY_STORAGE);
   }
 
-  // 2. Direct client-side fallback jika ada key
-  if (localKey) {
+  if (apiKey) {
     try {
       const cleanB64 = base64Data.replace(/^data:image\/[a-z]+;base64,/, "");
-      const apiUrl = `${geminiGenerateContentUrl()}?key=${encodeURIComponent(localKey)}`;
+      const apiUrl = `${geminiGenerateContentUrl()}?key=${encodeURIComponent(apiKey)}`;
       const systemInstruction = `Anda adalah Rohaniwan & Konselor Iman Alkitabiah Rhema AI. Analisis gambar/foto ini secara empati dan rohani.
 Berikan respons dalam format JSON murni:
 {
@@ -113,7 +97,7 @@ export function openVisionLensModal(callbacks = {}) {
 
       <!-- Upload / Camera Area -->
       <div class="vision-upload-box" id="vision-drop-zone">
-        <input type="file" id="vision-file-input" accept="image/*" capture="environment" style="display:none;" />
+        <input type="file" id="vision-file-input" accept="image/*" style="display:none;" />
         <div class="vision-prompt-wrap" id="vision-prompt-ui">
           <span class="vision-cam-icon">📸</span>
           <p class="vision-upload-title">Ambil Foto atau Unggah Gambar</p>

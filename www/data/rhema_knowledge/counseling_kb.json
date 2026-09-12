@@ -1,0 +1,214 @@
+{
+  "schemaVersion": "2.2.0",
+  "built": "2026-09-11",
+  "architecture": "Universal Scripture truth + organic pastoral delivery (weave principles, do not dictate verse numbers). Internal validation & mindset restructuring. Not clinical diagnosis.",
+  "deliveryMode": "organic_integration",
+  "pillars": ["anxiety", "burnout", "relationships", "tekanan_internal"],
+  "topics": [
+    {
+      "id": "anxiety",
+      "pillar": true,
+      "label": { "id": "Kecemasan & Kesehatan Mental", "en": "Anxiety & Mental Health" },
+      "keys": ["cemas", "anxiety", "khawatir", "panik", "overthinking", "doomscrolling", "kesepian", "lonely", "mental health", "kecemasan"],
+      "genZStruggle": {
+        "id": "Krisis eksistensial, ketakutan masa depan, efek doomscrolling media sosial, kesepian meski terhubung digital.",
+        "en": "Existential anxiety, fear of the future, doomscrolling side effects, loneliness despite being online."
+      },
+      "christianPsychology": {
+        "id": "CBT selaras Roma 12:2 (pembaruan budi): kecemasan adalah respons emosi yang perlu dibawa dalam penyerahan — bukan kutukan atau tanda iman lemah.",
+        "en": "CBT aligned with Romans 12:2 (renewing of the mind): anxiety is an emotional response to bring before God — not a curse or weak faith."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "Filipi 4:6-7", "refs": ["Filipi 4:6-7", "Matius 6:34", "1 Petrus 5:7", "Yesaya 41:10"] },
+        "en": { "bible": "KJV", "primary": "Philippians 4:6-7", "refs": ["Philippians 4:6-7", "1 Peter 5:7", "Matthew 6:34", "Isaiah 41:10"] }
+      },
+      "counselingStyle": {
+        "id": "Validasi dulu tanpa jargon religius. Tenun prinsip penyerahan/ketenangan (hidden: Filipi 4:6-7) — JANGAN dikte nomor ayat. Satu langkah praktis hari ini.",
+        "en": "Validate first without religious jargon. Weave peace/surrender principles (hidden: Phil 4:6-7) — do NOT dictate verse numbers. One practical step today."
+      },
+      "practicalSteps": {
+        "id": "(1) Sebut satu kekhawatiran konkret. (2) Tarik napas — bawa ke Tuhan tanpa formula. (3) Batasi scroll 30 menit. (4) Cerita ke satu orang tepercaya.",
+        "en": "(1) Name one concrete worry. (2) Pause — bring it to God without formula. (3) Limit scroll 30 min. (4) Tell one trusted person."
+      }
+    },
+    {
+      "id": "burnout",
+      "pillar": true,
+      "label": { "id": "Kelelahan Mental & Tekanan Karir", "en": "Burnout & Career Pressure" },
+      "keys": ["burnout", "lelah", "capek", "hustle", "fomo", "linkedin", "utbk", "karier", "career", "overwork", "deadline"],
+      "genZStruggle": {
+        "id": "Hustle culture, minder lihat pencapaian di LinkedIn/Instagram, kelelahan akademis atau kerja digital.",
+        "en": "Hustle culture, comparison on LinkedIn/Instagram, academic or digital work exhaustion."
+      },
+      "christianPsychology": {
+        "id": "Pemulihan ritme istirahat kudus (Sabbath). Identitas di dalam Kristus, bukan dari produktivitas atau validasi angka duniawi.",
+        "en": "Recovery through sacred rest (Sabbath rhythm). Identity in Christ, not productivity or worldly metrics."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "Matius 11:28", "refs": ["Matius 11:28-30", "Mazmur 127:2", "Mazmur 23:1-3", "Yesaya 40:29"] },
+        "en": { "bible": "KJV", "primary": "Matthew 11:28", "refs": ["Matthew 11:28-30", "Galatians 6:9", "Psalm 23:1-3", "Isaiah 40:29"] }
+      },
+      "counselingStyle": {
+        "id": "Normalisasi istirahat — akui tekanan UTBK/karier/digital nyata. Tenun prinsip istirahat & identitas di Kristus (hidden: Matius 11:28, Mazmur 127:2) tanpa baca ayat.",
+        "en": "Normalize rest — acknowledge real career/digital pressure. Weave rest & identity-in-Christ (hidden: Matt 11:28, Ps 127:2) without reading verses aloud."
+      },
+      "practicalSteps": {
+        "id": "(1) Blok 1 jam tanpa layar malam ini. (2) Delegasi satu tugas. (3) Ingat: istirahat bukan kemalasan — Tuhan memberi saat Anda berhenti sejenak.",
+        "en": "(1) One screen-free hour tonight. (2) Delegate one task. (3) Rest is not laziness — trust that strength comes when you pause."
+      }
+    },
+    {
+      "id": "relationships",
+      "pillar": true,
+      "label": { "id": "Hubungan & Komunitas Toksik", "en": "Relationships & Peer Pressure" },
+      "keys": ["hubungan", "toxic", "pacaran", "ghosting", "peer pressure", "trauma", "batas", "boundaries", "konflik", "penolakan"],
+      "genZStruggle": {
+        "id": "Hubungan asmara tidak sehat, penolakan kelompok sebaya, trauma masa lalu, pencarian komunitas sel yang tulus.",
+        "en": "Unhealthy dating, peer rejection, past trauma, longing for authentic small-group community."
+      },
+      "christianPsychology": {
+        "id": "Batas sehat (healthy boundaries) berbasis kasih. Pemulihan self-image yang rusak oleh perkataan buruk — hati dijaga (Amsal 4:23).",
+        "en": "Healthy boundaries rooted in love. Restoring self-image wounded by harmful words — guard your heart (Proverbs 4:23)."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "1 Korintus 15:33", "refs": ["1 Korintus 15:33", "Amsal 4:23", "Efesus 4:32", "1 Korintus 13:4-7"] },
+        "en": { "bible": "KJV", "primary": "1 Corinthians 15:33", "refs": ["1 Corinthians 15:33", "Proverbs 4:23", "Ephesians 4:32", "1 Corinthians 13:4-7"] }
+      },
+      "counselingStyle": {
+        "id": "Validasi luka dulu (ghosting, toxic). Tenun prinsip batas sehat & kasih (hidden: Amsal 4:23) — bukan khotbah moral atau dikte ayat.",
+        "en": "Validate hurt first (ghosting, toxic). Weave healthy boundaries & love (hidden: Prov 4:23) — no moralizing or verse dictation."
+      },
+      "practicalSteps": {
+        "id": "(1) Tulis satu batas yang perlu dijaga. (2) Ajak mentor/pendeta tepercaya. (3) Doa sebelum percakapan sulit.",
+        "en": "(1) Write one boundary to protect. (2) Involve a trusted mentor. (3) Pray before a hard conversation."
+      }
+    },
+    {
+      "id": "tekanan_internal",
+      "pillar": true,
+      "label": { "id": "Tekanan Internal & Inner Critic", "en": "Internal Pressure & Inner Critic" },
+      "keys": [
+        "tekanan internal",
+        "inner critic",
+        "imposter",
+        "gagal",
+        "tidak berguna",
+        "begitu bodoh",
+        "self-talk",
+        "ekspektasi diri",
+        "perang batin",
+        "identitas",
+        "mindset",
+        "merasa gagal",
+        "burnout",
+        "cemas eksistensial"
+      ],
+      "genZStruggle": {
+        "id": "Perang batin: merasa gagal meski kerja keras, imposter syndrome, perbandingan LinkedIn/IG, inner critic yang mencekik, krisis identitas digital.",
+        "en": "Internal warfare: feeling like a failure despite hustle, imposter syndrome, LinkedIn/IG comparison, crushing inner critic, digital identity crisis."
+      },
+      "christianPsychology": {
+        "id": "Internal Validation + Mindset Restructuring selaras Roma 12:2 & Amsal 4:23 — ubah self-talk, jaga hati/pikiran sebagai pertahanan kognitif, identitas aman di Kristus bukan performa.",
+        "en": "Internal validation + mindset restructuring aligned with Romans 12:2 & Proverbs 4:23 — reframe self-talk, guard heart/mind as cognitive defense, secure identity in Christ not performance."
+      },
+      "scriptureAnchors": {
+        "id": {
+          "bible": "TB",
+          "primary": "Amsal 4:23",
+          "refs": ["Amsal 4:23", "Roma 12:2", "Filipi 4:7", "Mazmur 139:14", "Efesus 2:10"]
+        },
+        "en": {
+          "bible": "KJV",
+          "primary": "Proverbs 4:23",
+          "refs": ["Proverbs 4:23", "Romans 12:2", "Philippians 4:7", "Psalm 139:14", "Ephesians 2:10"]
+        }
+      },
+      "counselingStyle": {
+        "id": "Validasi berat beban self-inflicted dulu. Hadapi inner critic — bukan checklist luar. Tenun damai internal & identitas berharga (hidden anchors) tanpa dikte ayat. Satu langkah malam ini: maafkan diri, lepas ekspektasi mencekik.",
+        "en": "Validate self-inflicted burden first. Address inner critic — not external checklist. Weave internal peace & inherent worth (hidden anchors) without verse dictation. One step tonight: self-forgiveness, release crushing expectations."
+      },
+      "practicalSteps": {
+        "id": "(1) Tulis satu kalimat inner critic yang paling menyakitkan — lalu counter dengan kebenaran identitas. (2) Unplug 1 jam dari perbandingan digital. (3) Cerita ke satu orang tepercaya — tidak harus sendirian.",
+        "en": "(1) Write the harshest inner-critic line — counter with identity truth. (2) Unplug 1 hour from comparison feeds. (3) Tell one trusted person — you don't have to fight alone."
+      }
+    },
+    {
+      "id": "identitas",
+      "pillar": false,
+      "label": { "id": "Identitas & Self-Worth", "en": "Identity & Self-Worth" },
+      "keys": ["identitas", "insecure", "fomo", "media sosial", "self-worth", "banding"],
+      "genZStruggle": {
+        "id": "FOMO, perbandingan di IG/TikTok, identitas dari likes bukan dari Kristus.",
+        "en": "FOMO, comparison on social media, identity from likes not Christ."
+      },
+      "christianPsychology": {
+        "id": "Identitas di dalam Kristus (Efesus 2:10) — tidak berfluktuasi dengan algoritma.",
+        "en": "Identity in Christ (Ephesians 2:10) — not tied to algorithms."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "Mazmur 139:14", "refs": ["Mazmur 139:14", "Efesus 2:10", "1 Petrus 2:9"] },
+        "en": { "bible": "KJV", "primary": "Psalm 139:14", "refs": ["Psalm 139:14", "Ephesians 2:10", "1 Peter 2:9"] }
+      },
+      "counselingStyle": {
+        "id": "Akui tekanan media sosial; tenun identitas berharga di Kristus (hidden: Mazmur 139:14, Efesus 2:10) — tanpa dikte nomor ayat.",
+        "en": "Acknowledge social pressure; weave inherent worth in Christ (hidden: Ps 139:14, Eph 2:10) — no verse dictation."
+      },
+      "practicalSteps": {
+        "id": "Unfollow trigger 24 jam; tulis 3 kebenaran identitas (boleh parafrase, bukan wajib kutip TB).",
+        "en": "Unfollow triggers 24h; write 3 identity truths (paraphrase OK, no required citations)."
+      }
+    },
+    {
+      "id": "duka",
+      "pillar": false,
+      "label": { "id": "Duka & Kehilangan", "en": "Grief & Loss" },
+      "keys": ["duka", "sedih", "kehilangan", "grief", "patah hati"],
+      "genZStruggle": {
+        "id": "Kehilangan, patah hati, duka yang sulit diungkapkan di era digital.",
+        "en": "Loss, heartbreak, grief hard to express in a digital age."
+      },
+      "christianPsychology": {
+        "id": "Allah dekat dengan yang patah hati — duka manusiawi dengan pengharapan kebangkitan.",
+        "en": "God near the brokenhearted — human grief with resurrection hope."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "Mazmur 34:18", "refs": ["Mazmur 34:18", "2 Korintus 1:3-4", "Wahyu 21:4"] },
+        "en": { "bible": "KJV", "primary": "Psalm 34:18", "refs": ["Psalm 34:18", "2 Corinthians 1:3-4", "Revelation 21:4"] }
+      },
+      "counselingStyle": {
+        "id": "Jangan rush ke positif — duduk dalam Mazmur dulu.",
+        "en": "Do not rush to positivity — sit in the Psalms first."
+      },
+      "practicalSteps": {
+        "id": "Jurnal; hadir di komunitas; profesional jika duka paralisis hidup.",
+        "en": "Journal; community presence; professional help if grief paralyzes life."
+      }
+    },
+    {
+      "id": "krisis_referral",
+      "pillar": false,
+      "label": { "id": "Rujukan Krisis", "en": "Crisis Referral" },
+      "keys": ["bunuh diri", "suicide", "menyakiti diri", "self harm", "depresi berat"],
+      "genZStruggle": {
+        "id": "Krisis bunuh diri atau menyakiti diri — butuh bantuan manusia segera.",
+        "en": "Suicide or self-harm crisis — immediate human help required."
+      },
+      "christianPsychology": {
+        "id": "Hidup berharga; iman dan hotline darurat saling melengkapi, tidak menggantikan.",
+        "en": "Life is precious; faith and emergency services complement, not replace."
+      },
+      "scriptureAnchors": {
+        "id": { "bible": "TB", "primary": "Mazmur 42:11", "refs": ["Mazmur 42:11", "Yohanes 10:10", "Roma 8:38-39"] },
+        "en": { "bible": "KJV", "primary": "Psalm 42:11", "refs": ["Psalm 42:11", "John 10:10", "Romans 8:38-39"] }
+      },
+      "counselingStyle": {
+        "id": "Hangat, singkat, arahkan ke 119 / SEJIWA / Into The Light — bukan diagnosis.",
+        "en": "Warm, brief, direct to 988/911/local hotline — no diagnosis."
+      },
+      "practicalSteps": {
+        "id": "Hubungi 119, SEJIWA 119 ext 8, Into The Light 1500-456; jangan sendirian malam ini.",
+        "en": "Call 988 (US), local emergency, trusted person — do not stay alone tonight."
+      }
+    }
+  ]
+}

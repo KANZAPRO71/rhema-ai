@@ -13,7 +13,7 @@ import { initAmbientPickerUI } from "./ambientAudio.js";
 
 import { installAppBackend } from "./appBackend.js";
 import { wireNativeBackend } from "./appTransport.js";
-import { wireAppVoiceBridge } from "./appVoiceBridge.js";
+import { wireAppVoiceBridge } from "./appVoiceBridge.js?v=20260911-nolive";
 import { unlockNativeElementAudio } from "./nativeAudioPlayback.js";
 import { applyBundledProviderKeys } from "./bundledProviderKeys.js";
 import { warmupNativeMicPermission } from "./nativeMicPermission.js";
@@ -41,15 +41,15 @@ initUiShell();
 
 
 
-import { initChatApp } from "./chatCore.js";
+import { initChatApp } from "./chatCore.js?v=20260911-nolive";
 
 import { refreshCloud, initCloudPanel } from "./cloudPanel.js";
 
 import { initAppShell } from "./appShell.js";
 
-import { initAlkitabPanel, loadHome, loadRenungan, loadDoa, loadAlkitabProgram, initVoiceTranscriptHistory, refreshActiveScreen } from "./alkitabPanel.js?v=20260819-1509";
+import { initAlkitabPanel, loadHome, loadRenungan, loadDoa, loadAlkitabProgram, initVoiceTranscriptHistory, refreshActiveScreen } from "./alkitabPanel.js?v=20260911-play";
 import { initVoiceIntelligenceUI } from "./voiceIntelligenceUI.js?v=20260819-1509";
-import { initRealtimeVoiceClient } from "./realtimeVoiceClient.js?v=20260819-1509";
+import { initRealtimeVoiceClient } from "./realtimeVoiceClient.js?v=20260911-nolive";
 import { registerVoiceTextSpeech } from "./voiceTextSpeech.js";
 import { initGlobalVoiceBar } from "./globalVoiceBar.js?v=20260819-1509";
 

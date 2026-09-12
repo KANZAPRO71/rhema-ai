@@ -15,7 +15,7 @@ import {
   isLectioSessionActive,
   onLectioVoiceTurnComplete,
 } from "./lectioDivina.js";
-import { initAlkitabPowerFeatures } from "./alkitabFeatures.js?v=20260819-1509";
+import { initAlkitabPowerFeatures } from "./alkitabFeatures.js?v=20260911-sleep";
 import { forceStopAmbientAndSpeech } from "./ambientAudio.js";
 import {
   buildSermonVoicePrompt,
@@ -26,9 +26,10 @@ import {
 } from "./sermonPrompts.js";
 import { initSermonLiveContinuer, markSermonEnded, markSermonStarted } from "./sermonLiveContinuer.js";
 import { unlockNativeElementAudio, warmupNativePlayback } from "./nativeAudioPlayback.js";
-import { googleKeyConfigured, validateGoogleKeyForVoice } from "./geminiConstants.js";
+import { googleKeyConfigured, isGoogleKeyLiveValidated, validateGoogleKeyForVoice } from "./geminiConstants.js";
 import { openByokOnboarding } from "./byokOnboarding.js";
-import { getDefaultBibleVersion } from "./localeProfile.js";
+import { getEffectiveBibleVersion, getEffectiveUiLang } from "./localeProfile.js";
+import { t } from "./uiStrings.js";
 import { deliverVoiceOpenGreeting, deliverVoiceResumeContext, hasVoiceConversationHistory } from "./voiceGreeting.js";
 import { parseExplicitMemory, syncLocalSessionMemory } from "./memoryStore.js";
 import { handleVoiceLocalCommand } from "./voiceLocalCommands.js";
@@ -61,7 +62,7 @@ import {
   openHomeQuizSection,
   switchAlkitabProgramSubTab,
   switchRenunganSubTab,
-} from "./homeWorship.js?v=20260819-1509";
+} from "./homeWorship.js?v=20260911-play";
 import { refreshHomeGreeting } from "./uiShell.js";
 
 const RHEMA_STUDIO_LABEL = "🎨 Rhema Studio";
@@ -75,6 +76,7 @@ const QUICK_VERSES = [
 ];
 
 const RECENT_KEY = "rhema-alkitab-recent";
+const HOME_PILLAR_KEY = "rhema-home-pillar-last";
 
 /** @type {{ onOpenVerse?: (ref: string) => void, onAskVoice?: (text: string) => void } | null} */
 let alkitabPowerCallbacks = null;
@@ -188,10 +190,10 @@ async function loadKjvForCard(reference, tbText, found) {
   }
 }
 
-let currentVersionMode = getDefaultBibleVersion(); // 'tb' | 'kjv'
+let currentVersionMode = getEffectiveBibleVersion(); // 'tb' | 'kjv'
 
 function applyLocaleBibleDefault() {
-  currentVersionMode = getDefaultBibleVersion();
+  currentVersionMode = getEffectiveBibleVersion();
   if (currentVerse?.reference) {
     renderVerseCard(
       currentVerse.reference,
@@ -316,6 +318,7 @@ function syncKhotbahHubState(hasVerse = Boolean(currentVerse?.reference && curre
     btn.disabled = !hasVerse;
     btn.setAttribute("aria-disabled", hasVerse ? "false" : "true");
     btn.classList.toggle("verse-action-disabled", !hasVerse);
+    btn.classList.toggle("alkitab-voice-bento-btn--disabled", !hasVerse);
   }
 }
 
@@ -496,7 +499,7 @@ function renderAlkitabQuickRow() {
 function renderRecentList() {
   const items = loadJson(RECENT_KEY);
   const onPick = (ref) => void openVerse(ref);
-  renderMiniList(document.getElementById("alkitab-recent-list"), items, "Belum ada riwayat.", onPick);
+  renderMiniList(document.getElementById("alkitab-recent-list"), items, t("home.recent.empty"), onPick);
   renderAlkitabQuickRow();
 }
 
@@ -717,7 +720,8 @@ export async function refreshHomeEmbedBadge() {
     const meta = await knowledgeMeta();
     const count = meta.tbSearchIndex?.verseCount ?? 0;
     if (meta.tbSearchIndex?.ready && count > 0) {
-      heroBadge.textContent = `Semantic ${count.toLocaleString("id-ID")} ayat`;
+      const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+      heroBadge.textContent = t("home.embed.semantic", { count: count.toLocaleString(loc) });
       heroBadge.classList.remove("hidden");
       return;
     }
@@ -727,7 +731,8 @@ export async function refreshHomeEmbedBadge() {
   try {
     const st = await fetchTbSearchStatus();
     if (st.fullComplete) {
-      heroBadge.textContent = `Semantic ${st.fullCount.toLocaleString("id-ID")} ayat`;
+      const loc = getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+      heroBadge.textContent = t("home.embed.semantic", { count: st.fullCount.toLocaleString(loc) });
       heroBadge.classList.remove("hidden");
     }
   } catch {
@@ -883,21 +888,28 @@ async function renderHomeTodayVerse() {
   if (!tile) return;
   const textEl = tile.querySelector(".bento-verse-text");
   const refEl = tile.querySelector(".bento-verse-ref");
+  if (textEl) {
+    textEl.setAttribute("data-i18n", "home.verse.loading");
+    textEl.textContent = t("home.verse.loading");
+    textEl.classList.add("alkitab-loading");
+  }
+  if (refEl) refEl.textContent = "—";
   try {
     const verse = await verseOfTheDay();
     todayRhemaVerse = verse?.found !== false ? verse : null;
     if (verse?.text && textEl && refEl) {
+      textEl.removeAttribute("data-i18n");
       textEl.textContent = `"${verse.text}"`;
       textEl.classList.remove("alkitab-loading");
       refEl.textContent = verse.reference || "—";
     } else if (textEl) {
-      textEl.textContent = "Firman hari ini segera hadir.";
+      textEl.textContent = t("home.verse.unavailable");
       textEl.classList.remove("alkitab-loading");
     }
   } catch {
     todayRhemaVerse = null;
     if (textEl) {
-      textEl.textContent = "Gagal memuat ayat hari ini.";
+      textEl.textContent = t("home.verse.loadError");
       textEl.classList.remove("alkitab-loading");
     }
   }
@@ -1208,11 +1220,23 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
     return;
   }
   setVoiceTapLabel("connecting");
-  setAlkitabHint("Memeriksa API key…");
   voiceStartPending = true;
   unlockNativeElementAudio();
   void warmupNativePlayback();
   void import("./nativeMicPermission.js").then((m) => m.warmupNativeMicPermission?.());
+
+  const connectLive = () => {
+    if (!voiceStartPending) return;
+    setAlkitabHint("Menghubungkan…");
+    transport.voice.start({ mic: true });
+  };
+
+  if (isGoogleKeyLiveValidated()) {
+    connectLive();
+    return;
+  }
+
+  setAlkitabHint("Memeriksa API key…");
   void validateGoogleKeyForVoice().then((check) => {
     if (!transport.voice) voiceStartPending = false;
     if (!check.ok) {
@@ -1223,14 +1247,32 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
       openByokOnboarding({ startStep: 4 });
       return;
     }
-    if (!voiceStartPending) return;
-    setAlkitabHint("Menghubungkan…");
-    transport.voice.start({ mic: true });
+    connectLive();
   });
+}
+
+function refreshHomePillarHighlight() {
+  const last = localStorage.getItem(HOME_PILLAR_KEY) || "";
+  document.querySelectorAll(".beranda-pillar[data-pillar]").forEach((el) => {
+    el.classList.toggle("beranda-pillar--active", el.dataset.pillar === last);
+  });
+}
+
+function markHomePillar(pillar) {
+  if (!pillar) return;
+  localStorage.setItem(HOME_PILLAR_KEY, pillar);
+  refreshHomePillarHighlight();
 }
 
 export async function loadHome() {
   refreshHomeGreeting();
+  refreshHomePillarHighlight();
+  try {
+    const { syncNativeStreakToLocal } = await import("./quizNativeStore.js");
+    await syncNativeStreakToLocal();
+  } catch {
+    /* web-only */
+  }
   renderHomeStreakMini();
   renderRecentList();
   try { renderDailyBibleQuiz(); } catch (e) { console.warn("[rhema] renderDailyBibleQuiz:", e); }
@@ -1358,6 +1400,12 @@ export function initAlkitabPanel(transport, go) {
 
   document.addEventListener("rhema-locale-changed", () => {
     applyLocaleBibleDefault();
+  });
+
+  document.addEventListener("rhema-locale-home-refresh", () => {
+    void renderHomeTodayVerse();
+    renderRecentList();
+    void refreshHomeEmbedBadge();
   });
 
   document.addEventListener("rhema-alkitab-toast", (e) => {
@@ -1500,6 +1548,20 @@ export function initAlkitabPanel(transport, go) {
     goToRhemaVoice({ force: true });
   }
 
+  // Tiga pilar Beranda — Baca · Bicara · Berdoa
+  document.getElementById("pillar-goto-read")?.addEventListener("click", () => {
+    markHomePillar("read");
+    navigate("alkitab");
+  });
+  document.getElementById("pillar-goto-speak")?.addEventListener("click", () => {
+    markHomePillar("speak");
+    goToRhemaVoice({ force: true });
+  });
+  document.getElementById("pillar-goto-pray")?.addEventListener("click", () => {
+    markHomePillar("pray");
+    navigate("renungan");
+  });
+
   // Pintasan Bento Home — yang terkait ibadah dihubungkan ke Rhema AI Voice
   document.getElementById("btn-goto-renungan")?.addEventListener("click", () => navigate("renungan"));
   document.getElementById("home-streak-mini")?.addEventListener("click", () => navigate("renungan"));
@@ -1530,6 +1592,8 @@ export function initAlkitabPanel(transport, go) {
     }
     askVoiceFn(
       `Bacakan ayat hari ini dari ${todayRhemaVerse.reference}: "${todayRhemaVerse.text}" dan berikan berkat singkat.`,
+      undefined,
+      { stayOnScreen: true },
     );
     markTodayRead();
   });
@@ -1542,7 +1606,7 @@ export function initAlkitabPanel(transport, go) {
       void renderHomeTodayVerse();
       return;
     }
-    askVoiceFn(`Penjelasan arti dari ayat ${todayRhemaVerse.reference}`);
+    askVoiceFn(`Penjelasan arti dari ayat ${todayRhemaVerse.reference}`, undefined, { stayOnScreen: true });
   });
 
   document.getElementById("btn-home-open-today")?.addEventListener("click", (e) => {

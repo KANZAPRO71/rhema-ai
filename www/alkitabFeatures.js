@@ -5,7 +5,7 @@
  * Kuis Alkitab harian → dailyQuizEngine.js + homeWorship.js (Beranda)
  */
 
-import { speakIndonesianText, stopSpeaking, ambientEngine, initBreathingPrayerUI } from "./ambientAudio.js";
+import { speakIndonesianText, stopSpeaking, ambientEngine } from "./ambientAudio.js";
 import { getDailyMoodScripture, listMoodChips } from "./moodScriptureEngine.js";
 
 // ==========================================
@@ -68,12 +68,6 @@ export function initAlkitabPowerFeatures(callbacks = {}) {
 
   initMoodChips(onOpenVerse, onAskVoice);
   initSleepStories(onAskVoice);
-
-  const breathingHost = document.getElementById("breathing-prayer-host");
-  if (breathingHost && !breathingHost.dataset.bound) {
-    breathingHost.dataset.bound = "1";
-    initBreathingPrayerUI(breathingHost);
-  }
 }
 
 // ---------------- MOOD SCRIPTURE ----------------
@@ -102,16 +96,16 @@ function initMoodChips(onOpenVerse, onAskVoice) {
   const chips = listMoodChips();
   container.innerHTML = chips
     .map(
-      (m) => `<button type="button" class="mood-chip-btn" data-mood="${m.id}">
-      <span class="mood-chip-emoji">${m.emoji}</span>
-      <span class="mood-chip-label">${m.label}</span>
+      (m) => `<button type="button" class="mood-squircle tone-${m.id}" data-mood="${m.id}">
+      <span class="mood-squircle-emoji">${m.emoji}</span>
+      <span class="mood-squircle-label">${m.label}</span>
     </button>`,
     )
     .join("");
 
-  container.querySelectorAll(".mood-chip-btn").forEach((btn) => {
+  container.querySelectorAll(".mood-squircle").forEach((btn) => {
     btn.addEventListener("click", () => {
-      container.querySelectorAll(".mood-chip-btn").forEach((b) => b.classList.remove("active"));
+      container.querySelectorAll(".mood-squircle").forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       const moodId = btn.getAttribute("data-mood");
       const item = moodId ? getDailyMoodScripture(moodId) : null;
@@ -180,21 +174,22 @@ function initSleepStories(onAskVoice) {
   const player = document.getElementById("alkitab-sleep-player");
   if (!list || !player) return;
 
-  list.innerHTML = SLEEP_STORIES.map(
-    (s) => `
-      <div class="sleep-card-item" data-id="${s.id}">
-        <div class="sleep-card-head">
-          <span class="sleep-card-moon">🌙 ${s.duration}</span>
-          <span class="sleep-bg-tag">🌿 Suasana ${s.bgSound}</span>
+  list.innerHTML = SLEEP_STORIES.map((s) => {
+    const ambientLabel = { water: "Air", stream: "Sungai", wind: "Angin" }[s.bgSound] || s.bgSound;
+    return `
+      <article class="sleep-visual-card" data-id="${s.id}">
+        <div class="sleep-visual-meta">
+          <span class="sleep-visual-duration">🌙 ${s.duration}</span>
+          <span class="sleep-visual-ambient">🌿 ${ambientLabel}</span>
         </div>
-        <h4 class="sleep-card-title">${s.title}</h4>
-        <p class="sleep-card-desc">${s.desc}</p>
-        <button type="button" class="btn-pill btn-soft btn-play-sleep">▶ Putar Cerita</button>
-      </div>
-    `
-  ).join("");
+        <h4 class="sleep-visual-title">${s.title}</h4>
+        <p class="sleep-visual-desc">${s.desc}</p>
+        <button type="button" class="sleep-play-bar btn-play-sleep" aria-label="Putar ${s.title}">▶ Putar Cerita</button>
+      </article>
+    `;
+  }).join("");
 
-  list.querySelectorAll(".sleep-card-item").forEach((card) => {
+  list.querySelectorAll(".sleep-visual-card").forEach((card) => {
     card.querySelector(".btn-play-sleep")?.addEventListener("click", () => {
       const id = card.getAttribute("data-id");
       const story = SLEEP_STORIES.find((s) => s.id === id);
@@ -204,21 +199,21 @@ function initSleepStories(onAskVoice) {
       try { ambientEngine.play(story.bgSound || "water", 0.22); } catch {}
 
       player.innerHTML = `
-        <div class="sleep-player-inner">
+        <div class="sleep-player-card sleep-player-inner">
           <div class="sleep-player-head">
             <span class="sleep-player-icon">🌙</span>
-            <div>
+            <div class="sleep-player-head-text">
               <h4 class="sleep-player-title">${story.title}</h4>
-              <p class="sleep-player-meta">Narasi Teduh Bersuara Lembut · Musik Latar Aktif</p>
+              <p class="sleep-player-meta">Narasi teduh · musik latar aktif</p>
             </div>
-            <button type="button" class="btn-box-close" id="btn-close-sleep">✕</button>
+            <button type="button" class="btn-box-close sleep-player-close" id="btn-close-sleep" aria-label="Tutup pemutar">✕</button>
           </div>
-          <div class="sleep-script-preview mobile-scroll">
+          <div class="sleep-script-preview">
             <p>${story.script.replace(/\n/g, "<br>")}</p>
           </div>
           <div class="sleep-player-controls">
-            <button type="button" class="btn-pill primary" id="btn-narrate-sleep">🔊 Putar Narasi Live (Gemini)</button>
-            <button type="button" class="btn-pill btn-soft" id="btn-stop-sleep">⏹️ Berhenti</button>
+            <button type="button" class="btn-pill primary" id="btn-narrate-sleep">🔊 Putar Narasi Live</button>
+            <button type="button" class="btn-pill btn-soft sleep-stop-btn" id="btn-stop-sleep">⏹️ Berhenti</button>
           </div>
         </div>
       `;

@@ -13,7 +13,7 @@ export function renderSettingsPanel(opts = {}) {
   const configured = providerKeyStatus.google;
   const placeholder = configured
     ? (t("settings.keySaved") || "Key saved — type new key to replace")
-    : "AIza… — Google AI Studio (Gemini Live)";
+    : "AIza… — Google AI Studio";
 
   const savedVoice = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-voice-name")) || "Puck";
   const savedPersona = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-persona-id")) || "pastor";
@@ -82,7 +82,7 @@ export function renderSettingsPanel(opts = {}) {
   <!-- Section 1: Karakter Suara AI (Gemini Live) -->
   <div class="settings-section">
     <div class="settings-section-title">🎙️ ${t("settings.voiceTitle")}</div>
-    <p class="settings-hint">Pilih warna suara alami Gemini Live yang paling nyaman untuk pendampingan ibadah dan doa Anda.</p>
+    <p class="settings-hint">Pilih warna suara alami yang paling nyaman untuk pendampingan ibadah dan doa Anda.</p>
     <div class="settings-row">
       <label for="select-voice-name">Karakter Suara</label>
       <select id="select-voice-name" class="settings-select">

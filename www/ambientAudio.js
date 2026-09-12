@@ -852,29 +852,44 @@ export function stopBreathingPrayer() {
 
 export function initBreathingPrayerUI(containerEl) {
   if (!containerEl) return;
+  const compact = containerEl.dataset.compact === "1" || containerEl.dataset.compact === "true";
 
   function renderBreathingWidget() {
-    containerEl.innerHTML = `
-      <div class="breathing-card">
-        <div class="breathing-head">
-          <span class="breathing-badge">🌬️ Latihan Nafas Doa</span>
-          <span class="breathing-timer-tag">Rileksasi Jiwa 4-4-4</span>
-        </div>
-        <div class="breathing-circle-wrap">
-          <div id="breathing-circle" class="breathing-circle ${isBreathingActive ? "inhale" : ""}">
-            <span id="breathing-phase-text" class="breathing-phase">${isBreathingActive ? "Tarik Nafas..." : "Mulai"}</span>
+    if (compact) {
+      containerEl.innerHTML = `
+        <div class="wellness-split-card wellness-split-card--breath${isBreathingActive ? " is-active" : ""}">
+          <span class="wellness-split-icon" aria-hidden="true">🌬️</span>
+          <p class="wellness-split-value">Nafas Doa</p>
+          <p class="wellness-split-label">4-4-4</p>
+          <p id="breathing-verse-guide" class="wellness-split-hint">${
+            isBreathingActive ? BREATHING_VERSES[breathingVerseIdx].inhale : "Tenangkan jiwa sebelum saat teduh"
+          }</p>
+          <button type="button" class="breathing-compact-fab" id="btn-toggle-breathing" aria-label="${
+            isBreathingActive ? "Hentikan nafas doa" : "Mulai nafas doa"
+          }">${isBreathingActive ? "⏹" : "▶"}</button>
+        </div>`;
+    } else {
+      containerEl.innerHTML = `
+        <div class="breathing-card">
+          <div class="breathing-head">
+            <span class="breathing-badge">🌬️ Latihan Nafas Doa</span>
+            <span class="breathing-timer-tag">Rileksasi Jiwa 4-4-4</span>
           </div>
-        </div>
-        <p id="breathing-verse-guide" class="breathing-verse-guide">
-          ${isBreathingActive ? BREATHING_VERSES[breathingVerseIdx].inhale : "Tarik nafas hening, hembuskan rasa cemas dalam hadirat Tuhan."}
-        </p>
-        <div class="breathing-actions">
-          <button type="button" class="btn-pill primary" id="btn-toggle-breathing">
-            ${isBreathingActive ? "⏹️ Hentikan Latihan" : "▶ Mulai Doa Nafas (4-4-4)"}
-          </button>
-        </div>
-      </div>
-    `;
+          <div class="breathing-circle-wrap">
+            <div id="breathing-circle" class="breathing-circle ${isBreathingActive ? "inhale" : ""}">
+              <span id="breathing-phase-text" class="breathing-phase">${isBreathingActive ? "Tarik Nafas..." : "Mulai"}</span>
+            </div>
+          </div>
+          <p id="breathing-verse-guide" class="breathing-verse-guide">
+            ${isBreathingActive ? BREATHING_VERSES[breathingVerseIdx].inhale : "Tarik nafas hening, hembuskan rasa cemas dalam hadirat Tuhan."}
+          </p>
+          <div class="breathing-actions">
+            <button type="button" class="btn-pill primary" id="btn-toggle-breathing">
+              ${isBreathingActive ? "⏹️ Hentikan Latihan" : "▶ Mulai Doa Nafas (4-4-4)"}
+            </button>
+          </div>
+        </div>`;
+    }
 
     containerEl.querySelector("#btn-toggle-breathing")?.addEventListener("click", () => {
       if (isBreathingActive) {
@@ -896,27 +911,26 @@ export function initBreathingPrayerUI(containerEl) {
     const verseText = containerEl.querySelector("#breathing-verse-guide");
     const curVerse = BREATHING_VERSES[breathingVerseIdx];
 
-    // Mulai musik latar tenang
     try { ambientEngine.start("harp"); } catch {}
 
-    let phase = 0; // 0: Inhale (4s), 1: Hold (4s), 2: Exhale (4s)
+    let phase = 0;
 
     function step() {
       if (!isBreathingActive) return;
       if (phase === 0) {
-        if (circle) { circle.className = "breathing-circle inhale"; }
+        if (circle) circle.className = "breathing-circle inhale";
         if (phaseText) phaseText.textContent = "Tarik Nafas";
-        if (verseText) verseText.textContent = `🌱 ${curVerse.inhale}`;
+        if (verseText) verseText.textContent = compact ? `Tarik · ${curVerse.inhale}` : `🌱 ${curVerse.inhale}`;
         phase = 1;
       } else if (phase === 1) {
-        if (circle) { circle.className = "breathing-circle hold"; }
+        if (circle) circle.className = "breathing-circle hold";
         if (phaseText) phaseText.textContent = "Tahan";
-        if (verseText) verseText.textContent = `✨ ${curVerse.hold}`;
+        if (verseText) verseText.textContent = compact ? `Tahan · ${curVerse.hold}` : `✨ ${curVerse.hold}`;
         phase = 2;
       } else {
-        if (circle) { circle.className = "breathing-circle exhale"; }
+        if (circle) circle.className = "breathing-circle exhale";
         if (phaseText) phaseText.textContent = "Hembuskan";
-        if (verseText) verseText.textContent = `🕊️ ${curVerse.exhale}`;
+        if (verseText) verseText.textContent = compact ? `Hembus · ${curVerse.exhale}` : `🕊️ ${curVerse.exhale}`;
         phase = 0;
         breathingVerseIdx = (breathingVerseIdx + 1) % BREATHING_VERSES.length;
       }

@@ -119,6 +119,17 @@ export function googleKeyConfigured() {
   return Boolean(getStoredGoogleKey()) || localStorage.getItem(GOOGLE_KEY_FLAG) === "1";
 }
 
+/** True jika Live API sudah lolos handshake di perangkat ini (hindari cek ulang tiap tap). */
+export function isGoogleKeyLiveValidated(maxAgeMs = 24 * 60 * 60 * 1000) {
+  try {
+    if (localStorage.getItem("rhema-google-key-live-validated") !== "1") return false;
+    const at = Number(localStorage.getItem("rhema-google-key-validated-at") || 0);
+    return at > 0 && Date.now() - at < maxAgeMs;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Validasi BYOK untuk Gemini Live: REST list models + handshake WebSocket Live API.
  * Koneksi langsung HP → wss://generativelanguage.googleapis.com (tanpa server Rhema).

@@ -148,6 +148,12 @@ export function getDefaultBibleVersion() {
   return v === "kjv" ? "kjv" : "tb";
 }
 
+/** Alkitab efektif — profil tersimpan, atau selaras bahasa UI sebelum onboarding. */
+export function getEffectiveBibleVersion() {
+  if (isLocaleProfileConfigured()) return getDefaultBibleVersion();
+  return getEffectiveUiLang() === "en" ? "kjv" : "tb";
+}
+
 export function getAiLanguageRule() {
   return isIndonesiaProfile()
     ? "WAJIB: bahasa Indonesia sehari-hari hangat dan mudah dicerna."

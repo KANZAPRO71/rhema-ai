@@ -4,9 +4,47 @@
 
 import { todayKey } from "./dailyRenunganEngine.js";
 import { BIBLE_QUIZ_POOL, DAILY_QUIZ_COUNT } from "./renunganData.js";
+import { getEffectiveUiLang } from "./localeProfile.js";
+import { QUIZ_EN } from "./quizPoolI18n.js";
+import { t } from "./uiStrings.js";
 
 export { DAILY_QUIZ_COUNT };
 export const QUIZ_STATE_KEY = "rhema-daily-quiz";
+
+/** @type {Record<number, { key: string, labelKey: string }>} */
+export const QUIZ_WEEKDAY_TOPICS = {
+  1: { key: "sejarah", labelKey: "home.quiz.topic.sejarah" },
+  3: { key: "tokoh", labelKey: "home.quiz.topic.tokoh" },
+  5: { key: "doktrin", labelKey: "home.quiz.topic.doktrin" },
+};
+
+/** @param {string} dateKey */
+function dateFromKey(dateKey) {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
+/** @param {typeof BIBLE_QUIZ_POOL[number]} q */
+export function localizeQuizItem(q) {
+  if (getEffectiveUiLang() !== "en") return q;
+  const en = QUIZ_EN[q.id];
+  if (!en) return q;
+  return {
+    ...q,
+    question: en.question,
+    options: en.options,
+    explanation: en.explanation,
+    verseRef: en.verseRef,
+    hint: en.hint ?? q.hint,
+  };
+}
+
+/** @param {string} [dateKey] */
+export function getDailyQuizTopic(dateKey = todayKey()) {
+  const day = dateFromKey(dateKey).getDay();
+  const entry = QUIZ_WEEKDAY_TOPICS[day] || { key: "campuran", labelKey: "home.quiz.topic.campuran" };
+  return { key: entry.key, label: t(entry.labelKey) };
+}
 
 /** @param {string} dateKey @param {string} salt */
 function hashDateSeed(dateKey, salt) {
@@ -37,8 +75,14 @@ function pickDailyQuizIndices(poolLength, count, dateKey) {
 
 /** @param {string} [dateKey] */
 export function getDailyQuizQuestions(dateKey = todayKey()) {
-  const indices = pickDailyQuizIndices(BIBLE_QUIZ_POOL.length, DAILY_QUIZ_COUNT, dateKey);
-  return indices.map((i) => BIBLE_QUIZ_POOL[i]);
+  const topic = getDailyQuizTopic(dateKey);
+  let pool = BIBLE_QUIZ_POOL;
+  if (topic.key !== "campuran") {
+    const filtered = BIBLE_QUIZ_POOL.filter((q) => q.category === topic.key);
+    if (filtered.length >= DAILY_QUIZ_COUNT) pool = filtered;
+  }
+  const indices = pickDailyQuizIndices(pool.length, DAILY_QUIZ_COUNT, `${dateKey}::${topic.key}`);
+  return indices.map((i) => localizeQuizItem(pool[i]));
 }
 
 /** @param {unknown} raw */

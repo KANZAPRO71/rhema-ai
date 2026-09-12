@@ -1,6 +1,7 @@
 /**
  * Alkitab TB offline — lookup & search di device (BYOK, tanpa PC server).
  */
+import { getEffectiveBibleVersion } from "./localeProfile.js";
 
 const TB_BASE = "/data/alkitab_tb";
 const KJV_BASE = "/data/alkitab_kjv";
@@ -47,6 +48,8 @@ let kitabIndex = [];
 let aliasToKode = {};
 /** @type {Record<string,string>} */
 let kodeToNama = {};
+/** @type {Record<string,string>} */
+let kjvKodeToNama = {};
 /** @type {Map<string, object>} */
 const bukuCache = new Map();
 /** @type {Map<string, object>} */
@@ -87,6 +90,18 @@ async function loadIndex() {
   for (const [leg, baru] of Object.entries(KODE_LEGACY)) aliasToKode[leg] = baru;
 }
 
+async function loadKjvIndex() {
+  if (Object.keys(kjvKodeToNama).length) return;
+  try {
+    const raw = await fetchJson(`${KJV_BASE}/kitab_index.json`);
+    for (const k of raw.kitab ?? []) {
+      kjvKodeToNama[k.kode] = k.nama;
+    }
+  } catch {
+    kjvKodeToNama = {};
+  }
+}
+
 function normKode(kode) {
   const k = String(kode || "").toLowerCase();
   return KODE_LEGACY[k] ?? aliasToKode[k] ?? k;
@@ -94,6 +109,14 @@ function normKode(kode) {
 
 function bookName(kode) {
   return kodeToNama[normKode(kode)] ?? String(kode).toUpperCase();
+}
+
+function kjvBookName(kode) {
+  return kjvKodeToNama[normKode(kode)] ?? bookName(kode);
+}
+
+function formatKjvReference(ref) {
+  return `${kjvBookName(ref.kode)} ${ref.pasal}:${ref.ayat}`;
 }
 
 async function readKjvBuku(kode) {
@@ -368,13 +391,14 @@ export async function lookupVerse(reference) {
 /** King James Version — 66 kitab offline (parity TB). */
 export async function lookupKjvVerse(reference) {
   await loadIndex();
+  await loadKjvIndex();
   const raw = String(reference || "").trim();
   const tr = "KJV";
   const src = "KJV offline (device)";
   const chRange = await parseChapterRange(raw);
   if (chRange) {
     const kode = chRange.kode;
-    const formatted = `${bookName(kode)} ${chRange.pasalStart}-${chRange.pasalEnd}`;
+    const formatted = `${kjvBookName(kode)} ${chRange.pasalStart}-${chRange.pasalEnd}`;
     const snippets = [];
     for (let pasal = chRange.pasalStart; pasal <= chRange.pasalEnd; pasal++) {
       const text = await readFromKjvBuku(kode, pasal, 1);
@@ -395,7 +419,7 @@ export async function lookupKjvVerse(reference) {
   const range = await parseVerseRange(raw);
   if (range) {
     const kode = normKode(range.kode);
-    const formatted = `${bookName(kode)} ${range.pasal}:${range.ayatStart}-${range.ayatEnd}`;
+    const formatted = `${kjvBookName(kode)} ${range.pasal}:${range.ayatStart}-${range.ayatEnd}`;
     const verses = [];
     for (let ayat = range.ayatStart; ayat <= range.ayatEnd; ayat++) {
       const text = await readFromKjvBuku(kode, range.pasal, ayat);
@@ -431,7 +455,7 @@ export async function lookupKjvVerse(reference) {
     return { reference: raw, text: "", translation: tr, found: false };
   }
   const kode = normKode(ref.kode);
-  const formatted = formatReference({ ...ref, kode });
+  const formatted = formatKjvReference({ ...ref, kode });
   const text = await readFromKjvBuku(kode, ref.pasal, ref.ayat);
   if (text) {
     return {
@@ -467,7 +491,7 @@ export async function verseOfTheDay(date = new Date()) {
   const start = new Date(date.getFullYear(), 0, 0);
   const day = Math.floor((date.getTime() - start.getTime()) / 86_400_000);
   const ref = VERSE_OF_DAY_REFS[day % VERSE_OF_DAY_REFS.length] ?? "Yohanes 3:16";
-  return lookupVerse(ref);
+  return getEffectiveBibleVersion() === "kjv" ? lookupKjvVerse(ref) : lookupVerse(ref);
 }
 
 export async function verifyVerse(reference, quotedText) {

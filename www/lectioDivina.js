@@ -630,10 +630,12 @@ export function renderLectioJournalList() {
   if (!entries.length) {
     list.innerHTML = "";
     empty?.classList.remove("hidden");
+    empty?.setAttribute("aria-hidden", "false");
     return;
   }
 
   empty?.classList.add("hidden");
+  empty?.setAttribute("aria-hidden", "true");
   list.innerHTML = entries
     .slice(0, 12)
     .map(

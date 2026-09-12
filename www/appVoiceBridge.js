@@ -1,7 +1,7 @@
 ﻿/**
- * Voice proxy lokal di APK — jalur sama dengan web (:8765 + webServer).
+ * Voice proxy lokal di APK — jalur sama dengan dev localhost (:3000).
  */
-import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260819-1509";
+import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260911-nolive";
 import { handleLocalApi } from "./appBackend.js";
 import { formatInteractionMemoryForPrompt, parseExplicitMemory, addLocalMemoryEntry } from "./memoryStore.js";
 import { emitMemorySaveBroadcast, handleVoiceLocalCommand, VOICE_MEMORY_SESSION } from "./voiceLocalCommands.js";

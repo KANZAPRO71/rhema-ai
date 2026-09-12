@@ -1,7 +1,7 @@
 /**
  * Shared chat UI — dipakai webview (Cursor) dan browser.
  */
-import { renderSettingsPanel } from "./settingsPanelMarkup.js";
+import { renderSettingsPanel } from "./settingsPanelMarkup.js?v=20260911-nolive";
 import { renderMarkdown, setMarkdownEl } from "./markdown.js";
 import { MENTION_CATEGORIES, parseMentionQuery, buildMentionInsert } from "./mentionMenu.js";
 import { loadSessions, saveSessions, createSession, upsertSession, CURRENT_SESSION_KEY } from "./chatHistory.js";
@@ -297,7 +297,7 @@ export function initChatApp(transport, options = {}) {
       const input = /** @type {HTMLInputElement|null} */ (document.getElementById("byok-google"));
       if (input) {
         input.value = "";
-        input.placeholder = "AIza… — Google AI Studio (Gemini Live)";
+        input.placeholder = "AIza… — Google AI Studio";
       }
       transport.post({ type: "saveProviderKey", provider: "google", key: "" });
       updateByokKeyStatusLine(false);
@@ -1225,7 +1225,7 @@ export function initChatApp(transport, options = {}) {
       input.placeholder = "Key tersimpan ✓ — ketik key baru untuk ganti";
       storage.setItem?.(GOOGLE_KEY_FLAG, "1");
     } else if (input && status && !status.google) {
-      input.placeholder = "AIza… — API key Google AI Studio (Gemini Live)";
+      input.placeholder = "AIza… — API key Google AI Studio";
       storage.removeItem?.(GOOGLE_KEY_FLAG);
     }
   }

@@ -131,14 +131,14 @@ export function createGeminiLiveSession(options) {
       return "Mic dipakai aplikasi lain (Zoom/Discord?). Tutup dulu lalu coba lagi.";
     }
     if (name === "SecurityError") {
-      return "Mic butuh localhost/HTTPS. Buka http://127.0.0.1:8765 (bukan file://).";
+      return "Mic butuh localhost/HTTPS. Buka http://127.0.0.1:3000 (npm run dev).";
     }
     return err instanceof Error ? err.message : String(err);
   }
 
   async function ensureMicSupport() {
     if (!window.isSecureContext) {
-      throw new Error("Mic butuh secure context — buka http://127.0.0.1:8765");
+      throw new Error("Mic butuh secure context — buka http://127.0.0.1:3000 (npm run dev)");
     }
     if (!navigator.mediaDevices?.getUserMedia) {
       throw new Error("Browser tidak mendukung getUserMedia. Coba Chrome/Edge terbaru.");
@@ -374,7 +374,7 @@ export function createGeminiLiveSession(options) {
         options.emit({
           type: "voiceStatus",
           status: "error",
-          detail: "Gemini Live timeout — periksa internet lalu coba lagi.",
+          detail: "Koneksi suara timeout — periksa internet lalu coba lagi.",
         });
       }
     }, 18000);
