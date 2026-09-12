@@ -10,6 +10,7 @@ import { getEffectiveUiLang } from "./localeProfile.js";
 import { getDailyMoodScripture } from "./moodScriptureEngine.js";
 import { t } from "./uiStrings.js";
 import { formatMoodSummaryDate, localizedMoodChips } from "./worshipUiI18n.js";
+import { SLEEP_STORY_EN } from "./sleepStoryI18n.js";
 
 /** @type {{ onOpenVerse?: (ref: string) => void, onAskVoice?: (text: string) => void }} */
 let moodFeatureCallbacks = {};
@@ -86,6 +87,7 @@ export function initAlkitabPowerFeatures(callbacks = {}) {
 
 document.addEventListener("rhema-locale-alkitab-refresh", () => {
   initMoodChips(moodFeatureCallbacks.onOpenVerse, moodFeatureCallbacks.onAskVoice);
+  initSleepStories(moodFeatureCallbacks.onAskVoice);
 });
 
 // ---------------- MOOD SCRIPTURE ----------------
@@ -180,7 +182,40 @@ function initMoodChips(onOpenVerse, onAskVoice) {
 }
 
 // ---------------- SLEEP STORIES ----------------
+/** @param {typeof SLEEP_STORIES[number]} story */
+function localizeSleepStory(story) {
+  if (getEffectiveUiLang() !== "en") return story;
+  const en = SLEEP_STORY_EN[story.id];
+  if (!en) return story;
+  return {
+    ...story,
+    title: en.title ?? story.title,
+    duration: en.duration ?? story.duration,
+    desc: en.desc ?? story.desc,
+    script: en.script ?? story.script,
+    _ambientLabels: en.ambient,
+  };
+}
+
+/** @returns {ReturnType<typeof localizeSleepStory>[]} */
+function getLocalizedSleepStories() {
+  return SLEEP_STORIES.map(localizeSleepStory);
+}
+
+/** @param {ReturnType<typeof localizeSleepStory>} story */
 function buildSleepVoicePrompt(story) {
+  if (getEffectiveUiLang() === "en") {
+    return `Read this bedtime Bible story in a soft, calm, slow voice — like a shepherd soothing the soul before sleep.
+
+Title: "${story.title}"
+Target length: ${story.duration}
+Mood: ${story.desc}
+
+Narration (gentle tone, natural pauses between paragraphs):
+${story.script}
+
+End with a brief prayer and "Good night, God bless you."`;
+  }
   return `Bacakan cerita Alkitab pengantar tidur dengan suara lembut, tenang, dan perlahan — seperti gembala yang menenangkan jiwa sebelum tidur.
 
 Judul: "${story.title}"
@@ -193,22 +228,30 @@ ${story.script}
 Akhiri dengan doa singkat dan "Selamat tidur, Tuhan memberkati."`;
 }
 
+/** @param {ReturnType<typeof localizeSleepStory>} story */
+function sleepAmbientLabel(story) {
+  const id = story.bgSound;
+  const key = `sleep.ambient.${id}`;
+  const localized = t(key);
+  return localized !== key ? localized : id;
+}
+
 function initSleepStories(onAskVoice) {
   const list = document.getElementById("alkitab-sleep-list");
   const player = document.getElementById("alkitab-sleep-player");
   if (!list || !player) return;
 
-  list.innerHTML = SLEEP_STORIES.map((s) => {
-    const ambientLabel = { water: "Air", stream: "Sungai", wind: "Angin" }[s.bgSound] || s.bgSound;
+  list.innerHTML = getLocalizedSleepStories().map((s) => {
+    const ambientLabel = sleepAmbientLabel(s);
     return `
       <article class="sleep-visual-card" data-id="${s.id}">
         <div class="sleep-visual-meta">
-          <span class="sleep-visual-duration">🌙 ${s.duration}</span>
-          <span class="sleep-visual-ambient">🌿 ${ambientLabel}</span>
+          <span class="sleep-visual-duration">🌙 ${escapeHtml(s.duration)}</span>
+          <span class="sleep-visual-ambient">🌿 ${escapeHtml(ambientLabel)}</span>
         </div>
-        <h4 class="sleep-visual-title">${s.title}</h4>
-        <p class="sleep-visual-desc">${s.desc}</p>
-        <button type="button" class="sleep-play-bar btn-play-sleep" aria-label="Putar ${s.title}">▶ Putar Cerita</button>
+        <h4 class="sleep-visual-title">${escapeHtml(s.title)}</h4>
+        <p class="sleep-visual-desc">${escapeHtml(s.desc)}</p>
+        <button type="button" class="sleep-play-bar btn-play-sleep" aria-label="${escapeHtml(t("sleep.playAria", { title: s.title }))}">${escapeHtml(t("sleep.playBtn"))}</button>
       </article>
     `;
   }).join("");
@@ -216,7 +259,7 @@ function initSleepStories(onAskVoice) {
   list.querySelectorAll(".sleep-visual-card").forEach((card) => {
     card.querySelector(".btn-play-sleep")?.addEventListener("click", () => {
       const id = card.getAttribute("data-id");
-      const story = SLEEP_STORIES.find((s) => s.id === id);
+      const story = getLocalizedSleepStories().find((s) => s.id === id);
       if (!story) return;
 
       // Jalankan musik latar ambient
@@ -227,17 +270,17 @@ function initSleepStories(onAskVoice) {
           <div class="sleep-player-head">
             <span class="sleep-player-icon">🌙</span>
             <div class="sleep-player-head-text">
-              <h4 class="sleep-player-title">${story.title}</h4>
-              <p class="sleep-player-meta">Narasi teduh · musik latar aktif</p>
+              <h4 class="sleep-player-title">${escapeHtml(story.title)}</h4>
+              <p class="sleep-player-meta">${escapeHtml(t("sleep.playerMeta"))}</p>
             </div>
-            <button type="button" class="btn-box-close sleep-player-close" id="btn-close-sleep" aria-label="Tutup pemutar">✕</button>
+            <button type="button" class="btn-box-close sleep-player-close" id="btn-close-sleep" aria-label="${escapeHtml(t("sleep.closeAria"))}">✕</button>
           </div>
           <div class="sleep-script-preview">
-            <p>${story.script.replace(/\n/g, "<br>")}</p>
+            <p>${escapeHtml(story.script).replace(/\n/g, "<br>")}</p>
           </div>
           <div class="sleep-player-controls">
-            <button type="button" class="btn-pill primary" id="btn-narrate-sleep">🔊 Putar Narasi Live</button>
-            <button type="button" class="btn-pill btn-soft sleep-stop-btn" id="btn-stop-sleep">⏹️ Berhenti</button>
+            <button type="button" class="btn-pill primary" id="btn-narrate-sleep">${escapeHtml(t("sleep.narrateBtn"))}</button>
+            <button type="button" class="btn-pill btn-soft sleep-stop-btn" id="btn-stop-sleep">${escapeHtml(t("sleep.stopBtn"))}</button>
           </div>
         </div>
       `;

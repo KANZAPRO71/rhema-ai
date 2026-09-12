@@ -39,10 +39,8 @@ import {
   localizedGuidedPrayerSessionPhases,
   localizedPrayerPresets,
 } from "./worshipUiI18n.js";
-import {
-  PRAYER_CATEGORIES,
-  THEMATIC_READING_PLANS,
-} from "./renunganData.js";
+import { PRAYER_CATEGORIES } from "./renunganData.js";
+import { getLocalizedThematicPlans } from "./thematicPlanEngine.js";
 import {
   getTodayAIDevotion,
 } from "./aiDevotionEngine.js";
@@ -591,18 +589,24 @@ function saveThematicProgress(data) {
 /** @param {number} totalDays */
 function formatPlanWeeks(totalDays) {
   const weeks = Math.ceil(totalDays / 7);
+  if (getEffectiveUiLang() === "en") {
+    return weeks <= 1 ? t("plans.week.one") : t("plans.week.many", { n: String(weeks) });
+  }
   return weeks <= 1 ? "1 minggu" : `${weeks} minggu`;
 }
 
 /** @param {{ totalDays: number }} plan @param {number} doneCount */
 function getThematicPlanStatus(plan, doneCount) {
   if (doneCount >= plan.totalDays) {
-    return { label: "Selesai", tone: "done" };
+    return { label: t("plans.status.done"), tone: "done" };
   }
   if (doneCount > 0) {
-    return { label: `Hari ${doneCount + 1} dari ${plan.totalDays}`, tone: "active" };
+    return {
+      label: t("plans.status.active", { current: String(doneCount + 1), total: String(plan.totalDays) }),
+      tone: "active",
+    };
   }
-  return { label: "Belum mulai", tone: "new" };
+  return { label: t("plans.status.new"), tone: "new" };
 }
 
 /** Tandai hari ini sudah baca (streak + rencana). */
@@ -922,24 +926,25 @@ function renderPrayers() {
 let selectedThematicPlanId = null;
 
 export function renderThematicPlans() {
+  const plans = getLocalizedThematicPlans();
   const oneYearCard = document.getElementById("one-year-bible-card");
   const plansSummaryEl = document.getElementById("reading-plans-summary");
   const { year, dayOfYear, plan, totalDays } = getTodayOneYearDay();
   const oyProgress = getOneYearProgress();
   const oyDoneCount = countOneYearCompleted(year);
   const thematicProgress = loadThematicProgress();
-  const thematicActive = THEMATIC_READING_PLANS.filter((p) => {
+  const thematicActive = plans.filter((p) => {
     const done = thematicProgress[p.id]?.completedDays?.length || 0;
     return done > 0 && done < p.totalDays;
   }).length;
 
   if (plansSummaryEl) {
     plansSummaryEl.innerHTML = `
-      <span class="reading-plans-chip">365 hari · 1 tahun</span>
-      <span class="reading-plans-chip">${THEMATIC_READING_PLANS.length} rencana tematik</span>
-      <span class="reading-plans-chip reading-plans-chip--year">Hari ${dayOfYear} · ${year}</span>
-      ${oyDoneCount ? `<span class="reading-plans-chip reading-plans-chip--read">${oyDoneCount}/${totalDays} dibaca</span>` : ""}
-      ${thematicActive ? `<span class="reading-plans-chip reading-plans-chip--active">${thematicActive} tematik aktif</span>` : ""}
+      <span class="reading-plans-chip">${escapeHtml(t("plans.oneYear.chip"))}</span>
+      <span class="reading-plans-chip">${escapeHtml(t("plans.thematic.count", { n: String(plans.length) }))}</span>
+      <span class="reading-plans-chip reading-plans-chip--year">${escapeHtml(t("plans.dayYear", { day: String(dayOfYear), year: String(year) }))}</span>
+      ${oyDoneCount ? `<span class="reading-plans-chip reading-plans-chip--read">${escapeHtml(t("plans.readProgress", { done: String(oyDoneCount), total: String(totalDays) }))}</span>` : ""}
+      ${thematicActive ? `<span class="reading-plans-chip reading-plans-chip--active">${escapeHtml(t("plans.thematic.active", { n: String(thematicActive) }))}</span>` : ""}
     `;
   }
 
@@ -958,25 +963,25 @@ export function renderThematicPlans() {
               <small>/${totalDays}</small>
             </span>
           </div>
-          <p class="oy-split-kicker">1 Tahun · ${year}</p>
-          <p class="oy-split-day">Hari ${dayOfYear}</p>
-          <p class="oy-split-cal">${calPct}% tahun</p>
+          <p class="oy-split-kicker">${escapeHtml(t("plans.oneYear.kicker", { year: String(year) }))}</p>
+          <p class="oy-split-day">${escapeHtml(t("plans.oneYear.day", { n: String(dayOfYear) }))}</p>
+          <p class="oy-split-cal">${escapeHtml(t("plans.oneYear.calPct", { n: String(calPct) }))}</p>
         </div>
         <div class="oy-split-right">
           <p class="oy-split-theme">${escapeHtml(plan.theme)}</p>
           <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.pl)}">
-            <span class="oy-tag-lbl">PL</span> ${escapeHtml(plan.pl)}
+            <span class="oy-tag-lbl">${escapeHtml(t("plans.oneYear.ot"))}</span> ${escapeHtml(plan.pl)}
           </button>
           <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.pb)}">
-            <span class="oy-tag-lbl">PB</span> ${escapeHtml(plan.pb)}
+            <span class="oy-tag-lbl">${escapeHtml(t("plans.oneYear.nt"))}</span> ${escapeHtml(plan.pb)}
           </button>
           <button type="button" class="oy-split-passage" data-ref="${escapeHtml(plan.mazmur)}">
-            <span class="oy-tag-lbl">Hikmat</span> ${escapeHtml(plan.mazmur)}
+            <span class="oy-tag-lbl">${escapeHtml(t("plans.oneYear.wisdom"))}</span> ${escapeHtml(plan.mazmur)}
           </button>
           <div class="oy-split-actions">
-            <button type="button" class="oy-split-play" id="btn-oy-listen" aria-label="Putar audio firman hari ini">▶</button>
+            <button type="button" class="oy-split-play" id="btn-oy-listen" aria-label="${escapeHtml(t("plans.oneYear.playAria"))}">▶</button>
             <button type="button" class="oy-split-check ${isDone ? "is-done" : ""}" id="btn-oy-check">
-              ${isDone ? "✓ Selesai" : "Tandai selesai"}
+              ${isDone ? escapeHtml(t("plans.oneYear.done")) : escapeHtml(t("plans.oneYear.markDone"))}
             </button>
           </div>
         </div>
@@ -995,7 +1000,9 @@ export function renderThematicPlans() {
       e.stopPropagation();
       if (homeBridge?.askVoice) {
         homeBridge.askVoice(
-          `Bacakan dan berikan renungan untuk program baca Alkitab 1 Tahun hari ke-${dayOfYear}: Perjanjian Lama dari ${plan.pl}, Perjanjian Baru dari ${plan.pb}, serta Mazmur dari ${plan.mazmur}. Pimpin doa berkat.`
+          getEffectiveUiLang() === "en"
+            ? `Read and reflect on One-Year Bible day ${dayOfYear}: Old Testament from ${plan.pl}, New Testament from ${plan.pb}, and Psalms/Wisdom from ${plan.mazmur}. Lead a brief blessing prayer.`
+            : `Bacakan dan berikan renungan untuk program baca Alkitab 1 Tahun hari ke-${dayOfYear}: Perjanjian Lama dari ${plan.pl}, Perjanjian Baru dari ${plan.pb}, serta Mazmur dari ${plan.mazmur}. Pimpin doa berkat.`,
         );
       }
       markTodayRead();
@@ -1014,24 +1021,24 @@ export function renderThematicPlans() {
   if (!grid || !detail) return;
 
   const progress = loadThematicProgress();
-  const activeCount = THEMATIC_READING_PLANS.filter((plan) => {
+  const activeCount = plans.filter((plan) => {
     const done = progress[plan.id]?.completedDays?.length || 0;
     return done > 0 && done < plan.totalDays;
   }).length;
-  const doneCountAll = THEMATIC_READING_PLANS.filter((plan) => {
+  const doneCountAll = plans.filter((plan) => {
     const done = progress[plan.id]?.completedDays?.length || 0;
     return done >= plan.totalDays;
   }).length;
 
   if (summaryEl) {
     summaryEl.innerHTML = `
-      <span class="plan-summary-chip">${THEMATIC_READING_PLANS.length} rencana</span>
-      ${activeCount ? `<span class="plan-summary-chip plan-summary-chip--active">${activeCount} sedang jalan</span>` : ""}
-      ${doneCountAll ? `<span class="plan-summary-chip plan-summary-chip--done">${doneCountAll} selesai</span>` : ""}
+      <span class="plan-summary-chip">${escapeHtml(t("plans.summary.count", { n: String(plans.length) }))}</span>
+      ${activeCount ? `<span class="plan-summary-chip plan-summary-chip--active">${escapeHtml(t("plans.summary.inProgress", { n: String(activeCount) }))}</span>` : ""}
+      ${doneCountAll ? `<span class="plan-summary-chip plan-summary-chip--done">${escapeHtml(t("plans.summary.completed", { n: String(doneCountAll) }))}</span>` : ""}
     `;
   }
 
-  grid.innerHTML = THEMATIC_READING_PLANS.map((plan) => {
+  grid.innerHTML = plans.map((plan) => {
     const pData = progress[plan.id] || { completedDays: [] };
     const doneCount = pData.completedDays?.length || 0;
     const pct = Math.round((doneCount / plan.totalDays) * 100);
@@ -1047,7 +1054,7 @@ export function renderThematicPlans() {
           </div>
           <p class="plan-card-sub">${escapeHtml(plan.subtitle)}</p>
           <div class="plan-card-meta">
-            <span class="plan-card-duration">${plan.totalDays} hari · ${formatPlanWeeks(plan.totalDays)}</span>
+            <span class="plan-card-duration">${escapeHtml(t("plans.card.duration", { days: String(plan.totalDays), weeks: formatPlanWeeks(plan.totalDays) }))}</span>
             <span class="plan-card-status plan-card-status--${status.tone}">${status.label}</span>
           </div>
           <div class="plan-card-progress">
@@ -1083,7 +1090,7 @@ function renderThematicPlanDetail(planId) {
   const daysList = document.getElementById("plan-days-list");
 
   if (!detail || !daysList) return;
-  const plan = THEMATIC_READING_PLANS.find((p) => p.id === planId);
+  const plan = getLocalizedThematicPlans().find((p) => p.id === planId);
   if (!plan) {
     detail.classList.add("hidden");
     return;
@@ -1108,8 +1115,8 @@ function renderThematicPlanDetail(planId) {
       <div class="plan-detail-stats">
         <div class="plan-detail-stat">
           <div class="plan-detail-stat-top">
-            <span class="plan-detail-stat-label">Progres baca</span>
-            <span class="plan-detail-stat-val">${doneCount}/${plan.totalDays} hari</span>
+            <span class="plan-detail-stat-label">${escapeHtml(t("plans.detail.progress"))}</span>
+            <span class="plan-detail-stat-val">${escapeHtml(t("plans.detail.progressVal", { done: String(doneCount), total: String(plan.totalDays) }))}</span>
           </div>
           <div class="plan-detail-stat-bar">
             <div class="plan-detail-stat-fill" style="width:${pct}%"></div>
@@ -1117,7 +1124,7 @@ function renderThematicPlanDetail(planId) {
         </div>
         <div class="plan-detail-stat">
           <div class="plan-detail-stat-top">
-            <span class="plan-detail-stat-label">Durasi</span>
+            <span class="plan-detail-stat-label">${escapeHtml(t("plans.detail.duration"))}</span>
             <span class="plan-detail-stat-val">${formatPlanWeeks(plan.totalDays)}</span>
           </div>
           <span class="plan-detail-status plan-detail-status--${status.tone}">${status.label}</span>
@@ -1135,9 +1142,9 @@ function renderThematicPlanDetail(planId) {
       <div class="plan-completion-banner glass-card glow">
         <span class="completion-trophy">🏆</span>
         <div class="completion-meta">
-          <h4 class="completion-title">Selamat! Rencana Selesai</h4>
-          <p class="completion-desc">Anda telah menyelesaikan seluruh bacaan ${escapeHtml(plan.title)} dengan setia. Teruslah bertumbuh dalam firman Tuhan!</p>
-          <button type="button" class="btn-pill btn-soft btn-restart-plan" data-plan-id="${plan.id}">🔁 Ulangi Rencana Ini</button>
+          <h4 class="completion-title">${escapeHtml(t("plans.detail.completeTitle"))}</h4>
+          <p class="completion-desc">${escapeHtml(t("plans.detail.completeDesc", { title: plan.title }))}</p>
+          <button type="button" class="btn-pill btn-soft btn-restart-plan" data-plan-id="${plan.id}">${escapeHtml(t("plans.detail.restart"))}</button>
         </div>
       </div>
     `;
@@ -1145,13 +1152,13 @@ function renderThematicPlanDetail(planId) {
     headerBannerHtml = `
       <div class="plan-hero-action glass-card">
         <div class="hero-action-meta">
-          <span class="hero-badge">👉 BACA HARI INI</span>
-          <h4 class="hero-day-title">Hari ke-${currentUnfinishedDay.day}: ${escapeHtml(currentUnfinishedDay.title)}</h4>
+          <span class="hero-badge">${escapeHtml(t("plans.detail.todayBadge"))}</span>
+          <h4 class="hero-day-title">${escapeHtml(t("plans.detail.dayTitle", { n: String(currentUnfinishedDay.day), title: currentUnfinishedDay.title }))}</h4>
           <p class="hero-day-ref">${escapeHtml(currentUnfinishedDay.ref)} · ${escapeHtml(currentUnfinishedDay.desc)}</p>
         </div>
         <div class="hero-action-buttons">
           <button type="button" class="btn-pill primary full glow btn-hero-start-day" data-ref="${escapeHtml(currentUnfinishedDay.ref)}" data-title="${escapeHtml(currentUnfinishedDay.title)}" data-desc="${escapeHtml(currentUnfinishedDay.desc)}" data-day="${currentUnfinishedDay.day}">
-            🎙 Putar Audio &amp; Mulai Renungan
+            ${escapeHtml(t("plans.detail.startBtn"))}
           </button>
         </div>
       </div>
@@ -1166,21 +1173,21 @@ function renderThematicPlanDetail(planId) {
         const isToday = !isAllDone && d.day === currentUnfinishedDay.day;
         return `
           <div class="thematic-day-item ${isDone ? "done" : ""} ${isToday ? "active-today" : ""}">
-            <button type="button" class="btn-check-day ${isDone ? "checked" : ""}" data-plan-id="${plan.id}" data-day="${d.day}" title="${isDone ? "Tandai belum selesai" : "Tandai selesai"}">
+            <button type="button" class="btn-check-day ${isDone ? "checked" : ""}" data-plan-id="${plan.id}" data-day="${d.day}" title="${escapeHtml(isDone ? t("plans.detail.markUndone") : t("plans.detail.markDone"))}">
               ${isDone ? "✓" : d.day}
             </button>
             <div class="thematic-day-info">
               <div class="thematic-day-top">
                 <div class="thematic-title-wrap">
-                  ${isToday ? `<span class="badge-today-mini">HARI INI</span>` : ""}
-                  <span class="thematic-day-label">Hari ke-${d.day}: ${escapeHtml(d.title)}</span>
+                  ${isToday ? `<span class="badge-today-mini">${escapeHtml(t("plans.detail.todayMini"))}</span>` : ""}
+                  <span class="thematic-day-label">${escapeHtml(t("plans.detail.dayTitle", { n: String(d.day), title: d.title }))}</span>
                 </div>
                 <button type="button" class="thematic-day-ref" data-ref="${escapeHtml(d.ref)}">${escapeHtml(d.ref)} ↗</button>
               </div>
               <p class="thematic-day-desc">${escapeHtml(d.desc)}</p>
               <div class="thematic-day-actions">
-                <button type="button" class="btn-day-micro btn-day-open" data-ref="${escapeHtml(d.ref)}">📖 Buka Firman</button>
-                <button type="button" class="btn-day-micro btn-day-listen" data-ref="${escapeHtml(d.ref)}" data-title="${escapeHtml(d.title)}" data-desc="${escapeHtml(d.desc)}">🔊 Dengarkan</button>
+                <button type="button" class="btn-day-micro btn-day-open" data-ref="${escapeHtml(d.ref)}">${escapeHtml(t("plans.detail.openVerse"))}</button>
+                <button type="button" class="btn-day-micro btn-day-listen" data-ref="${escapeHtml(d.ref)}" data-title="${escapeHtml(d.title)}" data-desc="${escapeHtml(d.desc)}">${escapeHtml(t("plans.detail.listen"))}</button>
               </div>
             </div>
           </div>
@@ -1201,7 +1208,9 @@ function renderThematicPlanDetail(planId) {
 
     if (homeBridge?.askVoice) {
       homeBridge.askVoice(
-        `Bacakan rencana baca hari ke-${day} dari "${plan.title}": ${title} (${ref}). ${desc}. Mari kita renungkan maknanya dan pimpin doa singkat.`
+        getEffectiveUiLang() === "en"
+          ? `Read day ${day} of "${plan.title}": ${title} (${ref}). ${desc}. Let's reflect on its meaning and lead a brief prayer.`
+          : `Bacakan rencana baca hari ke-${day} dari "${plan.title}": ${title} (${ref}). ${desc}. Mari kita renungkan maknanya dan pimpin doa singkat.`,
       );
     }
     toggleThematicDay(plan.id, day);
@@ -1212,7 +1221,7 @@ function renderThematicPlanDetail(planId) {
 
   // Listener Restart Plan
   daysList.querySelector(".btn-restart-plan")?.addEventListener("click", () => {
-    if (confirm("Ulangi progres rencana baca ini dari awal?")) {
+    if (confirm(t("plans.detail.restartConfirm"))) {
       const progress = loadThematicProgress();
       delete progress[plan.id];
       saveThematicProgress(progress);
@@ -1252,7 +1261,11 @@ function renderThematicPlanDetail(planId) {
       const title = btn.getAttribute("data-title") || "";
       const desc = btn.getAttribute("data-desc") || "";
       if (homeBridge?.askVoice) {
-        homeBridge.askVoice(`Bacakan firman dari ${ref}: "${title}". ${desc}. Berikan renungan dan berkat.`);
+        homeBridge.askVoice(
+          getEffectiveUiLang() === "en"
+            ? `Read Scripture from ${ref}: "${title}". ${desc}. Offer a brief reflection and blessing.`
+            : `Bacakan firman dari ${ref}: "${title}". ${desc}. Berikan renungan dan berkat.`,
+        );
       }
       markTodayRead();
     });
@@ -1708,6 +1721,7 @@ export function initHomeWorship(transport, api) {
     try { renderPrayerJournal(); } catch { /* ignore */ }
     try { syncPrayerCategoryPillFn?.(); } catch { /* ignore */ }
     try { renderRenunganShell(); } catch { /* ignore */ }
+    try { renderAlkitabProgramShell(); } catch { /* ignore */ }
     try { document.dispatchEvent(new CustomEvent("rhema-locale-alkitab-refresh")); } catch { /* ignore */ }
   });
 
