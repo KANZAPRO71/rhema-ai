@@ -6,7 +6,22 @@
  */
 
 import { speakIndonesianText, stopSpeaking, ambientEngine } from "./ambientAudio.js";
-import { getDailyMoodScripture, listMoodChips } from "./moodScriptureEngine.js";
+import { getEffectiveUiLang } from "./localeProfile.js";
+import { getDailyMoodScripture } from "./moodScriptureEngine.js";
+import { t } from "./uiStrings.js";
+import { formatMoodSummaryDate, localizedMoodChips } from "./worshipUiI18n.js";
+
+/** @type {{ onOpenVerse?: (ref: string) => void, onAskVoice?: (text: string) => void }} */
+let moodFeatureCallbacks = {};
+
+/** @param {string} s */
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
 // ==========================================
 // 1. MOOD / SUASANA HATI — rotasi harian via moodScriptureEngine.js
@@ -64,24 +79,27 @@ Tidak ada lagi ketakutan, tidak ada lagi kekhawatiran. Beristirahatlah dalam ter
 // ==========================================
 
 export function initAlkitabPowerFeatures(callbacks = {}) {
-  const { onOpenVerse, onAskVoice } = callbacks;
-
-  initMoodChips(onOpenVerse, onAskVoice);
-  initSleepStories(onAskVoice);
+  moodFeatureCallbacks = callbacks;
+  initMoodChips(callbacks.onOpenVerse, callbacks.onAskVoice);
+  initSleepStories(callbacks.onAskVoice);
 }
+
+document.addEventListener("rhema-locale-alkitab-refresh", () => {
+  initMoodChips(moodFeatureCallbacks.onOpenVerse, moodFeatureCallbacks.onAskVoice);
+});
 
 // ---------------- MOOD SCRIPTURE ----------------
 function renderMoodSummary(activeLabel = "") {
   const summaryEl = document.getElementById("mood-scripture-summary");
   if (!summaryEl) return;
 
-  const chips = listMoodChips();
-  const today = new Date().toLocaleDateString("id-ID", { weekday: "short", day: "numeric", month: "short" });
+  const chips = localizedMoodChips();
+  const today = formatMoodSummaryDate();
 
   summaryEl.innerHTML = `
-    <span class="mood-summary-chip">${chips.length} perasaan</span>
-    <span class="mood-summary-chip">4 ayat · rotasi harian</span>
-    <span class="mood-summary-chip mood-summary-chip--today">${today}</span>
+    <span class="mood-summary-chip">${escapeHtml(t("mood.summary.feelings", { count: String(chips.length) }))}</span>
+    <span class="mood-summary-chip">${escapeHtml(t("mood.summary.rotation"))}</span>
+    <span class="mood-summary-chip mood-summary-chip--today">${escapeHtml(today)}</span>
     ${activeLabel ? `<span class="mood-summary-chip mood-summary-chip--active">${activeLabel}</span>` : ""}
   `;
 }
@@ -93,7 +111,7 @@ function initMoodChips(onOpenVerse, onAskVoice) {
 
   renderMoodSummary();
 
-  const chips = listMoodChips();
+  const chips = localizedMoodChips();
   container.innerHTML = chips
     .map(
       (m) => `<button type="button" class="mood-squircle tone-${m.id}" data-mood="${m.id}">
@@ -118,13 +136,13 @@ function initMoodChips(onOpenVerse, onAskVoice) {
           <span class="mood-res-title">${item.emoji} ${item.title}</span>
           <span class="mood-res-badge">${item.verse}</span>
         </div>
-        <p class="mood-res-daily-note">Firman hari ini · variasi ${item.variationIndex + 1}/${item.poolSize}</p>
+        <p class="mood-res-daily-note">${escapeHtml(t("mood.result.daily", { n: String(item.variationIndex + 1), total: String(item.poolSize) }))}</p>
         <p class="mood-res-text">"${item.text}"</p>
         <p class="mood-res-devotion">💡 <em>${item.devotion}</em></p>
         <div class="mood-res-actions">
-          <button type="button" class="btn-pill primary" id="btn-mood-read-verse">📖 Buka Ayat</button>
-          <button type="button" class="btn-pill btn-soft" id="btn-mood-listen-audio">🔊 Dengar Live</button>
-          <button type="button" class="btn-pill btn-soft" id="btn-mood-ask-ai">✨ Doakan Bersama AI</button>
+          <button type="button" class="btn-pill primary" id="btn-mood-read-verse">${escapeHtml(t("mood.btn.open"))}</button>
+          <button type="button" class="btn-pill btn-soft" id="btn-mood-listen-audio">${escapeHtml(t("mood.btn.listen"))}</button>
+          <button type="button" class="btn-pill btn-soft" id="btn-mood-ask-ai">${escapeHtml(t("mood.btn.pray"))}</button>
         </div>
       `;
       resultBox.classList.remove("hidden");
@@ -138,9 +156,11 @@ function initMoodChips(onOpenVerse, onAskVoice) {
         e.preventDefault();
         e.stopPropagation();
         if (onAskVoice) {
-          onAskVoice(
-            `Saya merasa ${item.label}. Bacakan dan renungkan ayat ${item.verse}: "${item.text}". ${item.devotion}`,
-          );
+          const lead =
+            getEffectiveUiLang() === "en"
+              ? `I feel ${item.label}. Read and reflect on ${item.verse}: "${item.text}". ${item.devotion}`
+              : `Saya merasa ${item.label}. Bacakan dan renungkan ayat ${item.verse}: "${item.text}". ${item.devotion}`;
+          onAskVoice(lead);
         }
       });
 
@@ -148,7 +168,11 @@ function initMoodChips(onOpenVerse, onAskVoice) {
         e.preventDefault();
         e.stopPropagation();
         if (onAskVoice) {
-          onAskVoice(`Saya sedang merasa ${item.label}. Firman Tuhan dari ${item.verse} berkata: "${item.text}". Berikan bimbingan firman dan pimpinlah doa penghiburan bagi saya.`);
+          const lead =
+            getEffectiveUiLang() === "en"
+              ? `I'm feeling ${item.label}. God's word from ${item.verse} says: "${item.text}". Give Scripture guidance and lead a comforting prayer for me.`
+              : `Saya sedang merasa ${item.label}. Firman Tuhan dari ${item.verse} berkata: "${item.text}". Berikan bimbingan firman dan pimpinlah doa penghiburan bagi saya.`;
+          onAskVoice(lead);
         }
       });
     });

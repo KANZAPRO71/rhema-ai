@@ -2,14 +2,14 @@
 
 /** @type {Array<{ id: string, emoji: string, label: string, ref: string, prompt: string }>} */
 export const EMOTIONS = [
-  { id: "sedih", emoji: "😢", label: "Sedih", ref: "Mazmur 34:18", prompt: "Bacakan ayat penghiburan untuk hati yang sedih" },
-  { id: "cemas", emoji: "😰", label: "Cemas", ref: "Filipi 4:6-7", prompt: "Bacakan ayat tentang kekhawatiran dan damai sejahtera" },
-  { id: "syukur", emoji: "🙏", label: "Bersyukur", ref: "1 Tesalonika 5:18", prompt: "Bacakan ayat tentang bersyukur" },
-  { id: "takut", emoji: "😨", label: "Takut", ref: "Yesaya 41:10", prompt: "Bacakan ayat peneguhan saat takut" },
-  { id: "lelah", emoji: "😩", label: "Lelah", ref: "Matius 11:28", prompt: "Bacakan ayat untuk yang lelah dan terbebani" },
-  { id: "marah", emoji: "😤", label: "Marah", ref: "Efesus 4:26", prompt: "Bacakan ayat tentang mengelola amarah" },
-  { id: "putus-asa", emoji: "💔", label: "Putus asa", ref: "Roma 8:28", prompt: "Bacakan ayat harapan saat putus asa" },
-  { id: "bahagia", emoji: "😊", label: "Bahagia", ref: "Mazmur 118:24", prompt: "Bacakan ayat syukur untuk hari yang baik" },
+  { id: "sedih", emoji: "😢", labelKey: "emotion.sedih", ref: "Mazmur 34:18", prompt: "Bacakan ayat penghiburan untuk hati yang sedih" },
+  { id: "cemas", emoji: "😰", labelKey: "emotion.cemas", ref: "Filipi 4:6-7", prompt: "Bacakan ayat tentang kekhawatiran dan damai sejahtera" },
+  { id: "syukur", emoji: "🙏", labelKey: "emotion.syukur", ref: "1 Tesalonika 5:18", prompt: "Bacakan ayat tentang bersyukur" },
+  { id: "takut", emoji: "😨", labelKey: "emotion.takut", ref: "Yesaya 41:10", prompt: "Bacakan ayat peneguhan saat takut" },
+  { id: "lelah", emoji: "😩", labelKey: "emotion.lelah", ref: "Matius 11:28", prompt: "Bacakan ayat untuk yang lelah dan terbebani" },
+  { id: "marah", emoji: "😤", labelKey: "emotion.marah", ref: "Efesus 4:26", prompt: "Bacakan ayat tentang mengelola amarah" },
+  { id: "putus-asa", emoji: "💔", labelKey: "emotion.putusAsa", ref: "Roma 8:28", prompt: "Bacakan ayat harapan saat putus asa" },
+  { id: "bahagia", emoji: "😊", labelKey: "emotion.bahagia", ref: "Mazmur 118:24", prompt: "Bacakan ayat syukur untuk hari yang baik" },
 ];
 
 /** Renungan singkat per hari (rotasi) — melengkapi ayat hari ini. */
@@ -39,35 +39,35 @@ export const PRAYER_PRESETS = [
   {
     id: "pagi",
     emoji: "🌅",
-    title: "Doa Pagi Hari",
-    subtitle: "Ucap syukur & serahkan hari",
-    label: "Doa pagi",
+    titleKey: "preset.pagi.title",
+    subtitleKey: "preset.pagi.sub",
+    labelKey: "preset.pagi.label",
     voicePrompt:
       "Pimpin doa pagi singkat dalam bahasa Indonesia — ucapkan syukur, serahkan hari ini, dan minta hikmat. Tenang dan khidmat.",
   },
   {
     id: "malam",
     emoji: "🌙",
-    title: "Doa Malam Hari",
-    subtitle: "Damai sebelum tidur",
-    label: "Doa malam",
+    titleKey: "preset.malam.title",
+    subtitleKey: "preset.malam.sub",
+    labelKey: "preset.malam.label",
     voicePrompt:
       "Pimpin doa malam singkat — syukuri hari ini, minta pengampunan jika perlu, dan berikan damai sebelum tidur.",
   },
   {
     id: "keluarga",
     emoji: "👨‍👩‍👧",
-    title: "Doa Keluarga",
-    subtitle: "Kasih & perlindungan rumah",
-    label: "Doa keluarga",
+    titleKey: "preset.keluarga.title",
+    subtitleKey: "preset.keluarga.sub",
+    labelKey: "preset.keluarga.label",
     voicePrompt: "Doakan keluarga saya — kesatuan, kasih, dan perlindungan Tuhan. Singkat dan hangat.",
   },
   {
     id: "stres",
     emoji: "🧘",
-    title: "Ketenangan Jiwa",
-    subtitle: "Saat cemas & lelah",
-    label: "Stres & ujian",
+    titleKey: "preset.stres.title",
+    subtitleKey: "preset.stres.sub",
+    labelKey: "preset.stres.label",
     voicePrompt: "Doakan saya yang sedang stres dan terbebani — berikan ayat penghiburan lalu doa singkat.",
   },
 ];

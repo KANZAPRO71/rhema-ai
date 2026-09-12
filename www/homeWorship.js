@@ -28,8 +28,17 @@ import {
 } from "./dailyQuizEngine.js";
 import { awardDailyQuizXp } from "./quizProfileStore.js";
 import { isNativeQuizStoreAvailable, saveDailyQuizNative } from "./quizNativeStore.js";
-import { getEffectiveUiLang } from "./localeProfile.js";
+import { getEffectiveBibleVersion, getEffectiveUiLang } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
+import {
+  devotionTimelineShortLabels,
+  formatDevotionDate,
+  localizedDevotionSessionPhases,
+  localizedEmotionSessionPhases,
+  localizedEmotions,
+  localizedGuidedPrayerSessionPhases,
+  localizedPrayerPresets,
+} from "./worshipUiI18n.js";
 import {
   PRAYER_CATEGORIES,
   THEMATIC_READING_PLANS,
@@ -254,7 +263,7 @@ function getDevotionSession() {
 function getEmotionSession() {
   if (emotionSession) return emotionSession;
   emotionSession = createEmotionSessionController({
-    onPhaseChange: (index) => renderInlineSessionPhases("emotion-session-phases", EMOTION_SESSION_PHASES, index),
+    onPhaseChange: (index) => renderInlineSessionPhases("emotion-session-phases", localizedEmotionSessionPhases(), index),
     onSessionStart: ({ emotion, content }) => {
       setEmotionChipActive(emotion.id);
       renderEmotionPreview({ emotion, content });
@@ -268,7 +277,7 @@ function getEmotionSession() {
       setEmotionChipActive(null);
       clearEmotionPreview();
       document.getElementById("emotion-session-bar")?.classList.add("hidden");
-      renderInlineSessionPhases("emotion-session-phases", EMOTION_SESSION_PHASES, -1);
+      renderInlineSessionPhases("emotion-session-phases", localizedEmotionSessionPhases(), -1);
       const finalizeVoice = async () => {
         try {
           if (reason === "complete") {
@@ -307,7 +316,7 @@ function getGuidedPrayerSession() {
   if (guidedPrayerSession) return guidedPrayerSession;
   guidedPrayerSession = createGuidedPrayerSessionController({
     onPhaseChange: (index) =>
-      renderInlineSessionPhases("prayer-session-phases", GUIDED_PRAYER_SESSION_PHASES, index),
+      renderInlineSessionPhases("prayer-session-phases", localizedGuidedPrayerSessionPhases(), index),
     onSessionStart: (payload) => {
       const preset = payload.preset || payload;
       const content = payload.content || null;
@@ -323,7 +332,7 @@ function getGuidedPrayerSession() {
       setPrayerCardActive(null);
       clearPrayerPreview();
       document.getElementById("prayer-session-bar")?.classList.add("hidden");
-      renderInlineSessionPhases("prayer-session-phases", GUIDED_PRAYER_SESSION_PHASES, -1);
+      renderInlineSessionPhases("prayer-session-phases", localizedGuidedPrayerSessionPhases(), -1);
       const finalizeVoice = async () => {
         try {
           if (reason === "complete") {
@@ -387,17 +396,18 @@ function setDevotionPodcastUiPlaying(playing) {
   syncDevotionListenButton();
 }
 
-const DEVOTION_TIMELINE_SHORT = ["Prolog", "Renungkan", "Refleksi", "Doa"];
 const DEVOTION_TIMELINE_TIMES = ["~2m", "2m", "5-6m", "2m"];
 
 function renderSessionPhaseBar(activeIndex) {
   const el = document.getElementById("dpw-session-phases");
   if (!el) return;
+  const phases = localizedDevotionSessionPhases();
+  const timelineShort = devotionTimelineShortLabels();
   const useTimeline = el.classList.contains("devotion-audio-timeline");
   if (useTimeline) {
-    el.innerHTML = DEVOTION_SESSION_PHASES.map((phase, idx) => {
+    el.innerHTML = phases.map((phase, idx) => {
       const state = idx < activeIndex ? "is-done" : idx === activeIndex ? "is-active" : "";
-      const short = DEVOTION_TIMELINE_SHORT[idx] || phase.label;
+      const short = timelineShort[idx] || phase.label;
       const timeLbl = DEVOTION_TIMELINE_TIMES[idx] || "";
       const dotChar = idx <= activeIndex && activeIndex >= 0 ? "●" : "○";
       return `<div class="dat-step ${state}" title="${escapeHtml(phase.label)}">
@@ -408,7 +418,7 @@ function renderSessionPhaseBar(activeIndex) {
     }).join("");
     return;
   }
-  el.innerHTML = DEVOTION_SESSION_PHASES.map((phase, idx) => {
+  el.innerHTML = phases.map((phase, idx) => {
     const state = idx < activeIndex ? "done" : idx === activeIndex ? "active" : "";
     return `<span class="dpw-phase-pill ${state}" title="${escapeHtml(phase.label)}"><span class="dpw-phase-icon">${phase.icon}</span><span class="dpw-phase-label">${escapeHtml(phase.label)}</span></span>`;
   }).join("");
@@ -642,9 +652,9 @@ function renderStreakBar() {
     el.innerHTML = `
       <div class="wellness-split-card wellness-split-card--streak">
         <span class="wellness-split-icon" aria-hidden="true">${count > 0 ? "🔥" : "✨"}</span>
-        <p class="wellness-split-value">${count} Hari</p>
-        <p class="wellness-split-label">Berturut-turut</p>
-        <p class="wellness-split-hint">${activeToday ? "✓ Sudah beribadah hari ini" : "Baca atau dengar firman hari ini"}</p>
+        <p class="wellness-split-value">${count} ${escapeHtml(t("streak.days"))}</p>
+        <p class="wellness-split-label">${escapeHtml(t("streak.consecutive"))}</p>
+        <p class="wellness-split-hint">${activeToday ? escapeHtml(t("streak.doneToday")) : escapeHtml(t("streak.hintToday"))}</p>
       </div>`;
     return;
   }
@@ -661,15 +671,15 @@ function renderStreakBar() {
         <div class="streak-badge">${count > 0 ? "🔥" : "✨"}</div>
         <div class="streak-meta">
           <span class="streak-count">${count}</span>
-          <span class="streak-label">hari berturut-turut</span>
+          <span class="streak-label">${escapeHtml(t("streak.unitLong"))}</span>
         </div>
         <div class="streak-pct">${Math.min(count, 7)}/7</div>
       </div>
       <div class="streak-track" aria-hidden="true">
         <div class="streak-fill" style="width:${Math.min(100, (Math.min(count, 7) / 7) * 100)}%"></div>
       </div>
-      <div class="streak-dots" aria-label="Progres streak 7 hari">${dots}</div>
-      <p class="streak-hint">${activeToday ? "✓ Hari ini sudah beribadah — puji Tuhan!" : "Dengarkan atau baca satu ayat untuk melanjutkan streak rohani Anda."}</p>
+      <div class="streak-dots" aria-label="${escapeHtml(t("streak.progressAria"))}">${dots}</div>
+      <p class="streak-hint">${activeToday ? escapeHtml(t("streak.doneTodayLong")) : escapeHtml(t("streak.hintLong"))}</p>
     </div>`;
 }
 
@@ -685,21 +695,23 @@ export function renderDevotionCard(devotion, actions = {}) {
   if (!el) return;
 
   if (!devotion) {
-    el.innerHTML = `<p class="alkitab-verse-missing">Saat teduh hari ini belum tersedia.</p>`;
+    el.innerHTML = `<p class="alkitab-verse-missing">${escapeHtml(t("devotion.unavailable"))}</p>`;
     return;
   }
 
   currentDevotionData = devotion;
 
-  const theme = devotion.theme || "Firman Saat Teduh Hari Ini";
+  const theme = devotion.theme || t("devotion.themeDefault");
   const verseText = devotion.verse?.text || devotion.text || "";
   const verseRef = devotion.verse?.reference || devotion.reference || "";
   const reflection = devotion.reflection || devotionSnippet();
   const practicalAction = devotion.practicalAction || "";
   const guidedPrayer = devotion.guidedPrayer || "";
-  const formattedDate = devotion.formattedDate || new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "short" });
+  const formattedDate = devotion.formattedDate || formatDevotionDate();
+  const translationLabel =
+    getEffectiveBibleVersion() === "kjv" ? t("devotion.translationKjv") : t("devotion.translationTb");
 
-  const sourceBadge = devotion.source === "gemini" ? "Saat Teduh AI" : "Saat Teduh Hari Ini";
+  const sourceBadge = devotion.source === "gemini" ? t("devotion.badgeAi") : t("devotion.badgeToday");
 
   el.innerHTML = `
     <div class="devotion-paper-hero">
@@ -708,7 +720,7 @@ export function renderDevotionCard(devotion, actions = {}) {
       <div class="devotion-silk-panel">
         <span class="devotion-paper-quote" aria-hidden="true">&ldquo;</span>
         <blockquote class="devotion-verse devotion-verse--paper">&ldquo;${escapeHtml(verseText)}&rdquo;</blockquote>
-        <cite class="devotion-ref devotion-ref--silk">${escapeHtml(verseRef)} · Terjemahan Baru (LAI)</cite>
+        <cite class="devotion-ref devotion-ref--silk">${escapeHtml(verseRef)} · ${escapeHtml(translationLabel)}</cite>
       </div>
     </div>
 
@@ -717,7 +729,7 @@ export function renderDevotionCard(devotion, actions = {}) {
         <summary class="devotion-accordion-summary">
           <span class="devotion-accordion-row">
             <span class="devotion-accordion-icon">💡</span>
-            <span class="devotion-accordion-label">Refleksi Firman</span>
+            <span class="devotion-accordion-label">${escapeHtml(t("devotion.reflection"))}</span>
           </span>
         </summary>
         <p class="devotion-reflection">${escapeHtml(reflection)}</p>
@@ -727,7 +739,7 @@ export function renderDevotionCard(devotion, actions = {}) {
         <summary class="devotion-accordion-summary">
           <span class="devotion-accordion-row">
             <span class="devotion-accordion-icon">🎯</span>
-            <span class="devotion-accordion-label">Langkah Iman Hari Ini</span>
+            <span class="devotion-accordion-label">${escapeHtml(t("devotion.action"))}</span>
           </span>
         </summary>
         <p class="devotion-action-text">${escapeHtml(practicalAction)}</p>
@@ -737,7 +749,7 @@ export function renderDevotionCard(devotion, actions = {}) {
         <summary class="devotion-accordion-summary">
           <span class="devotion-accordion-row">
             <span class="devotion-accordion-icon">🙏</span>
-            <span class="devotion-accordion-label">Doa Penutup</span>
+            <span class="devotion-accordion-label">${escapeHtml(t("devotion.closingPrayer"))}</span>
           </span>
         </summary>
         <p class="devotion-prayer-text">${escapeHtml(guidedPrayer)}</p>
@@ -746,26 +758,26 @@ export function renderDevotionCard(devotion, actions = {}) {
 
     <div class="devotion-audio-card devotion-podcast-widget devotion-podcast-widget--timeline" id="devotion-podcast-widget">
       <div class="devotion-audio-head">
-        <span class="devotion-audio-kicker">🎧 Sesi Saat Teduh · ~${SESSION_ESTIMATED_MINUTES} Menit</span>
-        <span class="devotion-audio-badge">Suara live</span>
+        <span class="devotion-audio-kicker">${escapeHtml(t("devotion.sessionKicker", { min: String(SESSION_ESTIMATED_MINUTES) }))}</span>
+        <span class="devotion-audio-badge">${escapeHtml(t("devotion.liveBadge"))}</span>
       </div>
-      <div class="dpw-session-phases devotion-audio-timeline" id="dpw-session-phases" aria-label="Progres saat teduh 4 fase"></div>
+      <div class="dpw-session-phases devotion-audio-timeline" id="dpw-session-phases" aria-label="${escapeHtml(t("devotion.progressAria"))}"></div>
       <div class="dpw-meditation-overlay hidden" id="dpw-meditation-overlay" aria-live="polite">
         <span class="dpw-meditation-icon">🕊️</span>
-        <p class="dpw-meditation-label">Renungkan firman yang baru didengar…</p>
-        <p class="dpw-meditation-hint">Diam sejenak — biarkan Roh Kudus berbicara</p>
+        <p class="dpw-meditation-label">${escapeHtml(t("devotion.meditateLabel"))}</p>
+        <p class="dpw-meditation-hint">${escapeHtml(t("devotion.meditateHint"))}</p>
         <p class="dpw-meditation-timer" id="dpw-meditation-timer">${formatMeditationTime(MEDITATION_DURATION_SEC)}</p>
       </div>
       <div class="dpw-equalizer dpw-equalizer--compact hidden" id="dpw-equalizer" aria-hidden="true">
         <span></span><span></span><span></span><span></span><span></span>
       </div>
       <div class="dpw-controls dpw-controls--inline">
-        <button type="button" class="btn-dpw-play hidden" id="btn-dpw-play-toggle" title="Mulai saat teduh" aria-label="Mulai saat teduh">
+        <button type="button" class="btn-dpw-play hidden" id="btn-dpw-play-toggle" title="${escapeHtml(t("devotion.startAria"))}" aria-label="${escapeHtml(t("devotion.startAria"))}">
           <span id="dpw-play-icon" aria-hidden="true">▶</span>
         </button>
-        <button type="button" class="btn-dpw-stop hidden" id="btn-dpw-stop" title="Hentikan saat teduh" aria-label="Hentikan saat teduh">⏹</button>
+        <button type="button" class="btn-dpw-stop hidden" id="btn-dpw-stop" title="${escapeHtml(t("devotion.stopAria"))}" aria-label="${escapeHtml(t("devotion.stopAria"))}">⏹</button>
       </div>
-      <button type="button" class="btn-devotion-listen-full btn-devotion-listen-gold" id="btn-devotion-listen">🎙️ Mulai Saat Teduh</button>
+      <button type="button" class="btn-devotion-listen-full btn-devotion-listen-gold" id="btn-devotion-listen">${escapeHtml(t("devotion.startBtn"))}</button>
     </div>`;
 
   renderSessionPhaseBar(-1);
@@ -811,7 +823,7 @@ function renderEmotions() {
   if (!el) return;
 
   const compact = el.classList.contains("emotion-grid--compact");
-  el.innerHTML = EMOTIONS.map(
+  el.innerHTML = localizedEmotions().map(
     (e) =>
       `<button type="button" class="emotion-chip tone-${escapeHtml(e.id)}${compact ? " emotion-chip--tile" : ""}" data-id="${escapeHtml(e.id)}" data-ref="${escapeHtml(e.ref)}" aria-pressed="false" aria-label="${escapeHtml(e.label)}">
         <span class="emotion-emoji">${e.emoji}</span>
@@ -853,7 +865,7 @@ function renderPrayerPreview(preset, content) {
   el.innerHTML = `<div class="prayer-preview-inner">
     <span class="prayer-preview-badge">${preset.emoji} ${escapeHtml(preset.title || preset.label || "Doa")}</span>
     ${theme}
-    <p class="prayer-preview-sub">${escapeHtml(preset.subtitle || "Doa terpandu")}</p>
+    <p class="prayer-preview-sub">${escapeHtml(preset.subtitle || t("prayer.previewFallback"))}</p>
   </div>`;
 }
 
@@ -869,14 +881,14 @@ function renderPrayers() {
   if (!el) return;
 
   const bento = el.classList.contains("prayer-grid--bento");
-  el.innerHTML = PRAYER_PRESETS.map(
+  el.innerHTML = localizedPrayerPresets().map(
     (p) =>
       `<button type="button" class="prayer-card tone-${escapeHtml(p.id)}${bento ? " prayer-card--bento" : ""}" data-id="${escapeHtml(p.id)}" aria-pressed="false">
         <span class="prayer-card-bg" aria-hidden="true"></span>
         <span class="prayer-emoji">${p.emoji}</span>
         <div class="prayer-info">
-          <span class="prayer-title">${escapeHtml(p.title || p.label || "Doa")}</span>
-          <span class="prayer-sub">${escapeHtml(p.subtitle || "Doa terpandu")}</span>
+          <span class="prayer-title">${escapeHtml(p.title || p.label || t("prayer.previewFallback"))}</span>
+          <span class="prayer-sub">${escapeHtml(p.subtitle || t("prayer.previewFallback"))}</span>
         </div>
       </button>`,
   ).join("");
@@ -884,7 +896,7 @@ function renderPrayers() {
   el.querySelectorAll(".prayer-card").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const presetId = btn.getAttribute("data-id");
-      const preset = PRAYER_PRESETS.find((p) => p.id === presetId);
+      const preset = localizedPrayerPresets().find((p) => p.id === presetId);
       if (!preset) return;
 
       const session = getGuidedPrayerSession();
@@ -1658,6 +1670,11 @@ export function renderRenunganShell() {
   try { renderEmotions(); } catch (e) { console.warn("[rhema] renderEmotions:", e); }
   try { renderPrayers(); } catch (e) { console.warn("[rhema] renderPrayers:", e); }
   try { renderHomeStreakMini(); } catch (e) { console.warn("[rhema] renderHomeStreakMini:", e); }
+  try {
+    if (currentDevotionData) renderDevotionCard(currentDevotionData);
+  } catch (e) {
+    console.warn("[rhema] renderDevotionCard refresh:", e);
+  }
   void preloadTodayGuidedPrayers();
 }
 
@@ -1690,6 +1707,8 @@ export function initHomeWorship(transport, api) {
     try { renderDailyBibleQuiz(); } catch { /* ignore */ }
     try { renderPrayerJournal(); } catch { /* ignore */ }
     try { syncPrayerCategoryPillFn?.(); } catch { /* ignore */ }
+    try { renderRenunganShell(); } catch { /* ignore */ }
+    try { document.dispatchEvent(new CustomEvent("rhema-locale-alkitab-refresh")); } catch { /* ignore */ }
   });
 
   if (!transport.__devotionPodcastHook) {

@@ -5,6 +5,7 @@
 
 import { apiUrl } from "./platform.js";
 import { EMOTIONS } from "./homeWorshipData.js";
+import { localizedLabel } from "./worshipUiI18n.js";
 import { normalizeDevotionContent } from "./aiDevotionEngine.js";
 import { getDailyEmotionPrologVariation } from "./dailyRenunganEngine.js";
 import {
@@ -15,6 +16,11 @@ import {
 } from "./localeProfile.js";
 
 const EMOTION_CACHE_KEY = "rhema-ai-emotion-content";
+
+/** @param {typeof EMOTIONS[number]} emotion */
+function withEmotionLabel(emotion) {
+  return { ...emotion, label: localizedLabel(emotion) };
+}
 
 /** @type {Record<string, { ref: string, text: string, theme: string, reflection: string, prayer: string }>} */
 export const EMOTION_CONTENT_BANK = {
@@ -119,12 +125,12 @@ function buildEmotionContent(emotion, source = "local") {
       verse: { reference: bank.ref || emotion.ref, text: bank.text },
       reflection: bank.reflection,
       guidedPrayer: bank.prayer,
-      tags: [emotion.label, "Emosi"],
+      tags: [localizedLabel(emotion), "Emosi"],
     },
     {
       id: `emotion-${emotion.id}-${todayKey()}`,
       dateKey: todayKey(),
-      formattedDate: emotion.label,
+      formattedDate: localizedLabel(emotion),
       source,
     },
   );
@@ -161,8 +167,10 @@ async function fetchEmotionFromApi(emotionId, topicPrompt) {
  * @returns {Promise<{ content: object, emotion: typeof EMOTIONS[number] } | null>}
  */
 export async function getEmotionContent(emotionId) {
-  const emotion = EMOTIONS.find((e) => e.id === emotionId);
-  if (!emotion) return null;
+  const raw = EMOTIONS.find((e) => e.id === emotionId);
+  if (!raw) return null;
+  const emotion = withEmotionLabel(raw);
+  const labelLower = emotion.label.toLowerCase();
 
   const cacheKey = `${EMOTION_CACHE_KEY}-${emotionId}`;
   const today = todayKey();
@@ -177,8 +185,8 @@ export async function getEmotionContent(emotionId) {
   }
 
   const topicPrompt = isIndonesiaProfile()
-    ? `Ayat penghiburan Alkitab TB/LAI untuk perasaan ${emotion.label.toLowerCase()}: ${emotion.prompt}. Refleksi hangat ke hidup nyata Indonesia kontemporer — minimal 1–2 analogi konkret yang menyentuh (pekerjaan, keluarga, kesehatan, keuangan). Bahasa sehari-hari, bukan khotbah. Doa penghiburan spesifik dari perasaan ini, bukan template generik.`
-    : `Comforting Scripture (${getPrimaryBibleLabel()}) for feeling ${emotion.label.toLowerCase()}: ${emotion.prompt}. ${getAiLanguageRule()} ${getAiLifeContextRule()} Include 1–2 concrete illustrations. Specific prayer for this feeling, not a generic template.`;
+    ? `Ayat penghiburan Alkitab TB/LAI untuk perasaan ${labelLower}: ${raw.prompt}. Refleksi hangat ke hidup nyata Indonesia kontemporer — minimal 1–2 analogi konkret yang menyentuh (pekerjaan, keluarga, kesehatan, keuangan). Bahasa sehari-hari, bukan khotbah. Doa penghiburan spesifik dari perasaan ini, bukan template generik.`
+    : `Comforting Scripture (${getPrimaryBibleLabel()}) for feeling ${labelLower}: ${raw.prompt}. ${getAiLanguageRule()} ${getAiLifeContextRule()} Include 1–2 concrete illustrations. Specific prayer for this feeling, not a generic template.`;
 
   try {
     const generated = await fetchEmotionFromApi(emotionId, topicPrompt);
@@ -243,7 +251,7 @@ export const EMOTION_VOICE_CONTEXT = {
 export function getEmotionVoiceContext(emotion) {
   return (
     EMOTION_VOICE_CONTEXT[emotion.id] || {
-      validatePhrase: `Perasaan ${emotion.label.toLowerCase()} saudara layak diakui dengan jujur.`,
+      validatePhrase: `Perasaan ${localizedLabel(emotion).toLowerCase()} saudara layak diakui dengan jujur.`,
       invitePhrase: "Biarkan firman Tuhan menemui hati saudara lewat ayat penghiburan ini.",
     }
   );

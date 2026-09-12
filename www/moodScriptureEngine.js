@@ -27,13 +27,13 @@ function pickDailyMoodEntry(pool, salt) {
 
 /** @type {Array<{ id: string, emoji: string, label: string }>} */
 export const MOOD_CHIPS = [
-  { id: "cemas", emoji: "🌿", label: "Cemas & Gelisah" },
-  { id: "lelah", emoji: "⚡", label: "Letih & Lelah Jiwa" },
-  { id: "syukur", emoji: "🌟", label: "Penuh Syukur & Sukacita" },
-  { id: "takut", emoji: "🛡️", label: "Takut Masa Depan" },
-  { id: "duka", emoji: "💔", label: "Sedih & Patah Hati" },
-  { id: "arah", emoji: "🧭", label: "Butuh Petunjuk Arah" },
-  { id: "bersalah", emoji: "🕊️", label: "Rasa Bersalah / Dosa" },
+  { id: "cemas", emoji: "🌿", labelKey: "mood.cemas" },
+  { id: "lelah", emoji: "⚡", labelKey: "mood.lelah" },
+  { id: "syukur", emoji: "🌟", labelKey: "mood.syukur" },
+  { id: "takut", emoji: "🛡️", labelKey: "mood.takut" },
+  { id: "duka", emoji: "💔", labelKey: "mood.duka" },
+  { id: "arah", emoji: "🧭", labelKey: "mood.arah" },
+  { id: "bersalah", emoji: "🕊️", labelKey: "mood.bersalah" },
 ];
 
 /**
