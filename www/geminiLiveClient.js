@@ -3,6 +3,7 @@
  */
 
 import { ensureNativeMicPermission, isNativeMicGranted } from "./nativeMicPermission.js";
+import { t } from "./uiStrings.js";
 import {
   isCapacitorNative,
   playPcmBase64Native,
@@ -105,10 +106,10 @@ export function createGeminiLiveSession(options) {
   function formatWsCloseError(code, reason) {
     const r = String(reason || "");
     if (code === 1008 || /invalid authentication|API key|PERMISSION_DENIED|credentials/i.test(r)) {
-      return "API key tidak valid atau habis — buka Akun → ⚙ Pengaturan & API Key, isi key baru, lalu Simpan.";
+      return t("voice.conn.keyInvalid");
     }
     if (r) return r.length > 140 ? `${r.slice(0, 137)}…` : r;
-    if (code && code !== 1000 && code !== 1005) return `Koneksi Gemini gagal (kode ${code})`;
+    if (code && code !== 1000 && code !== 1005) return t("voice.conn.geminiFail", { code: String(code) });
     return "";
   }
 
@@ -119,29 +120,29 @@ export function createGeminiLiveSession(options) {
   function micErrorMessage(err) {
     const name = err instanceof Error ? err.name : "";
     if (name === "NotFoundError" || name === "DevicesNotFoundError") {
-      return "Mikrofon tidak ditemukan. Colok headset/USB mic lalu refresh.";
+      return t("voice.mic.notFound");
     }
     if (name === "NotAllowedError" || name === "PermissionDeniedError") {
       const native = Boolean(window.Capacitor?.isNativePlatform?.());
       return native
-        ? "Izin mic ditolak. Buka Pengaturan → Aplikasi → Rhema AI → Izin → Mikrofon → Izinkan."
-        : "Izin mic ditolak. Klik ikon gembok/kamera di address bar → Allow mic.";
+        ? t("voice.mic.deniedNative")
+        : t("voice.mic.deniedWeb");
     }
     if (name === "NotReadableError" || name === "TrackStartError") {
-      return "Mic dipakai aplikasi lain (Zoom/Discord?). Tutup dulu lalu coba lagi.";
+      return t("voice.mic.inUse");
     }
     if (name === "SecurityError") {
-      return "Mic butuh localhost/HTTPS. Buka http://127.0.0.1:3000 (npm run dev).";
+      return t("voice.mic.secureContext");
     }
     return err instanceof Error ? err.message : String(err);
   }
 
   async function ensureMicSupport() {
     if (!window.isSecureContext) {
-      throw new Error("Mic butuh secure context — buka http://127.0.0.1:3000 (npm run dev)");
+      throw new Error(t("voice.mic.secureContext"));
     }
     if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Browser tidak mendukung getUserMedia. Coba Chrome/Edge terbaru.");
+      throw new Error(t("voice.mic.noGetUserMedia"));
     }
   }
 
@@ -327,7 +328,7 @@ export function createGeminiLiveSession(options) {
     pendingTexts.push(t);
     await start({
       mic: opts.mic !== false,
-      detail: opts.mic === false ? "Menyiapkan suara…" : undefined,
+      detail: opts.mic === false ? t("voice.conn.preparing") : undefined,
     });
   }
 
@@ -374,7 +375,7 @@ export function createGeminiLiveSession(options) {
         options.emit({
           type: "voiceStatus",
           status: "error",
-          detail: "Koneksi suara timeout — periksa internet lalu coba lagi.",
+          detail: t("voice.conn.timeout"),
         });
       }
     }, 18000);
@@ -387,7 +388,7 @@ export function createGeminiLiveSession(options) {
       await nativeGeminiWsConnect(config.wsUrl, config.setup, {
         onOpen: () => {
           voiceLog("native ws open");
-          options.emit({ type: "voiceStatus", status: "connecting", detail: "Menunggu Gemini…" });
+          options.emit({ type: "voiceStatus", status: "connecting", detail: t("voice.conn.waitGemini") });
         },
         onMessage: (text) => {
           try {
@@ -404,7 +405,7 @@ export function createGeminiLiveSession(options) {
           options.emit({
             type: "voiceStatus",
             status: "error",
-            detail: formatVoiceError(message || "WebSocket Gemini gagal"),
+            detail: formatVoiceError(message || t("voice.conn.wsFail")),
           });
         },
         onClose: (code, reason) => {
@@ -442,7 +443,7 @@ export function createGeminiLiveSession(options) {
     armSetupWatchdog();
     ws.onopen = () => {
       voiceLog("ws open");
-      options.emit({ type: "voiceStatus", status: "connecting", detail: "Menunggu Gemini…" });
+      options.emit({ type: "voiceStatus", status: "connecting", detail: t("voice.conn.waitGemini") });
       const payload = JSON.stringify({ setup: config.setup });
       voiceLog("setup bytes", payload.length);
       window.setTimeout(() => {
@@ -470,7 +471,7 @@ export function createGeminiLiveSession(options) {
       connecting = false;
       clearSetupWatchdog();
       voiceLog("ws error");
-      options.emit({ type: "voiceStatus", status: "error", detail: "WebSocket Gemini gagal" });
+      options.emit({ type: "voiceStatus", status: "error", detail: t("voice.conn.wsFail") });
     };
     ws.onclose = (ev) => {
       handleWsClose(ev.code, ev.reason);
@@ -495,8 +496,8 @@ export function createGeminiLiveSession(options) {
       throw new Error(micErrorMessage(err));
     }
     const track = mediaStream.getAudioTracks()[0];
-    micLabel = track?.label || "Mikrofon";
-    if (track?.muted) throw new Error("Track mic muted — cek pengaturan Windows Sound.");
+    micLabel = track?.label || t("voice.mic.defaultLabel");
+    if (track?.muted) throw new Error(t("voice.mic.trackMuted"));
     emitMicStatus(true, micLabel);
   }
 
@@ -568,7 +569,7 @@ export function createGeminiLiveSession(options) {
       options.emit({
         type: "voiceMicStatus",
         active: false,
-        detail: "Menunggu Rhema selesai berbicara…",
+        detail: t("voice.conn.waitRhema"),
       });
       await waitForAssistantPlaybackStarted();
       await waitForPlaybackIdle(maxWaitMs);
@@ -582,7 +583,7 @@ export function createGeminiLiveSession(options) {
     if (isCapacitorNative()) {
       const granted = await isNativeMicGranted();
       if (!granted) {
-        options.emit({ type: "voiceMicStatus", active: false, detail: "Minta izin mic…" });
+        options.emit({ type: "voiceMicStatus", active: false, detail: t("voice.conn.requestMic") });
         await ensureNativeMicPermission();
       }
     }
@@ -837,7 +838,7 @@ export function createGeminiLiveSession(options) {
     options.emit({
       type: "voiceStatus",
       status: "connecting",
-      detail: opts.detail ?? "Menghubungkan…",
+      detail: opts.detail ?? t("voice.hint.connecting"),
     });
 
     try {

@@ -28,6 +28,7 @@ import { initSermonLiveContinuer, markSermonEnded, markSermonStarted } from "./s
 import { unlockNativeElementAudio, warmupNativePlayback } from "./nativeAudioPlayback.js";
 import { googleKeyConfigured, isGoogleKeyLiveValidated, validateGoogleKeyForVoice } from "./geminiConstants.js";
 import { openByokOnboarding } from "./byokOnboarding.js";
+import { formatVoiceError } from "./byokUx.js";
 import { getEffectiveBibleVersion, getEffectiveUiLang } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 import { deliverVoiceOpenGreeting, deliverVoiceResumeContext, hasVoiceConversationHistory } from "./voiceGreeting.js";
@@ -740,6 +741,20 @@ export async function refreshHomeEmbedBadge() {
   }
 }
 
+function voiceTimeLocale() {
+  return getEffectiveUiLang() === "en" ? "en-US" : "id-ID";
+}
+
+function voiceEmptyStateHtml() {
+  return `
+    <div class="voice-empty-state" id="voice-empty-state">
+      <div class="empty-sacred-icon">🕊️</div>
+      <p class="empty-title">${escapeHtml(t("voice.empty.title"))}</p>
+      <p class="empty-desc">${escapeHtml(t("voice.empty.descClear"))}</p>
+    </div>
+  `;
+}
+
 function setAlkitabHint(text) {
   const el = document.getElementById("alkitab-hint");
   if (el) el.textContent = text;
@@ -763,22 +778,30 @@ function setVoiceTapLabel(mode, errorDetail) {
   }
   if (!state) return;
   if (mode === "active") {
-    state.textContent = "Live — tap ⏹ di bawah untuk berhenti";
+    state.textContent = t("voice.state.active");
   } else if (mode === "connecting") {
-    state.textContent = "Menghubungkan…";
+    state.textContent = t("voice.state.connecting");
   } else if (mode === "error") {
-    const detail = errorDetail || "";
-    state.textContent = detail.includes("API key")
-      ? "Atur API key dulu"
-      : detail.includes("dikunci")
-        ? "Voice lock — restart server"
-        : "Tap mic untuk coba lagi";
-    composerMic?.setAttribute("title", "Mulai bicara live");
-    composerMic?.setAttribute("aria-label", "Mulai sesi suara live");
+    const detail = String(errorDetail || "");
+    state.textContent = /API key|authentication|PERMISSION|invalid/i.test(detail)
+      ? t("voice.state.errorKey")
+      : /dikunci|lock/i.test(detail)
+        ? t("voice.state.errorLock")
+        : t("voice.state.errorRetry");
+    composerMic?.setAttribute("title", t("voice.composer.micTitle"));
+    composerMic?.setAttribute("aria-label", t("voice.composer.micAria"));
   } else {
-    state.textContent = "Tap mic untuk bicara";
-    composerMic?.setAttribute("title", "Mulai bicara live");
-    composerMic?.setAttribute("aria-label", "Mulai sesi suara live");
+    state.textContent = t("voice.state.idle");
+    composerMic?.setAttribute("title", t("voice.composer.micTitle"));
+    composerMic?.setAttribute("aria-label", t("voice.composer.micAria"));
+  }
+}
+
+function refreshVoiceLocaleUi(transport) {
+  const voiceActive = transport?.voice?.isActive?.();
+  if (!voiceActive && !voiceStartPending) {
+    setVoiceTapLabel("idle");
+    setAlkitabHint(t("voice.hint.idle"));
   }
 }
 
@@ -986,14 +1009,14 @@ function renderVoiceTranscriptBubble(role, text, timeStr, id) {
 
   const isUser = role === "user";
   const itemId = id || "vmsg-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
-  const time = timeStr || new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+  const time = timeStr || new Date().toLocaleTimeString(voiceTimeLocale(), { hour: "2-digit", minute: "2-digit" });
 
   const line = document.createElement("div");
   line.className = `vt-line ${isUser ? "user" : "assistant"}`;
   line.id = itemId;
   line.innerHTML = `
     <div class="vt-meta-row">
-      <span class="vt-role-tag">${isUser ? "Anda" : "Rhema AI"}</span>
+      <span class="vt-role-tag">${isUser ? t("voice.role.user") : t("voice.role.assistant")}</span>
       <span class="vt-time-tag">${time}</span>
     </div>
     <div class="vt-bubble">${escapeHtml(text)}</div>
@@ -1132,7 +1155,7 @@ function syncVoiceInteractionMemory() {
   syncLocalSessionMemory(
     localStorage,
     VOICE_MEMORY_SESSION,
-    "Percakapan Live",
+    t("voice.memory.sessionTitle"),
     history.map((h) => ({ role: h.role, text: h.text })),
   );
   document.dispatchEvent(new CustomEvent("rhema-memory-updated"));
@@ -1175,7 +1198,7 @@ function stopVoiceLive(transport) {
   }
   document.dispatchEvent(new CustomEvent("rhema-audio-stop-all", { detail: { forceAmbientStop: true } }));
   setVoiceTapLabel("idle");
-  setAlkitabHint('Ucapkan: "Bacakan Mazmur 23" atau "Jelaskan ayat ini"');
+  setAlkitabHint(t("voice.hint.idle"));
   document.getElementById("btn-alkitab-voice")?.classList.remove("live", "connecting", "voice-capturing");
 }
 
@@ -1209,13 +1232,13 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
   }
     if (!googleKeyConfigured()) {
     setVoiceTapLabel("error", "API key belum diset");
-    setAlkitabHint("Tempel Gemini API key milik Anda (BYOK) untuk mengaktifkan suara AI.");
+    setAlkitabHint(t("voice.hint.byok"));
     openByokOnboarding({ startStep: 4 });
     pendingOrbGreeting = false;
     return;
   }
   if (!transport.voice?.start) {
-    setAlkitabHint("Modul suara belum siap — tutup app lalu buka lagi.");
+    setAlkitabHint(t("voice.hint.moduleNotReady"));
     pendingOrbGreeting = false;
     return;
   }
@@ -1227,7 +1250,7 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
 
   const connectLive = () => {
     if (!voiceStartPending) return;
-    setAlkitabHint("Menghubungkan…");
+    setAlkitabHint(t("voice.hint.connecting"));
     transport.voice.start({ mic: true });
   };
 
@@ -1236,14 +1259,14 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
     return;
   }
 
-  setAlkitabHint("Memeriksa API key…");
+  setAlkitabHint(t("voice.hint.checkingKey"));
   void validateGoogleKeyForVoice().then((check) => {
     if (!transport.voice) voiceStartPending = false;
     if (!check.ok) {
       voiceStartPending = false;
       pendingOrbGreeting = false;
       setVoiceTapLabel("error", "API key tidak valid");
-      setAlkitabHint(check.error || "API key tidak valid.");
+      setAlkitabHint(formatVoiceError(check.error) || t("byok.error.invalidVoice"));
       openByokOnboarding({ startStep: 4 });
       return;
     }
@@ -1420,7 +1443,7 @@ export function initAlkitabPanel(transport, go) {
     unlockNativeElementAudio();
 
     if (!googleKeyConfigured()) {
-      setAlkitabHint("Tempel Gemini API key milik Anda (BYOK) untuk mengaktifkan suara AI.");
+      setAlkitabHint(t("voice.hint.byok"));
       setVoiceTapLabel("error", "API key belum diset");
       openByokOnboarding({ startStep: 4 });
       return;
@@ -1451,12 +1474,12 @@ export function initAlkitabPanel(transport, go) {
     });
     if (local.handled) {
       suppressGeminiAssistantUntil = Date.now() + 12000;
-      setAlkitabHint("Selesai.");
+      setAlkitabHint(t("voice.hint.done"));
       setVoiceTapLabel("active");
       return;
     }
 
-    setAlkitabHint("Menghubungkan…");
+    setAlkitabHint(t("voice.hint.connecting"));
     setVoiceTapLabel("active");
     transport.voiceProfile = "alkitab-voice";
     transport.voice?.sendTextOrStart?.(t, { mic: false, preferClientContent: false });
@@ -1488,22 +1511,14 @@ export function initAlkitabPanel(transport, go) {
   });
 
   document.getElementById("btn-voice-clear")?.addEventListener("click", () => {
-    if (confirm("Hapus seluruh riwayat percakapan firman?")) {
+    if (confirm(t("voice.transcript.clearConfirm"))) {
       saveVoiceHistory([]);
       liveAssistantBubble = null;
       liveAssistantText = "";
       liveUserBubble = null;
       liveUserText = "";
       const box = document.getElementById("voice-transcript");
-      if (box) {
-        box.innerHTML = `
-          <div class="voice-empty-state" id="voice-empty-state">
-            <div class="empty-sacred-icon">🕊️</div>
-            <p class="empty-title">Ruang Percakapan Firman</p>
-            <p class="empty-desc">Tekan mic di bawah untuk bicara live, atau ketik firman &amp; doa di kolom chat.</p>
-          </div>
-        `;
-      }
+      if (box) box.innerHTML = voiceEmptyStateHtml();
     }
   });
 
@@ -1521,10 +1536,10 @@ export function initAlkitabPanel(transport, go) {
     if (transport.voice?.isActive?.() && !inlineActive) {
       transport.voice?.interruptPlayback?.();
       if (!transport.voice?.isMicActive?.()) {
-        setAlkitabHint("Memotong suara Rhema — silakan bicara…");
+        setAlkitabHint(t("voice.hint.interrupt"));
         void transport.voice.enableMic?.({ deferUntilIdle: false });
       } else {
-        setAlkitabHint("Live — silakan bicara.");
+        setAlkitabHint(t("voice.hint.liveSpeak"));
       }
       return;
     }
@@ -1586,7 +1601,7 @@ export function initAlkitabPanel(transport, go) {
     e.preventDefault();
     e.stopPropagation();
     if (!todayRhemaVerse?.reference || !todayRhemaVerse.text) {
-      setAlkitabHint("Ayat hari ini belum siap — coba lagi sebentar.");
+      setAlkitabHint(t("voice.hint.verseNotReady"));
       void renderHomeTodayVerse();
       return;
     }
@@ -1602,7 +1617,7 @@ export function initAlkitabPanel(transport, go) {
     e.preventDefault();
     e.stopPropagation();
     if (!todayRhemaVerse?.reference) {
-      setAlkitabHint("Ayat hari ini belum siap — coba lagi sebentar.");
+      setAlkitabHint(t("voice.hint.verseNotReady"));
       void renderHomeTodayVerse();
       return;
     }
@@ -1613,7 +1628,7 @@ export function initAlkitabPanel(transport, go) {
     e.preventDefault();
     e.stopPropagation();
     if (!todayRhemaVerse?.reference) {
-      setAlkitabHint("Ayat hari ini belum siap — coba lagi sebentar.");
+      setAlkitabHint(t("voice.hint.verseNotReady"));
       void renderHomeTodayVerse();
       return;
     }
@@ -1655,15 +1670,15 @@ export function initAlkitabPanel(transport, go) {
 
   function handleShareVerseClick(e) {
     if (!currentVerse?.reference || !currentVerse?.text) {
-      setAlkitabHint("Buka ayat dulu sebelum membuka Rhema Studio.");
+      setAlkitabHint(t("voice.hint.openVerseFirst"));
       return;
     }
     try {
       const opened = openVerseShareModal(currentVerse);
-      if (!opened) setAlkitabHint("Gagal membuka Rhema Studio — coba refresh halaman.");
+      if (!opened) setAlkitabHint(t("voice.hint.studioFail"));
     } catch (err) {
       console.error("[rhema] openVerseShareModal error:", err);
-      setAlkitabHint("Gagal membuka Rhema Studio — coba refresh halaman.");
+      setAlkitabHint(t("voice.hint.studioFail"));
     }
   }
 
@@ -1720,7 +1735,7 @@ export function initAlkitabPanel(transport, go) {
           renderVoiceTranscriptBubble("assistant", `${m.reference}: "${m.text}"`);
         }
         if (isSermonModeActive()) {
-          setAlkitabHint("Mode Khotbah AI — tetap di percakapan live.");
+          setAlkitabHint(t("voice.hint.sermonMode"));
         }
       } else {
         renderVerseCard(m.reference || "", m.text || "", m.found !== false);
@@ -1768,7 +1783,7 @@ export function initAlkitabPanel(transport, go) {
 
     if (m.type === "voiceMicStatus") {
       if (m.active) {
-        setAlkitabHint("Live — silakan bicara, mic sudah aktif.");
+        setAlkitabHint(t("voice.hint.liveMicActive"));
       } else if (m.detail) {
         setAlkitabHint(String(m.detail));
       }
@@ -1790,13 +1805,11 @@ export function initAlkitabPanel(transport, go) {
               else deliverVoiceOpenGreeting(transport);
             }
           }, resume ? 350 : 900);
-          setAlkitabHint(
-            resume ? "Melanjutkan percakapan…" : "Shalom — dengarkan sapaan Rhema…",
-          );
+          setAlkitabHint(resume ? t("voice.hint.resume") : t("voice.hint.greeting"));
         } else if (isSermonModeActive()) {
-          setAlkitabHint("Mode Khotbah/Eksposisi AI — tetap di percakapan live.");
+          setAlkitabHint(t("voice.hint.sermonExposition"));
         } else {
-          setAlkitabHint("Live — dengarkan Rhema dulu, mic aktif setelah suara selesai.");
+          setAlkitabHint(t("voice.hint.listenFirst"));
         }
       } else if (m.status === "off") {
         voiceStartPending = false;
@@ -1807,21 +1820,25 @@ export function initAlkitabPanel(transport, go) {
         finalizeLiveAssistant();
         finalizeLiveUser();
         setVoiceTapLabel("idle");
-        setAlkitabHint('Ucapkan: "Bacakan Mazmur 23" atau "Jelaskan ayat ini"');
+        setAlkitabHint(t("voice.hint.idle"));
         voiceOrb?.classList.remove("live", "connecting", "voice-capturing");
       } else if (m.status === "error") {
         voiceStartPending = false;
         cancelOrbGreeting();
-        const detail = m.detail || "Error sesi suara.";
+        const detail = formatVoiceError(m.detail) || m.detail || t("voice.hint.sessionError");
         setVoiceTapLabel("error", detail);
         setAlkitabHint(detail);
         voiceOrb?.classList.remove("live", "connecting", "voice-capturing");
       } else if (m.status === "connecting") {
         voiceStartPending = true;
         setVoiceTapLabel("connecting");
-        setAlkitabHint(m.detail || "Menghubungkan…");
+        setAlkitabHint(m.detail || t("voice.hint.connecting"));
       }
     }
+  });
+
+  document.addEventListener("rhema-locale-ui-applied", () => {
+    refreshVoiceLocaleUi(transport);
   });
 
   void loadHome();

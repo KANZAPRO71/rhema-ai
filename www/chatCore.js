@@ -225,11 +225,11 @@ export function initChatApp(transport, options = {}) {
 
       const key = input?.value?.trim();
       if (key) {
-        showSaveStatus("Menyimpan…", "");
+        showSaveStatus(t("settings.saving"), "");
         transport.post({ type: "saveProviderKey", provider: "google", key });
         if (input) input.dataset.pendingSave = "1";
       } else {
-        showSaveStatus("Pengaturan tersimpan ✓", "ok");
+        showSaveStatus(t("settings.savedOk"), "ok");
       }
     }
 

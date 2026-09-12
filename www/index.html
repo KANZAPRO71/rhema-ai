@@ -167,7 +167,7 @@
       <div class="header-actions-right">
         <button id="btn-header-ambient" type="button" class="header-ambient-btn" title="Musik ambient" aria-label="Musik ambient"><span class="ambient-icon">🎶</span></button>
         <button id="btn-header-refresh" type="button" class="header-refresh-btn" title="Refresh halaman ini" data-i18n="refresh" aria-label="Refresh">Refresh</button>
-        <button id="btn-header-akun" type="button" class="header-akun-btn" aria-label="Akun &amp; pengaturan">
+        <button id="btn-header-akun" type="button" class="header-akun-btn" data-i18n-aria="account.headerAria" aria-label="Akun &amp; pengaturan">
           <svg class="header-akun-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20.5a6.5 6.5 0 0 1 13 0"/></svg>
         </button>
       </div>
@@ -887,8 +887,8 @@
               </span>
             </div>
             <div class="voice-title-group">
-              <h2 id="voice-state-label" class="voice-intelligence-title">Tap mic untuk bicara</h2>
-              <p id="alkitab-hint" class="voice-intelligence-hint">Bicara bebas · Khotbah (ayat) · Khotbah (topik)</p>
+              <h2 id="voice-state-label" class="voice-intelligence-title" data-i18n="voice.state.idle">Tap mic untuk bicara</h2>
+              <p id="alkitab-hint" class="voice-intelligence-hint" data-i18n="voice.hint.default">Bicara bebas · Khotbah (ayat) · Khotbah (topik)</p>
             </div>
             <canvas id="voice-waveform" class="voice-waveform" aria-hidden="true"></canvas>
           </div>
@@ -899,18 +899,18 @@
               <div class="transcript-top-row">
                 <div class="transcript-title-wrap">
                   <span class="live-indicator-dot"></span>
-                  <span class="transcript-label">Percakapan Live</span>
+                  <span class="transcript-label" data-i18n="voice.transcript.title">Percakapan Live</span>
                   <span id="night-pod-timer-badge" class="night-pod-timer-badge hidden" aria-live="polite"></span>
                 </div>
                 <div class="transcript-header-actions">
-                  <button id="btn-voice-panel-toggle" type="button" class="btn-transcript-toggle" title="Ciutkan panel" aria-expanded="true">▾</button>
-                  <button id="btn-voice-clear" type="button" class="btn-transcript-clear" title="Bersihkan riwayat percakapan">🗑️ Hapus</button>
+                  <button id="btn-voice-panel-toggle" type="button" class="btn-transcript-toggle" data-i18n-title="voice.panel.collapse" title="Ciutkan panel" aria-expanded="true">▾</button>
+                  <button id="btn-voice-clear" type="button" class="btn-transcript-clear" data-i18n="voice.transcript.clear" data-i18n-title="voice.transcript.clearTitle" title="Bersihkan riwayat percakapan">🗑️ Hapus</button>
                 </div>
               </div>
               <div class="khotbah-header-tools">
-                <button id="btn-khotbah-ai" type="button" class="btn-khotbah-mode" aria-expanded="false" title="Khotbah dari ayat TB — Rhema tanya ayat dulu">🎙️ Khotbah (ayat)</button>
-                <button id="btn-khotbah-topik" type="button" class="btn-khotbah-mode btn-khotbah-topik" title="Khotbah dari topik — kerangka &amp; bahan komsel">📝 Khotbah (topik)</button>
-                <span class="sermon-dur-group" aria-label="Durasi khotbah">
+                <button id="btn-khotbah-ai" type="button" class="btn-khotbah-mode" aria-expanded="false" data-i18n="bible.voice.sermonVerse" data-i18n-title="voice.sermon.verseBtnTitle" title="Khotbah dari ayat TB — Rhema tanya ayat dulu">🎙️ Khotbah (ayat)</button>
+                <button id="btn-khotbah-topik" type="button" class="btn-khotbah-mode btn-khotbah-topik" data-i18n="bible.voice.sermonTopic" data-i18n-title="voice.sermon.topicBtnTitle" title="Khotbah dari topik — kerangka &amp; bahan komsel">📝 Khotbah (topik)</button>
+                <span class="sermon-dur-group" data-i18n-aria="voice.sermon.durationAria" aria-label="Durasi khotbah">
                   <button type="button" class="sermon-dur-btn active" data-sermon-minutes="5" data-sermon-mode="khotbah">5′</button>
                   <button type="button" class="sermon-dur-btn" data-sermon-minutes="8" data-sermon-mode="khotbah">8′</button>
                   <button type="button" class="sermon-dur-btn" data-sermon-minutes="15" data-sermon-mode="khotbah">15′</button>
@@ -918,17 +918,17 @@
               </div>
             </div>
 
-            <div id="sermon-verse-bar" class="sermon-verse-bar hidden" aria-label="Khotbah dengan ayat">
+            <div id="sermon-verse-bar" class="sermon-verse-bar hidden" data-i18n-aria="voice.sermon.barAria" aria-label="Khotbah dengan ayat">
               <div class="sermon-verse-bar-head">
-                <span class="sermon-verse-bar-title">Khotbah (ayat)</span>
-                <button id="btn-sermon-bar-close" type="button" class="btn-sermon-bar-close" aria-label="Tutup panel Khotbah">×</button>
+                <span class="sermon-verse-bar-title" data-i18n="voice.sermon.barTitle">Khotbah (ayat)</span>
+                <button id="btn-sermon-bar-close" type="button" class="btn-sermon-bar-close" data-i18n-aria="voice.sermon.closeAria" aria-label="Tutup panel Khotbah">×</button>
               </div>
               <div class="sermon-verse-compact">
                 <div class="sermon-verse-input-row">
-                  <input id="sermon-verse-input" type="text" class="sermon-verse-input" placeholder="Ayat opsional…" autocomplete="off" aria-label="Ayat khotbah" />
-                  <button id="btn-sermon-verse-mic" type="button" class="btn-sermon-verse-mic" title="Ucapkan ayat" aria-label="Ucapkan ayat">🎤</button>
+                  <input id="sermon-verse-input" type="text" class="sermon-verse-input" data-i18n="voice.sermon.versePlaceholder" placeholder="Ayat opsional…" autocomplete="off" data-i18n-aria="voice.sermon.verseAria" aria-label="Ayat khotbah" />
+                  <button id="btn-sermon-verse-mic" type="button" class="btn-sermon-verse-mic" data-i18n-title="voice.sermon.speakVerseTitle" data-i18n-aria="voice.sermon.speakVerseAria" title="Ucapkan ayat" aria-label="Ucapkan ayat">🎤</button>
                 </div>
-                <button id="btn-start-sermon-ai" type="button" class="btn-start-sermon-ai">Mulai</button>
+                <button id="btn-start-sermon-ai" type="button" class="btn-start-sermon-ai" data-i18n="voice.sermon.start">Mulai</button>
               </div>
               <p id="sermon-verse-listen-status" class="sermon-verse-listen-status hidden" aria-live="polite"></p>
               <div id="sermon-knowledge-panel" class="sermon-knowledge-panel hidden" aria-live="polite"></div>
@@ -937,8 +937,8 @@
             <div id="voice-transcript" class="voice-transcript-stream" aria-live="polite">
               <div class="voice-empty-state" id="voice-empty-state">
                 <div class="empty-sacred-icon">🕊️</div>
-                <p class="empty-title">Ruang Percakapan Firman</p>
-                <p class="empty-desc">Tekan mic untuk bicara live. Mic aktif otomatis setelah Rhema selesai berbicara — tap ⏹ untuk berhenti.</p>
+                <p class="empty-title" data-i18n="voice.empty.title">Ruang Percakapan Firman</p>
+                <p class="empty-desc" data-i18n="voice.empty.desc">Tekan mic untuk bicara live. Mic aktif otomatis setelah Rhema selesai berbicara — tap ⏹ untuk berhenti.</p>
               </div>
             </div>
           </div>
@@ -946,15 +946,15 @@
           <!-- Composer di luar panel — menempel di atas bottom nav (WebView-safe) -->
           <footer class="voice-composer-modern">
             <div class="voice-composer-input-row">
-              <input id="alkitab-input" type="text" class="voice-text-input" placeholder="Tanya firman, pasal Alkitab, atau pokok doa..." autocomplete="off" />
-              <button id="btn-alkitab-send" type="button" class="btn-voice-send" title="Kirim pesan" aria-label="Kirim">
+              <input id="alkitab-input" type="text" class="voice-text-input" data-i18n="voice.input.placeholder" placeholder="Tanya firman, pasal Alkitab, atau pokok doa..." autocomplete="off" />
+              <button id="btn-alkitab-send" type="button" class="btn-voice-send" data-i18n-title="voice.composer.sendTitle" data-i18n-aria="voice.composer.sendAria" title="Kirim pesan" aria-label="Kirim">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             </div>
-            <button id="btn-voice-composer-mic" type="button" class="btn-voice-composer-mic" title="Mulai bicara live" aria-label="Mulai sesi suara live">
+            <button id="btn-voice-composer-mic" type="button" class="btn-voice-composer-mic" data-i18n-title="voice.composer.micTitle" data-i18n-aria="voice.composer.micAria" title="Mulai bicara live" aria-label="Mulai sesi suara live">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
             </button>
-            <button id="btn-voice-composer-stop" type="button" class="btn-voice-composer-stop idle" title="Hentikan sesi live" aria-label="Hentikan sesi suara live" disabled>
+            <button id="btn-voice-composer-stop" type="button" class="btn-voice-composer-stop idle" data-i18n-title="voice.composer.stopTitle" data-i18n-aria="voice.composer.stopAria" title="Hentikan sesi live" aria-label="Hentikan sesi suara live" disabled>
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
             </button>
           </footer>
@@ -965,30 +965,30 @@
       <section id="screen-akun" class="mobile-screen mobile-overlay" data-title="Akun" data-title-key="screen.account">
         <div class="mobile-scroll">
           <section class="mobile-section a11y-section" aria-labelledby="a11y-label">
-            <h2 id="a11y-label" class="section-label">Ukuran teks</h2>
-            <div class="font-size-picker" role="group" aria-label="Pilih ukuran teks">
+            <h2 id="a11y-label" class="section-label" data-i18n="account.fontSize.title">Ukuran teks</h2>
+            <div class="font-size-picker" role="group" data-i18n-aria="account.fontSize.aria" aria-label="Pilih ukuran teks">
               <button type="button" class="font-pick active" data-font="normal" aria-pressed="true">
                 <span class="font-pick-label">A</span>
-                <span class="font-pick-hint">Normal</span>
+                <span class="font-pick-hint" data-i18n="account.fontSize.normal">Normal</span>
               </button>
               <button type="button" class="font-pick" data-font="large" aria-pressed="false">
                 <span class="font-pick-label">A+</span>
-                <span class="font-pick-hint">Besar</span>
+                <span class="font-pick-hint" data-i18n="account.fontSize.large">Besar</span>
               </button>
               <button type="button" class="font-pick" data-font="xlarge" aria-pressed="false">
                 <span class="font-pick-label">A++</span>
-                <span class="font-pick-hint">Sangat besar</span>
+                <span class="font-pick-hint" data-i18n="account.fontSize.xlarge">Sangat besar</span>
               </button>
             </div>
-            <p class="mobile-note">Untuk lansia &amp; mata lelah. Pinch-to-zoom browser juga didukung.</p>
+            <p class="mobile-note" data-i18n="account.fontSize.note">Untuk lansia &amp; mata lelah. Pinch-to-zoom browser juga didukung.</p>
           </section>
 
           <div class="card-menu">
             <button type="button" id="btn-open-chat" class="menu-item">
-              <span>💬</span><span>Rhema Agent Chat</span><span class="chev">›</span>
+              <span>💬</span><span data-i18n="account.menu.agentChat">Rhema Agent Chat</span><span class="chev">›</span>
             </button>
             <button type="button" id="btn-open-cloud" class="menu-item">
-              <span>☁</span><span>Cloud Agents</span><span class="chev">›</span>
+              <span>☁</span><span data-i18n="account.menu.cloudAgents">Cloud Agents</span><span class="chev">›</span>
             </button>
             <button type="button" id="btn-open-settings" class="menu-item">
               <span>⚙</span><span data-i18n="account.settings">Pengaturan &amp; API Key</span><span class="chev">›</span>
@@ -1002,7 +1002,7 @@
       </section>
 
       <!-- CHAT AGENT (stack) -->
-      <section id="screen-chat" class="mobile-screen mobile-stack" data-title="Rhema Agent">
+      <section id="screen-chat" class="mobile-screen mobile-stack" data-title="Rhema Agent" data-title-key="screen.chat">
         <div class="stack-toolbar header-actions">
           <button type="button" class="toolbar-back" data-rhema-back aria-label="Kembali">←</button>
           <button id="btn-sessions" type="button" class="toolbar-icon" title="Riwayat chat" aria-label="Riwayat chat">☰</button>
@@ -1031,7 +1031,7 @@
       </section>
 
       <!-- CLOUD (stack) -->
-      <section id="screen-cloud" class="mobile-screen mobile-stack" data-title="Cloud">
+      <section id="screen-cloud" class="mobile-screen mobile-stack" data-title="Cloud" data-title-key="screen.cloud">
         <div class="cloud-toolbar">
           <button type="button" class="toolbar-back" data-rhema-back aria-label="Kembali">←</button>
           <span id="cloud-meta" class="cloud-meta">—</span>
@@ -1056,7 +1056,7 @@
         </span>
         <span class="nav-label" data-i18n="nav.bible">Alkitab</span>
       </button>
-      <button type="button" class="nav-item nav-item-voice" data-screen="voice" aria-label="Rhema AI — sentuh buka halaman, tahan 1 detik untuk live">
+      <button type="button" class="nav-item nav-item-voice" data-screen="voice" data-i18n-aria="voice.nav.aria" aria-label="Rhema AI — sentuh buka halaman, tahan 1 detik untuk live">
         <span class="nav-icon-wrap nav-fab sacred-nav-orb" aria-hidden="true">
           <span class="nav-voice-active-ring" aria-hidden="true"></span>
           <span class="nav-orb-glow"></span>

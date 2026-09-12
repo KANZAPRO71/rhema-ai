@@ -30,6 +30,11 @@ export function applyLocaleUi() {
     if (key) el.setAttribute("aria-label", t(key));
   });
 
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (key) el.setAttribute("title", t(key));
+  });
+
   const greeting = document.getElementById("home-greeting");
   if (greeting && !greeting.dataset.userGreeting) {
     greeting.textContent = getGreetingPhrase();
