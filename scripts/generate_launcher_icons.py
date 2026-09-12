@@ -10,6 +10,9 @@ from PIL import Image, ImageDraw
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "android" / "app" / "src" / "main" / "res"
+PLAY_STORE = ROOT / "scripts" / "play-store-assets"
+WEB_ICON = ROOT / "www" / "icons" / "icon-512.png"
+CORNER_RADIUS_RATIO = 112 / 512
 
 CREAM = (243, 238, 230)
 CREAM_LIGHT = (255, 252, 247)
@@ -90,6 +93,16 @@ def render_icon(size: int, *, adaptive_foreground: bool = False) -> Image.Image:
     return img
 
 
+def apply_rounded_mask(image: Image.Image) -> Image.Image:
+    size = image.size[0]
+    radius = max(1, int(size * CORNER_RADIUS_RATIO))
+    mask = Image.new("L", (size, size), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, size, size], radius=radius, fill=255)
+    out = image.convert("RGBA")
+    out.putalpha(mask)
+    return out
+
+
 def save_png(path: Path, image: Image.Image) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.name.endswith("_foreground.png"):
@@ -125,7 +138,14 @@ def main() -> None:
         fg = render_icon(size, adaptive_foreground=True)
         save_png(folder / "ic_launcher_foreground.png", fg)
 
+    play_icon = apply_rounded_mask(render_icon(512))
+    PLAY_STORE.mkdir(parents=True, exist_ok=True)
+    play_icon.save(PLAY_STORE / "icon-512.png", "PNG")
+    play_icon.save(WEB_ICON, "PNG")
+
     print("Generated launcher PNGs in", RES)
+    print("Play Store icon:", PLAY_STORE / "icon-512.png")
+    print("Web PNG icon:", WEB_ICON)
 
 
 if __name__ == "__main__":

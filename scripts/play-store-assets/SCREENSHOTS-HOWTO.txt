@@ -1,0 +1,23 @@
+RHEMA AI — Play Store Screenshots
+=================================
+
+Template siap upload (1080x1920, 9:16):
+  screenshots/id/   → 6 template Bahasa Indonesia
+  screenshots/en/   → 6 template English
+
+Opsi A — Upload template langsung (wireframe):
+  Play Console → Screenshot phone → upload dari folder di atas.
+
+Opsi B — Screenshot HP asli + frame otomatis:
+  1. Ambil screenshot di HP (Settings → screenshot biasa).
+  2. Salin ke: screenshots/raw/
+     Nama file: 01-beranda.png, 02-alkitab.png, ... (atau 01-anything.png)
+  3. Jalankan:
+       python scripts/generate_play_store_screenshots.py --compose --locale id
+       python scripts/generate_play_store_screenshots.py --compose --locale en
+  4. Upload hasil dari screenshots/id-composed/ atau en-composed/
+
+Regenerate semua aset:
+  python scripts/generate_launcher_icons.py
+  python scripts/generate_feature_graphic.py
+  python scripts/generate_play_store_screenshots.py
