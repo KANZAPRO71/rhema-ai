@@ -2,6 +2,7 @@
  * AI Worship Songwriter & Chords Composer Engine — Pencipta Lagu Rohani & Aransemen Kidung Baru AI.
  */
 
+import { escapeHtml } from "./markdown.js";
 import { apiUrl } from "./platform.js";
 
 export const SONG_THEME_TEMPLATES = [
@@ -194,14 +195,16 @@ export function openWorshipSongwriterModal(callbacks = {}) {
       const mEl = modal.querySelector("#sw-render-meta");
       const bEl = modal.querySelector("#sw-render-body");
       if (tEl) tEl.textContent = currentSong.title;
-      if (mEl) mEl.innerHTML = `Nada Dasar: <strong>${currentSong.key}</strong> · Tempo: ${currentSong.tempo} BPM · ${currentSong.passage}`;
+      if (mEl) {
+        mEl.innerHTML = `Nada Dasar: <strong>${escapeHtml(currentSong.key)}</strong> · Tempo: ${escapeHtml(currentSong.tempo)} BPM · ${escapeHtml(currentSong.passage)}`;
+      }
       if (bEl) {
         bEl.innerHTML = currentSong.structure.map((sec) => `
           <div class="sw-section-block">
-            <span class="sw-sec-name">[ ${sec.section} ]</span>
+            <span class="sw-sec-name">[ ${escapeHtml(sec.section)} ]</span>
             ${sec.lines.map((l) => `
-              <div class="sw-chord-line">${l.chords}</div>
-              <div class="sw-lyric-line">${l.lyrics}</div>
+              <div class="sw-chord-line">${escapeHtml(l.chords)}</div>
+              <div class="sw-lyric-line">${escapeHtml(l.lyrics)}</div>
             `).join("")}
           </div>
         `).join("");

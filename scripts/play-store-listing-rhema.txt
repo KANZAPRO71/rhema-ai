@@ -21,9 +21,9 @@ Bahasa default:
 
 --- STORE LISTING TRANSLATIONS (Play Console → Grow → Store presence → Main store listing → Manage translations) ---
   Tambah: English (United States), English (United Kingdom)
-  ID title: Rhema AI: Renungan Suara & Khotbah TB
+  ID title: Rhema AI: Renungan Suara & Khotbah
   EN title: Rhema AI: Audio Devotion & KJV Sermon Prep
-  ID short: Pendamping ibadah · Alkitab TB · renungan AI · kidung · suara live
+  ID short: Pendamping ibadah · Alkitab · renungan AI · kidung · suara live
   EN short: Live voice Bible companion · KJV · devotion · hymns · worldwide
 
 Jenis:
@@ -37,7 +37,7 @@ Kategori:
 
 --- DESKRIPSI SINGKAT ID (max 80 karakter) — 77/80 ✓ ---
 
-Asisten teduh & khotbah Alkitab TB via suara Full Duplex bertenaga Gemini AI.
+Asisten teduh & khotbah Alkitab via suara Full Duplex bertenaga Gemini AI.
 
 --- SHORT DESCRIPTION EN (max 80 chars) — 75/80 ✓ ---
 
@@ -50,7 +50,7 @@ Lihat file resmi: scripts/play-store-descriptions-bilingual.txt
 
 --- PROMO TEXT (max 170 karakter, opsional) ---
 
-Saat teduh dengan Alkitab TB, renungan suara AI, dan ribuan kidung — key Gemini milik Anda, privasi di HP Anda.
+Saat teduh dengan Alkitab, renungan suara AI, dan ribuan kidung — key Gemini milik Anda, privasi di HP Anda.
 
 --- TAG / KATA KUNCI (internal notes, tidak semua muncul di listing) ---
 
@@ -129,7 +129,7 @@ Play Console → Release → Production → Countries / regions:
 
 Catatan hak cipta untuk reviewer:
   - KJV: Public Domain worldwide (safe for commercial/free apps)
-  - TB/LAI: Bundled as offline study tool interface; user BYOK to Google for AI interpretation
+  - Alkitab: Bundled as offline study tool interface; user BYOK to Google for AI interpretation
   - Position app as "Bible study & worship companion tool" — not a Bible publisher
 
 Data safety → declare microphone + on-device API key + local notes/highlights
@@ -140,7 +140,7 @@ STRESS TEST VIVO (sebelum upload AAB)
 
 1. Settings → Region → Outside Indonesia (KJV)
 2. Voice live: AI must respond in English, KJV sermon structure when preacher persona
-3. Switch back to Indonesia → TB + Bahasa Indonesia
+3. Switch back to Indonesia → Alkitab + Bahasa Indonesia
 4. BYOK: Live WebSocket validation green check
 5. Uninstall/reinstall → region onboarding + BYOK flow
 

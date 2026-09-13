@@ -49,9 +49,8 @@ ${history || "(Riwayat singkat tersimpan di memori lokal.)"}`;
 function sendVoiceSystemPrompt(transport, prompt) {
   const voice = transport.voice;
   if (!voice?.sendText && !voice?.sendClientContent) return false;
-  if (voice.sendText?.(prompt)) return true;
-  voice.sendClientContent?.(prompt);
-  return true;
+  if (voice.sendClientContent?.(prompt)) return true;
+  return Boolean(voice.sendText?.(prompt));
 }
 
 /** Lanjut sesi yang terputus — tanpa greeting pembuka. */

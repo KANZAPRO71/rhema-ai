@@ -2,15 +2,18 @@
  * Speech-to-Speech client — mode direct (browser → Gemini WS) atau proxy (extension).
  */
 
-import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260911-nolive";
+import { createGeminiLiveSession } from "./geminiLiveClient.js?v=20260913-dengar13";
 import { speakModuleReply, stopModuleSpeech, warmupModuleSpeech } from "./voiceModuleSpeech.js";
 import { speakIndonesianText } from "./ambientAudio.js";
 import { loadLocalMemory } from "./memoryStore.js";
-import { unlockNativeElementAudio, isCapacitorNative, playPcmBase64Native, resetNativePlayback, waitNativePlaybackIdle, warmupNativePlayback } from "./nativeAudioPlayback.js";
+import { unlockNativeElementAudio, isCapacitorNative, playPcmBase64Native, resetNativePlayback, haltNativePlayback, waitNativePlaybackIdle, warmupNativePlayback } from "./nativeAudioPlayback.js";
 import { ensureNativeMicPermission } from "./nativeMicPermission.js";
-import { getStoredGoogleKey } from "./geminiConstants.js";
+import { ensureGoogleKeyLoaded, getStoredGoogleKey } from "./geminiConstants.js";
 import { buildSessionConfigResponse } from "./voiceProfiles.js";
-import { getUiLocale, isIndonesiaProfile } from "./localeProfile.js";
+import { geminiLiveWsUrl } from "./geminiConstants.js";
+import { executeVoiceTool } from "./voiceToolsClient.js";
+import { isBrowserByokStandalone, useDirectByokRuntime } from "./platform.js";
+import { getAiSpeechLocale, getUiLocale, isIndonesiaProfile } from "./localeProfile.js";
 import { handleVoiceLocalCommand } from "./voiceLocalCommands.js";
 
 const DEFAULT_INPUT_RATE = 24000;
@@ -29,7 +32,9 @@ function initDirectGeminiVoice(transport) {
   const btn = document.getElementById("btn-voice-live");
   const pill = document.getElementById("voice-live-pill");
   const micPill = document.getElementById("voice-mic-pill");
-  const profile = transport.voiceProfile || "rhema-ide";
+  function currentProfile() {
+    return transport.voiceProfile || "rhema-ide";
+  }
 
   function apiFetch(path, init) {
     if (typeof transport.apiFetch === "function") return transport.apiFetch(path, init);
@@ -75,47 +80,81 @@ function initDirectGeminiVoice(transport) {
     }
   }
 
+  /** @type {{ inlineListen?: boolean, mobileLean?: boolean, textOnlyListen?: boolean }} */
+  let sessionConnectOpts = {};
+  /** @type {{ tag: string, payload: object } | null} */
+  let cachedSessionConfig = null;
+
+  function applyConnectOpts(opts = {}) {
+    const textOnly = opts.inlineListen === true || opts.mic === false;
+    sessionConnectOpts = {
+      inlineListen: opts.inlineListen === true,
+      mobileLean: opts.mobileLean ?? (textOnly || isCapacitorNative()),
+      textOnlyListen: opts.textOnlyListen ?? textOnly,
+    };
+  }
+
   const session = createGeminiLiveSession({
-    nativePlaybackOnly: isCapacitorNative(),
+    nativePlaybackOnly: isCapacitorNative() && !isBrowserByokStandalone(),
     fetchSessionConfig: async () => {
       const voiceName = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-voice-name")) || "Puck";
       const personaId = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-persona-id")) || "pastor";
-      if (isCapacitorNative()) {
-        const key = getStoredGoogleKey();
+      if (useDirectByokRuntime()) {
+        const key = await ensureGoogleKeyLoaded();
         if (!key) {
           return { error: "Gemini API key belum diset. Buka Akun → ⚙ Pengaturan & API Key → Simpan." };
         }
-        return buildSessionConfigResponse({
-          apiKey: key,
-          profileId: profile,
+        const tag = [
+          currentProfile(),
           voiceName,
           personaId,
-          mobileLean: true,
+          sessionConnectOpts.textOnlyListen ? "inline" : sessionConnectOpts.mobileLean ? "lean" : "full",
+        ].join("|");
+        if (cachedSessionConfig?.tag === tag) {
+          return { ...cachedSessionConfig.payload, wsUrl: geminiLiveWsUrl(key) };
+        }
+        const payload = buildSessionConfigResponse({
+          apiKey: key,
+          profileId: currentProfile(),
+          voiceName,
+          personaId,
+          mobileLean: sessionConnectOpts.mobileLean ?? isCapacitorNative(),
+          inlineListen: sessionConnectOpts.inlineListen,
+          textOnlyListen: sessionConnectOpts.textOnlyListen,
         });
+        cachedSessionConfig = { tag, payload };
+        return payload;
       }
       const res = await apiFetch(
-        `/api/session-config?profile=${encodeURIComponent(profile)}&voiceName=${encodeURIComponent(voiceName)}&personaId=${encodeURIComponent(personaId)}`
+        `/api/session-config?profile=${encodeURIComponent(currentProfile())}&voiceName=${encodeURIComponent(voiceName)}&personaId=${encodeURIComponent(personaId)}`
       );
       const data = await res.json();
       if (!res.ok) return { error: data.error || `HTTP ${res.status}` };
       return data;
     },
     executeTool: async (call) => {
+      if (useDirectByokRuntime()) {
+        return executeVoiceTool(call);
+      }
       const res = await apiFetch("/api/voice/tool", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(call),
       });
+      if (!res.ok) {
+        const errText = await res.text().catch(() => "");
+        throw new Error(errText || `HTTP ${res.status}`);
+      }
       return res.json();
     },
     emit: (event) => {
       if (event.type === "voiceModuleSpeak" && event.text) {
         haltNativePlayback();
-        if (profile === "alkitab-voice") {
+        if (currentProfile() === "alkitab-voice") {
           if (isIndonesiaProfile()) {
             speakIndonesianText(String(event.text), { stopAmbientOnEnd: false });
           } else {
-            speakModuleReply(String(event.text), getUiLocale());
+            speakModuleReply(String(event.text), getAiSpeechLocale());
           }
         } else {
           speakModuleReply(String(event.text), navigator.language || "id-ID");
@@ -149,10 +188,35 @@ function initDirectGeminiVoice(transport) {
     interruptPlayback: () => session.interruptPlayback?.() ?? false,
     sendText: (text) => session.sendText(text),
     sendClientContent: (text) => session.sendClientContent?.(text) ?? session.sendText(text),
-    sendTextOrStart: (text, opts) =>
-      session.sendTextOrStart(text, { mic: false, preferClientContent: false, ...opts }),
-    start: (opts) => session.start(opts),
-    stop: () => session.stop(),
+    sendTextOrStart: (text, opts = {}) => {
+      const textOnly = opts.mic === false;
+      applyConnectOpts({ ...opts, mic: false, inlineListen: textOnly });
+      return session.sendTextOrStart(text, {
+        ...opts,
+        mic: false,
+        preferClientContent: textOnly,
+        inlineListen: textOnly,
+      });
+    },
+    warmupPlayback: () => session.warmupPlayback?.(),
+    prepareTextListen: () => session.prepareTextListen?.(),
+    isTextListenSession: () => session.isTextListenSession?.() ?? false,
+    startWarm: () => {
+      applyConnectOpts({ inlineListen: true, mic: false, textOnlyListen: true });
+      return session.startWarm?.();
+    },
+    prefetchConfig: () => {
+      applyConnectOpts({ inlineListen: true, mic: false, textOnlyListen: true });
+      return session.prefetchConfig?.();
+    },
+    start: (opts) => {
+      applyConnectOpts(opts);
+      return session.start(opts);
+    },
+    stop: () => {
+      sessionConnectOpts = {};
+      return session.stop();
+    },
     waitForPlaybackIdle: () => session.waitForPlaybackIdle?.() ?? Promise.resolve(),
     getAnalyser: () => session.getAnalyser?.() ?? null,
   };
@@ -510,7 +574,7 @@ function initProxyVoice(transport) {
           if (isIndonesiaProfile()) {
             speakIndonesianText(String(m.text), { stopAmbientOnEnd: false });
           } else {
-            speakModuleReply(String(m.text), getUiLocale());
+            speakModuleReply(String(m.text), getAiSpeechLocale());
           }
         } else if (m.text) {
           scheduleModuleSpeechFallback(m.text);

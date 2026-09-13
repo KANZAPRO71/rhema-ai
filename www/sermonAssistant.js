@@ -2,6 +2,7 @@
  * Sermon & Ministry Assistant Engine — Modul AI untuk Generator Kerangka Khotbah, Bahan Komsel & Sekolah Minggu.
  */
 
+import { escapeHtml } from "./markdown.js";
 import { buildSermonVoicePrompt, setPreacherPersona } from "./sermonPrompts.js";
 
 export const SERMON_TOPIC_TEMPLATES = [
@@ -171,7 +172,7 @@ export function openSermonAssistantModal(callbacks = {}) {
       const prEl = modal.querySelector("#sermon-render-prayer");
 
       if (tEl) tEl.textContent = currentOutline.title;
-      if (rEl) rEl.innerHTML = `📖 Bacaan: <strong>${currentOutline.passage}</strong>`;
+      if (rEl) rEl.innerHTML = `📖 Bacaan: <strong>${escapeHtml(currentOutline.passage)}</strong>`;
       if (bgEl) bgEl.textContent = currentOutline.historicalContext;
       if (ilEl) ilEl.textContent = currentOutline.realLifeIllustration;
       if (apEl) apEl.textContent = currentOutline.practicalApplication;
@@ -179,10 +180,10 @@ export function openSermonAssistantModal(callbacks = {}) {
       if (ptsEl) {
         ptsEl.innerHTML = currentOutline.points.map((pt) => `
           <div class="sermon-pt-row">
-            <span class="sermon-pt-num">${pt.number}</span>
+            <span class="sermon-pt-num">${escapeHtml(pt.number)}</span>
             <div>
-              <strong class="sermon-pt-head">${pt.headline}</strong>
-              <p class="sermon-pt-sub">${pt.subtext}</p>
+              <strong class="sermon-pt-head">${escapeHtml(pt.headline)}</strong>
+              <p class="sermon-pt-sub">${escapeHtml(pt.subtext)}</p>
             </div>
           </div>
         `).join("");

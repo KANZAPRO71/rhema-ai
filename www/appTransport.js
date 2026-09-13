@@ -2,6 +2,7 @@
  * Transport chat lokal — menggantikan WebSocket / PC server di app native.
  */
 import { GEMINI_MODEL, setStoredGoogleKey, getStoredGoogleKey, googleKeyConfigured } from "./geminiConstants.js";
+import { isAllowedExternalUrl } from "./safeUrl.js";
 import { streamGeminiChat } from "./geminiClient.js";
 import { providerKeyStatus } from "./appBackend.js";
 import {
@@ -185,14 +186,15 @@ export function wireNativeBackend(transport, voiceBridge) {
           break;
         case "openExternal": {
           const url = String(msg.url ?? "");
-          if (url && window.Capacitor?.Plugins?.Browser?.open) {
+          if (!isAllowedExternalUrl(url)) break;
+          if (window.Capacitor?.Plugins?.Browser?.open) {
             try {
               await window.Capacitor.Plugins.Browser.open({ url });
             } catch {
-              window.open(url, "_blank");
+              window.open(url, "_blank", "noopener,noreferrer");
             }
-          } else if (url) {
-            window.open(url, "_blank");
+          } else {
+            window.open(url, "_blank", "noopener,noreferrer");
           }
           break;
         }

@@ -1,7 +1,7 @@
 {
-  "name": "app bapak",
-  "short_name": "app bapak",
-  "description": "Pendamping ibadah · TB LAI · suara live interaktif",
+  "name": "Rhema AI",
+  "short_name": "Rhema AI",
+  "description": "Pendamping ibadah · suara live interaktif",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -14,6 +14,8 @@ export function isNativeGeminiWsAvailable() {
 
 /** @type {import("@capacitor/core").PluginListenerHandle | null} */
 let listenerHandle = null;
+/** 0 = tolak semua; -1 = terima gen berikutnya; >0 = hanya gen itu */
+let allowedGen = 0;
 
 /**
  * @param {string} wsUrl
@@ -34,7 +36,14 @@ export async function nativeGeminiWsConnect(wsUrl, setup, callbacks) {
     listenerHandle = null;
   }
 
+  allowedGen = -1;
+
   listenerHandle = await plugin.addListener("geminiWsEvent", (ev) => {
+    const gen = Number(ev?.gen || 0);
+    if (allowedGen === 0) return;
+    if (allowedGen > 0 && gen && gen !== allowedGen) return;
+    if (allowedGen === -1 && gen) allowedGen = gen;
+
     const type = String(ev?.type || "");
     if (type === "open") {
       callbacks.onOpen?.();
@@ -53,10 +62,12 @@ export async function nativeGeminiWsConnect(wsUrl, setup, callbacks) {
     }
   });
 
-  await plugin.connect({
+  const ret = await plugin.connect({
     wsUrl,
     setupJson: JSON.stringify({ setup }),
   });
+  const gen = Number(ret?.gen || 0);
+  if (gen) allowedGen = gen;
 }
 
 /** @param {string} json */
@@ -67,6 +78,7 @@ export async function nativeGeminiWsSend(json) {
 }
 
 export async function nativeGeminiWsDisconnect() {
+  allowedGen = 0;
   const plugin = window.Capacitor?.Plugins?.GeminiLive;
   if (plugin?.disconnect) {
     await plugin.disconnect();

@@ -22,15 +22,9 @@ import {
   renderChordProRows,
   wireChordBadgeClicks,
 } from "./chordPro.js";
+import { escapeHtml } from "./markdown.js";
 
 const FAV_KEY = "rhema-lagu-favorites";
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
 
 function loadFavs() {
   try {
@@ -359,7 +353,7 @@ function startLyricPrompter() {
 
   if (!isAccompanistActive()) {
     toggleWorshipAccompanist(arrangement, (chordName, idx, total) => {
-      if (accBtn) accBtn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${chordName}</strong>`;
+      if (accBtn) accBtn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${escapeHtml(chordName)}</strong>`;
       document.querySelectorAll(`[data-chord="${chordName}"]`).forEach((b) => {
         b.classList.add("strummed");
         setTimeout(() => b.classList.remove("strummed"), 400);
@@ -391,7 +385,7 @@ function startLyricPrompter() {
           stopAutoScroll();
           if (accBtn) {
             accBtn.classList.remove("active");
-            accBtn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+            accBtn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
           }
         };
         window.speechSynthesis.speak(closing);
@@ -401,7 +395,7 @@ function startLyricPrompter() {
         stopAutoScroll();
         if (accBtn) {
           accBtn.classList.remove("active");
-          accBtn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+          accBtn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
         }
       }
       return;
@@ -464,7 +458,7 @@ function toggleLyricPrompter() {
       accBtn.classList.remove("active");
       const inst = getAccompanimentInstrument();
       const profile = INSTRUMENT_PROFILES.find((p) => p.id === inst) || INSTRUMENT_PROFILES[0];
-      accBtn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+      accBtn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
     }
   } else {
     startLyricPrompter();
@@ -491,7 +485,7 @@ function hideDetail() {
     accBtn.classList.remove("active");
     const inst = getAccompanimentInstrument();
     const profile = INSTRUMENT_PROFILES.find((p) => p.id === inst) || INSTRUMENT_PROFILES[0];
-    accBtn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+    accBtn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
   }
   document.getElementById("lagu-detail")?.classList.add("hidden");
   document.getElementById("lagu-list")?.classList.remove("hidden");
@@ -628,9 +622,9 @@ export function initLaguPanel(transport) {
 
     const btn = document.getElementById("btn-lagu-inst");
     const accBtn = document.getElementById("btn-lagu-accompany");
-    if (btn) btn.innerHTML = `${nextProfile.icon} Suara: ${nextProfile.label.replace(/^.*? /, "")}`;
+    if (btn) btn.innerHTML = `${nextProfile.icon} Suara: ${escapeHtml(nextProfile.label.replace(/^.*? /, ""))}`;
     if (accBtn && !isAccompanistActive()) {
-      accBtn.innerHTML = `${nextProfile.icon} Iringi ${nextProfile.label.split(" ")[1] || "Pujian"} AI`;
+      accBtn.innerHTML = `${nextProfile.icon} Iringi ${escapeHtml(nextProfile.label.split(" ")[1] || "Pujian")} AI`;
     }
     renderSongDetails();
   });
@@ -663,7 +657,7 @@ export function initLaguPanel(transport) {
     const profile = INSTRUMENT_PROFILES.find((p) => p.id === inst) || INSTRUMENT_PROFILES[0];
 
     const started = toggleWorshipAccompanist(arrangement, (chordName, idx, total) => {
-      if (btn) btn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${chordName}</strong>`;
+      if (btn) btn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${escapeHtml(chordName)}</strong>`;
       document.querySelectorAll(`[data-chord="${chordName}"]`).forEach((b) => {
         b.classList.add("strummed");
         setTimeout(() => b.classList.remove("strummed"), 400);
@@ -673,7 +667,7 @@ export function initLaguPanel(transport) {
     if (btn) {
       btn.classList.toggle("active", started);
       if (!started) {
-        btn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+        btn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
       }
     }
 
@@ -737,7 +731,7 @@ export function initLaguPanel(transport) {
         accBtn.classList.remove("active");
         const inst = getAccompanimentInstrument();
         const profile = INSTRUMENT_PROFILES.find((p) => p.id === inst) || INSTRUMENT_PROFILES[0];
-        accBtn.innerHTML = `${profile.icon} Iringi ${profile.label.split(" ")[1] || "Pujian"} AI`;
+        accBtn.innerHTML = `${profile.icon} Iringi ${escapeHtml(profile.label.split(" ")[1] || "Pujian")} AI`;
       }
       return;
     }
@@ -753,7 +747,7 @@ export function initLaguPanel(transport) {
     // 1. Jalankan Musik Iringan di Tempat — aransemen unik per lagu
     if (!isAccompanistActive()) {
       toggleWorshipAccompanist(arrangement, (chordName, idx, total) => {
-        if (accBtn) accBtn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${chordName}</strong>`;
+        if (accBtn) accBtn.innerHTML = `${profile.icon} Bar ${idx + 1}/${total}: <strong>${escapeHtml(chordName)}</strong>`;
         document.querySelectorAll(`[data-chord="${chordName}"]`).forEach((b) => {
           b.classList.add("strummed");
           setTimeout(() => b.classList.remove("strummed"), 400);

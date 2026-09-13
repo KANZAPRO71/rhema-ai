@@ -22,7 +22,7 @@ export const AI_STORY_REPOSITORY = [
     verse: {
       reference: "Yesaya 40:31",
       text: "Tetapi orang-orang yang menanti-nantikan TUHAN mendapat kekuatan baru: mereka seumpama rajawali yang naik terbang dengan kekuatan sayapnya; mereka berlari dan tidak menjadi lesu, mereka berjalan dan tidak menjadi lelah.",
-      version: "Terjemahan Baru (LAI)",
+      version: "Alkitab",
     },
     reflection: {
       headline: "Bukan Berjuang Sendiri, Melainkan Melayang Bersama Roh Kudus",
@@ -52,7 +52,7 @@ export const AI_STORY_REPOSITORY = [
     verse: {
       reference: "Filipi 4:6-7",
       text: "Janganlah hendaknya kamu kuatir tentang apa pun juga, tetapi nyatakanlah dalam segala hal keinginanmu kepada Allah dalam doa dan permohonan dengan ucapan syukur. Damai sejahtera Allah, yang melampaui segala akal, akan memelihara hati dan pikiranmu dalam Kristus Yesus.",
-      version: "Terjemahan Baru (LAI)",
+      version: "Alkitab",
     },
     reflection: {
       headline: "Tukarkan Kekuatiranmu dengan Hadirat Damai Sejahtera",
@@ -82,7 +82,7 @@ export const AI_STORY_REPOSITORY = [
     verse: {
       reference: "Mazmur 23:1",
       text: "TUHAN adalah gembalaku, takkan kekurangan aku.",
-      version: "Terjemahan Baru (LAI)",
+      version: "Alkitab",
     },
     reflection: {
       headline: "Kamu Tidak Pernah Dibiarkan Berjalan Sendiri",
@@ -112,7 +112,7 @@ export const AI_STORY_REPOSITORY = [
     verse: {
       reference: "Yeremia 29:11",
       text: "Sebab Aku ini mengetahui rancangan-rancangan apa yang ada pada-Ku mengenai kamu, demikianlah firman TUHAN, yaitu rancangan damai sejahtera dan bukan rancangan kecelakaan, untuk memberikan kepadamu hari depan yang penuh harapan.",
-      version: "Terjemahan Baru (LAI)",
+      version: "Alkitab",
     },
     reflection: {
       headline: "Kisah Hidupmu Ditulis oleh Tangan Kasih Allah",
@@ -164,7 +164,7 @@ export async function generateCustomAIDailyStory(topicPrompt) {
     verse: {
       reference: ref,
       text: `Allah turut bekerja dalam segala sesuatu untuk mendatangkan kebaikan bagi mereka yang mengasihi Dia (${ref}).`,
-      version: "Terjemahan Baru (LAI)",
+      version: "Alkitab",
     },
     reflection: {
       headline: `Pesan Khusus AI Mengenai ${themeLabel}`,

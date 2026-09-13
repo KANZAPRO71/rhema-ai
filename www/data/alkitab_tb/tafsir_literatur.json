@@ -5,7 +5,7 @@
     "updated": "2026-08-16",
     "sumber_jenis": [
       "Komentar Ulangan / Deuteronomy (konteks Perjanjian Moab)",
-      "Hermeneutika Alkitab (historis-gramatikal, TB LAI)",
+      "Hermeneutika Alkitab (historis-gramatikal)",
       "Pastoral care & teologi lament (Job, Mazmur ratapan)"
     ]
   },
@@ -975,7 +975,7 @@
     },
     "prinsip_tafsir_tb": {
       "keys": ["tafsir", "hermeneutika", "makna ayat", "literatur"],
-      "data": "Prinsip tafsir TB: (1) baca konteks kitab dan pasal, (2) teks ayat dari TB LAI — jangan parafrase seenaknya, (3) bedakan makna waktu Musa/Yesus vs aplikasi hari ini, (4) rendah hati — komentar banyak penerjemahan, bukan pengganti pendeta, (5) kasih > debat teologis."
+      "data": "Prinsip tafsir: (1) baca konteks kitab dan pasal, (2) teks ayat dari Alkitab — jangan parafrase seenaknya, (3) bedakan makna waktu Musa/Yesus vs aplikasi hari ini, (4) rendah hati — komentar banyak penerjemahan, bukan pengganti pendeta, (5) kasih > debat teologis."
     },
     "kehendak_tuhan_instans": {
       "keys": ["kehendak tuhan", "sesuai kehendak", "rencana tuhan", "misteri tuhan"],

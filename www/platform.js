@@ -19,6 +19,22 @@ export function isStandaloneByok() {
   return isNativeApp();
 }
 
+/** @returns {boolean} Preview browser localhost — tanpa Cursor extension / WS server */
+export function isBrowserByokStandalone() {
+  if (isNativeApp()) return false;
+  try {
+    const host = location.hostname;
+    return host === "localhost" || host === "127.0.0.1" || host === "[::1]";
+  } catch {
+    return false;
+  }
+}
+
+/** Native APK atau preview localhost: koneksi langsung BYOK → Google (bukan proxy extension). */
+export function useDirectByokRuntime() {
+  return isStandaloneByok() || isBrowserByokStandalone();
+}
+
 /** @returns {string} Base URL tanpa trailing slash; kosong = same-origin / backend lokal */
 export function getApiBase() {
   const stored = (localStorage.getItem(SERVER_KEY) || "").trim().replace(/\/$/, "");
@@ -60,17 +76,10 @@ export function apiUrl(path) {
   return base ? `${base}${p}` : p;
 }
 
-/** @param {unknown} s */
-export function escapeHtml(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+export { escapeAttr, escapeHtml } from "./markdown.js";
 
 /** Inisialisasi UI native (status bar, splash, class body). */
-const SPLASH_MIN_MS = 2600;
+const SPLASH_MIN_MS = 1200;
 
 function syncLaunchSplashTitle() {
   const el = document.getElementById("rhema-launch-title");
@@ -90,12 +99,18 @@ function dismissLaunchSplash() {
 
 async function hideNativeSplashAfterMinimum(plugins) {
   const bootAt = Number(window.__RHEMA_BOOT_AT) || Date.now();
-  const waitMs = Math.max(0, SPLASH_MIN_MS - (Date.now() - bootAt));
+  const waitMs = Math.max(0, Math.min(1800, SPLASH_MIN_MS - (Date.now() - bootAt)));
   if (waitMs > 0) {
     await new Promise((resolve) => setTimeout(resolve, waitMs));
   }
   try {
-    await plugins?.SplashScreen?.hide?.();
+    const hide = plugins?.SplashScreen?.hide;
+    if (typeof hide === "function") {
+      await Promise.race([
+        hide.call(plugins.SplashScreen),
+        new Promise((resolve) => setTimeout(resolve, 600)),
+      ]);
+    }
   } catch {
     /* ignore */
   }

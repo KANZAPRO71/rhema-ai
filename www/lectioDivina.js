@@ -3,50 +3,22 @@
  */
 
 import { ambientEngine } from "./ambientAudio.js";
-import { escapeHtml } from "./platform.js";
+import {
+  getAiLanguageRule,
+  getEffectiveAiLang,
+  getEffectiveBibleVersion,
+  getUiLocale,
+} from "./localeProfile.js";
+import { escapeAttr, escapeHtml } from "./markdown.js";
+import { t } from "./uiStrings.js";
 
 export const LECTIO_JOURNAL_KEY = "rhema-lectio-journal";
 
 export const VOICE_PERSONAS = [
-  {
-    id: "shepherd",
-    name: "Gembala Teduh",
-    emoji: "🕊️",
-    desc: "Pastoral, tenang, berwibawa",
-    pitch: 0.92,
-    rate: 0.9,
-  },
-  {
-    id: "friend",
-    name: "Sahabat Iman",
-    emoji: "☀️",
-    desc: "Hangat & membesarkan hati",
-    pitch: 1.05,
-    rate: 0.96,
-  },
-  {
-    id: "psalm",
-    name: "Mazmur Malam",
-    emoji: "🌙",
-    desc: "Lembut, untuk saat teduh malam",
-    pitch: 0.88,
-    rate: 0.85,
-  },
+  { id: "shepherd", emoji: "🕊️", pitch: 0.92, rate: 0.9 },
+  { id: "friend", emoji: "☀️", pitch: 1.05, rate: 0.96 },
+  { id: "psalm", emoji: "🌙", pitch: 0.88, rate: 0.85 },
 ];
-
-const PHASES = [
-  { n: 1, latin: "Silencio", idLabel: "Hening", hint: "Tenangkan hati di hadapan Tuhan" },
-  { n: 2, latin: "Lectio", idLabel: "Firman", hint: "Dengarkan ayat dengan perlahan" },
-  { n: 3, latin: "Meditatio", idLabel: "Renung", hint: "Biarkan firman berbicara ke hati" },
-  { n: 4, latin: "Oratio", idLabel: "Doa", hint: "Serahkan diri dalam doa" },
-];
-
-const SPEAK_STATUS = {
-  1: "Membimbing hening…",
-  2: "Membacakan firman…",
-  3: "Membimbing perenungan…",
-  4: "Memimpin doa…",
-};
 
 const SELECTED_PERSONA_KEY = "rhema-voice-persona";
 
@@ -64,16 +36,81 @@ const SELECTED_PERSONA_KEY = "rhema-voice-persona";
  *   setStatus?: (text: string) => void;
  *   pauseAuto: () => void;
  *   voiceGen: number;
+ *   close?: () => void;
  * } | null} */
 let lectioSession = null;
+
+function lectioPhases() {
+  return [
+    { n: 1, latin: "Silencio", idLabel: t("lectio.phase.1"), hint: t("lectio.hint.1") },
+    { n: 2, latin: "Lectio", idLabel: t("lectio.phase.2"), hint: t("lectio.hint.2") },
+    { n: 3, latin: "Meditatio", idLabel: t("lectio.phase.3"), hint: t("lectio.hint.3") },
+    { n: 4, latin: "Oratio", idLabel: t("lectio.phase.4"), hint: t("lectio.hint.4") },
+  ];
+}
+
+function personaLabel(id) {
+  return t(`lectio.persona.${id}`);
+}
+
+function personaTone(id) {
+  return t(`lectio.persona.${id}.desc`);
+}
+
+function bibleShort() {
+  return getEffectiveBibleVersion() === "kjv" ? "KJV" : "Alkitab";
+}
+
+function bibleKicker() {
+  return getEffectiveBibleVersion() === "kjv" ? t("lectio.bible.kjv") : t("lectio.bible.tb");
+}
 
 export function isLectioSessionActive() {
   return Boolean(lectioSession?.active);
 }
 
+export function isLectioModalOpen() {
+  return Boolean(document.getElementById("lectio-divina-modal"));
+}
+
 export function stopLectioSession() {
   if (lectioSession) lectioSession.active = false;
   lectioSession = null;
+}
+
+/** Dipanggil saat sesi suara gagal — jangan biarkan mode otomatis macet di fase pertama. */
+export function notifyLectioVoiceError(detail = "") {
+  const session = lectioSession;
+  if (!session?.active) return;
+  session.advancing = false;
+  session.setSpeaking?.(false);
+  const hint = String(detail || "").trim();
+  const msg = hint ? `${t("lectio.status.voiceError")} ${hint}` : t("lectio.status.voiceError");
+  session.pauseAuto?.(msg);
+}
+
+/** Dipanggil saat sesi Gemini Live sudah siap — tampilkan status fase suara. */
+export function notifyLectioVoiceLive() {
+  const session = lectioSession;
+  if (!session?.active) return;
+  session.setSpeaking?.(true);
+}
+
+/** @param {string} [detail] */
+export function notifyLectioVoiceConnecting(detail) {
+  const session = lectioSession;
+  if (!session?.active) return;
+  session.setSpeaking?.(false);
+  session.setStatus?.(detail || t("lectio.status.connecting"));
+}
+
+export function consumeLectioBack() {
+  if (!isLectioModalOpen()) return false;
+  lectioSession?.close?.();
+  const leftover = document.getElementById("lectio-divina-modal");
+  leftover?.remove();
+  stopLectioSession();
+  return true;
 }
 
 /** Lanjut ke fase berikutnya setelah suara AI selesai. */
@@ -96,14 +133,15 @@ export async function onLectioVoiceTurnComplete() {
     if (!session.active || !session.autoMode || session.voiceGen !== gen) return;
 
     const step = session.step;
+    const phases = lectioPhases();
 
     if (step === 4) {
-      session.setStatus?.("Selesai — simpan jurnal Anda");
+      session.setStatus?.(t("lectio.status.done"));
       return;
     }
 
     if (step === 3) {
-      session.setStatus?.("Waktu menulis perenungan");
+      session.setStatus?.(t("lectio.status.write"));
       session.advancing = false;
       if (session.waitForJournal) {
         await session.waitForJournal(45_000);
@@ -117,7 +155,7 @@ export async function onLectioVoiceTurnComplete() {
     }
 
     const next = step + 1;
-    session.setStatus?.(`Beralih ke ${PHASES[next - 1]?.idLabel || "fase berikutnya"}…`);
+    session.setStatus?.(t("lectio.status.next", { phase: phases[next - 1]?.idLabel || "" }));
     await new Promise((r) => setTimeout(r, 450));
     if (!session.active || !session.autoMode || session.voiceGen !== gen) return;
     session.goToStep(next);
@@ -156,7 +194,7 @@ export function saveLectioJournalEntry(entry) {
     reference: String(entry.reference || "").trim(),
     text: String(entry.text || "").trim(),
     reflection: String(entry.reflection || "").trim(),
-    date: new Date().toLocaleDateString("id-ID", {
+    date: new Date().toLocaleString(getUiLocale(), {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -175,47 +213,113 @@ export function saveLectioJournalEntry(entry) {
 export function buildLectioVoicePrompt(verse, step, persona = getSelectedVoicePersona()) {
   const ref = String(verse?.reference || "").trim();
   const text = String(verse?.text || "").trim();
-  const tone = persona?.desc || "tenang dan pastoral";
+  const tone = personaTone(persona?.id || "shepherd");
+  const bible = bibleShort();
+  const langRule = getAiLanguageRule();
+  const id = getEffectiveAiLang() === "id";
+
+  const address = id
+    ? "Sapa dengan 'saudara' atau 'kita'. Jangan panggil 'jemaat'."
+    : "ADDRESS: speak to the listener as friend, you, or we. Never say saudara or jemaat.";
+
+  const noTools = id
+    ? "MODE LECTIO DIVINA: hanya panduan suara. Jangan panggil tool apapun."
+    : "LECTIO DIVINA MODE: voice guidance only. Do not call any tools.";
+
+  if (id) {
+    switch (step) {
+      case 1:
+        return [
+          noTools,
+          "Lectio Divina — fase Silencio (hening).",
+          "Sapa dengan lembut, undang tarik napas perlahan dan sadari kehadiran Tuhan.",
+          "Jangan baca ayat dulu. Durasi ~30 detik.",
+          `Gaya suara: ${tone}.`,
+          address,
+          langRule,
+        ].join(" ");
+      case 2:
+        return [
+          noTools,
+          `Lectio Divina — fase Lectio. Bacakan ayat ${ref} dari ${bible} dengan perlahan dan khidmat:`,
+          `"${text}".`,
+          "Jeda 2–3 detik antar kalimat. Ulangi sekali frasa yang paling menonjol.",
+          `Gaya suara: ${tone}.`,
+          langRule,
+        ].join(" ");
+      case 3:
+        return [
+          noTools,
+          `Lectio Divina — fase Meditatio untuk ${ref} (${bible}).`,
+          `Ayat: "${text}".`,
+          "Ajukan 2 pertanyaan refleksi rohani yang menyentuh hati:",
+          "kata mana yang paling menggugah, dan apa yang Tuhan katakan untuk hidup hari ini?",
+          `Gaya: ${tone}, singkat dan dalam — bukan khotbah panjang.`,
+          langRule,
+        ].join(" ");
+      case 4:
+        return [
+          noTools,
+          `Lectio Divina — fase Oratio untuk ${ref}.`,
+          `Pimpin doa penutup 1–2 menit dari ayat ${bible}: "${text}".`,
+          "Serahkan hati, minta damai sejahtera, akhiri dengan Amen.",
+          `Gaya: ${tone}.`,
+          langRule,
+        ].join(" ");
+      default:
+        return `Pandu Lectio Divina 4 langkah untuk ${ref}: "${text}". Gaya: ${tone}. ${langRule}`;
+    }
+  }
 
   switch (step) {
     case 1:
       return [
-        "Lectio Divina — fase Silencio (hening).",
-        "Sapa saudara dengan lembut, undang tarik napas perlahan dan sadari kehadiran Tuhan.",
-        "Jangan baca ayat dulu. Durasi ~30 detik, gaya suara:",
-        tone,
+        noTools,
+        "Lectio Divina — Silencio (silence).",
+        "Greet gently. Invite a slow breath and awareness of God's presence.",
+        "Do not read the verse yet. About 30 seconds.",
+        `Voice tone: ${tone}.`,
+        address,
+        langRule,
       ].join(" ");
     case 2:
       return [
-        `Lectio Divina — fase Lectio. Bacakan ayat ${ref} dari TB LAI dengan perlahan dan khidmat:`,
+        noTools,
+        `Lectio Divina — Lectio. Read ${ref} from the ${bible} slowly and reverently:`,
         `"${text}".`,
-        "Jeda 2–3 detik antar kalimat. Ulangi sekali frasa yang paling menonjol.",
-        `Gaya suara: ${tone}.`,
+        "Pause 2–3 seconds between sentences. Repeat the most striking phrase once.",
+        `Voice tone: ${tone}.`,
+        address,
+        langRule,
       ].join(" ");
     case 3:
       return [
-        `Lectio Divina — fase Meditatio untuk ${ref}.`,
-        `Ayat TB: "${text}".`,
-        "Ajukan 2 pertanyaan refleksi rohani yang menyentuh hati:",
-        "kata mana yang paling menggugah, dan apa yang Tuhan katakan untuk hidup saudara hari ini?",
-        `Gaya: ${tone}, singkat dan dalam — bukan khotbah panjang.`,
+        noTools,
+        `Lectio Divina — Meditatio for ${ref} (${bible}).`,
+        `Verse: "${text}".`,
+        "Ask two heart questions: which word stands out, and what is the Lord saying for life today?",
+        `Tone: ${tone}, brief and deep — not a long sermon.`,
+        address,
+        langRule,
       ].join(" ");
     case 4:
       return [
-        `Lectio Divina — fase Oratio untuk ${ref}.`,
-        `Pimpin doa penutup 1–2 menit dari ayat: "${text}".`,
-        "Serahkan hati, minta damai sejahtera, akhiri dengan Amen.",
-        `Gaya: ${tone}.`,
+        noTools,
+        `Lectio Divina — Oratio for ${ref}.`,
+        `Lead a 1–2 minute closing prayer from this ${bible} verse: "${text}".`,
+        "Offer the heart, ask for peace, end with Amen.",
+        `Tone: ${tone}.`,
+        address,
+        langRule,
       ].join(" ");
     default:
-      return `Pandu Lectio Divina 4 langkah untuk ${ref}: "${text}". Gaya: ${tone}.`;
+      return `Guide a 4-step Lectio Divina for ${ref}: "${text}". Tone: ${tone}. ${address} ${langRule}`;
   }
 }
 
 /** @param {{ reference?: string, text?: string }} verse */
 function buildMeditatioQuestion(verse) {
-  const ref = verse.reference || "ayat ini";
-  return `Kata atau kalimat mana dari ${ref} yang paling menyentuh keadaan hidup Anda saat ini? Apa yang Tuhan ingin katakan melalui firman itu hari ini?`;
+  return t("lectio.question", { ref: verse.reference || t("lectio.phase.2") });
 }
 
 function formatMmSs(totalSec) {
@@ -237,7 +341,8 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   let existing = document.getElementById("lectio-divina-modal");
   if (existing) existing.remove();
 
-  const safeRef = escapeHtml(verse.reference || "Mazmur 23:1");
+  const phases = lectioPhases();
+  const safeRef = escapeHtml(verse.reference || "");
   const safeText = escapeHtml(verse.text || "");
   const meditatioQuestion = escapeHtml(buildMeditatioQuestion(verse));
 
@@ -261,40 +366,42 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
       <div class="modal-handle-bar"></div>
       <div class="lectio-header">
         <div class="lectio-title-wrap">
-          <span class="lectio-badge">Saat teduh</span>
-          <h2 class="lectio-title" id="lectio-title">Lectio Divina</h2>
+          <span class="lectio-badge">${escapeHtml(t("lectio.badge"))}</span>
+          <h2 class="lectio-title" id="lectio-title">${escapeHtml(t("lectio.title"))}</h2>
           <p class="lectio-ref-sub">${safeRef}</p>
         </div>
-        <button type="button" class="btn-modal-close" id="btn-close-lectio" aria-label="Tutup">✕</button>
+        <button type="button" class="btn-modal-close" id="btn-close-lectio" aria-label="${escapeHtml(t("lectio.close"))}">✕</button>
       </div>
 
       <div class="lectio-status-row">
         <span class="lectio-status-pill" id="lectio-status-pill" aria-live="polite">
           <span class="lectio-status-dot"></span>
-          <span id="lectio-status-text">${autoMode ? "Memulai panduan…" : "Mode manual"}</span>
+          <span id="lectio-status-text">${escapeHtml(autoMode ? t("lectio.status.starting") : t("lectio.status.manual"))}</span>
         </span>
         <button type="button" class="lectio-auto-toggle ${autoMode ? "is-on" : ""}" id="btn-lectio-auto" aria-pressed="${autoMode}">
-          ${autoMode ? "Otomatis" : "Manual"}
+          ${escapeHtml(autoMode ? t("lectio.auto") : t("lectio.manual"))}
         </button>
       </div>
 
-      <div class="lectio-progress" role="tablist" aria-label="Empat fase Lectio Divina">
-        ${PHASES.map(
-          (p) => `
+      <div class="lectio-progress" role="tablist" aria-label="${escapeHtml(t("lectio.phasesAria"))}">
+        ${phases
+          .map(
+            (p) => `
           <button type="button" class="lectio-progress-item ${p.n === 1 ? "is-current" : ""}" data-step="${p.n}" role="tab" aria-selected="${p.n === 1}">
             <span class="lectio-progress-num">${p.n}</span>
             <span class="lectio-progress-name">${escapeHtml(p.idLabel)}</span>
           </button>`,
-        ).join("")}
+          )
+          .join("")}
       </div>
-      <p class="lectio-phase-latin" id="lectio-phase-latin">Silencio · Hening</p>
+      <p class="lectio-phase-latin" id="lectio-phase-latin">${escapeHtml(phases[0].latin)} · ${escapeHtml(phases[0].idLabel)}</p>
 
-      <div class="lectio-persona-row" role="group" aria-label="Pilih suara panduan">
+      <div class="lectio-persona-row" role="group" aria-label="${escapeHtml(t("lectio.personaAria"))}">
         ${VOICE_PERSONAS.map(
           (p) => `
-          <button type="button" class="lectio-persona-chip ${p.id === selectedPersona.id ? "active" : ""}" data-persona-id="${p.id}" title="${escapeHtml(p.desc)}">
+          <button type="button" class="lectio-persona-chip ${p.id === selectedPersona.id ? "active" : ""}" data-persona-id="${escapeAttr(p.id)}" title="${escapeHtml(personaTone(p.id))}">
             <span aria-hidden="true">${p.emoji}</span>
-            <span>${escapeHtml(p.name)}</span>
+            <span>${escapeHtml(personaLabel(p.id))}</span>
           </button>`,
         ).join("")}
       </div>
@@ -305,51 +412,53 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
             <div class="silencio-pulse-ring"></div>
             <div class="silencio-circle" id="silencio-orb">
               <span class="silencio-countdown" id="silencio-count">4</span>
-              <span class="silencio-label" id="silencio-label">Tarik napas</span>
+              <span class="silencio-label" id="silencio-label">${escapeHtml(t("lectio.breath.in"))}</span>
             </div>
           </div>
-          <p class="lectio-instruction">Lepaskan kepenatan hari ini. Sadari kehadiran Tuhan yang menyertai Anda di sini.</p>
+          <p class="lectio-instruction">${escapeHtml(t("lectio.step1.instruction"))}</p>
         </div>
 
         <div class="lectio-step-view hidden" id="step-view-2">
           <div class="lectio-scripture-box">
-            <p class="lectio-verse-kicker">Terjemahan Baru · LAI</p>
+            <p class="lectio-verse-kicker">${escapeHtml(bibleKicker())}</p>
             <p class="lectio-verse-text">${safeText}</p>
             <cite class="lectio-verse-cite">${safeRef}</cite>
           </div>
-          <p class="lectio-instruction">Dengarkan firman berulang kali. Biarkan satu frasa tinggal di hati Anda.</p>
+          <p class="lectio-instruction">${escapeHtml(t("lectio.step2.instruction"))}</p>
         </div>
 
         <div class="lectio-step-view hidden" id="step-view-3">
           <div class="meditatio-prompt-card">
-            <p class="lectio-card-kicker">Pertanyaan batin</p>
+            <p class="lectio-card-kicker">${escapeHtml(t("lectio.step3.kicker"))}</p>
             <p class="meditatio-question">${meditatioQuestion}</p>
           </div>
-          <label class="lectio-journal-label" for="lectio-reflection-input">Jurnal perenungan</label>
-          <textarea class="meditatio-journal-input" id="lectio-reflection-input" rows="4" placeholder="Tuliskan bisikan, rasa, atau janji yang Anda dengar…"></textarea>
+          <label class="lectio-journal-label" for="lectio-reflection-input">${escapeHtml(t("lectio.step3.label"))}</label>
+          <textarea class="meditatio-journal-input" id="lectio-reflection-input" rows="4" placeholder="${escapeHtml(t("lectio.step3.placeholder"))}"></textarea>
           <div class="lectio-journal-wait hidden" id="lectio-journal-wait">
             <div class="lectio-wait-bar"><span id="lectio-wait-fill"></span></div>
-            <p class="lectio-wait-caption"><span id="lectio-wait-sec">0:45</span> menuju doa — atau lanjut kapan saja</p>
+            <p class="lectio-wait-caption" id="lectio-wait-caption">${escapeHtml(t("lectio.step3.wait", { time: "0:45" }))}</p>
           </div>
         </div>
 
         <div class="lectio-step-view hidden" id="step-view-4">
           <div class="oratio-card">
-            <p class="lectio-card-kicker">Doa &amp; damai sejahtera</p>
-            <p class="oratio-text">Tuhan Yesus, terima kasih atas firman-Mu yang hidup. Aku memeteraikan setiap pesan kebenaran ini di dalam hatiku. Pimpin langkahku sepanjang hari ini dalam naungan kasih-Mu. Amin.</p>
+            <p class="lectio-card-kicker">${escapeHtml(t("lectio.step4.kicker"))}</p>
+            <p class="oratio-text">${escapeHtml(t("lectio.step4.prayer"))}</p>
           </div>
-          <p class="lectio-instruction">Diam sejenak setelah doa. Simpan jurnal bila Anda menulis perenungan.</p>
+          <p class="lectio-instruction">${escapeHtml(t("lectio.step4.instruction"))}</p>
         </div>
       </div>
 
       <div class="lectio-footer" id="lectio-footer">
-        <button type="button" class="lectio-btn lectio-btn-ghost" id="btn-lectio-replay">Ulangi suara</button>
-        <button type="button" class="lectio-btn lectio-btn-primary" id="btn-lectio-next">Lewati hening</button>
+        <button type="button" class="lectio-btn lectio-btn-ghost" id="btn-lectio-replay">${escapeHtml(t("lectio.replay.voice"))}</button>
+        <button type="button" class="lectio-btn lectio-btn-primary" id="btn-lectio-next">${escapeHtml(t("lectio.next.skipSilence"))}</button>
       </div>
     </div>
   `;
 
   document.body.appendChild(modal);
+  window.__rhemaLectioOpenedAt = Date.now();
+  document.dispatchEvent(new CustomEvent("rhema-subview", { detail: { id: "lectio", open: true } }));
 
   const sheet = modal.querySelector(".lectio-sheet");
   const statusEl = modal.querySelector("#lectio-status-text");
@@ -362,9 +471,13 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   const nextBtn = modal.querySelector("#btn-lectio-next");
   const waitBox = modal.querySelector("#lectio-journal-wait");
   const waitFill = modal.querySelector("#lectio-wait-fill");
-  const waitSec = modal.querySelector("#lectio-wait-sec");
+  const waitCaption = modal.querySelector("#lectio-wait-caption");
 
-  ambientEngine.start("harp");
+  try {
+    ambientEngine.start("harp");
+  } catch {
+    /* ignore */
+  }
 
   function setStatus(text) {
     if (statusEl) statusEl.textContent = text;
@@ -374,23 +487,24 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     speaking = on;
     statusPill?.classList.toggle("is-speaking", on);
     sheet?.classList.toggle("is-speaking", on);
-    if (on) setStatus(SPEAK_STATUS[currentStep] || "Mendengarkan…");
+    if (on) setStatus(t(`lectio.speak.${currentStep}`) || t("lectio.status.listen"));
   }
 
   function syncAutoButton() {
     if (!autoBtn) return;
     autoBtn.classList.toggle("is-on", autoMode);
     autoBtn.setAttribute("aria-pressed", String(autoMode));
-    autoBtn.textContent = autoMode ? "Otomatis" : "Manual";
+    autoBtn.textContent = autoMode ? t("lectio.auto") : t("lectio.manual");
   }
 
   function updateFooter() {
     if (!nextBtn || !replayBtn) return;
-    replayBtn.textContent = currentStep === 1 ? "Ulangi panduan" : currentStep === 4 ? "Ulangi doa" : "Ulangi suara";
-    if (currentStep === 1) nextBtn.textContent = "Lewati hening";
-    else if (currentStep === 2) nextBtn.textContent = "Lanjut merenung";
-    else if (currentStep === 3) nextBtn.textContent = "Siap berdoa";
-    else nextBtn.textContent = "Simpan jurnal";
+    replayBtn.textContent =
+      currentStep === 1 ? t("lectio.replay.guide") : currentStep === 4 ? t("lectio.replay.prayer") : t("lectio.replay.voice");
+    if (currentStep === 1) nextBtn.textContent = t("lectio.next.skipSilence");
+    else if (currentStep === 2) nextBtn.textContent = t("lectio.next.meditate");
+    else if (currentStep === 3) nextBtn.textContent = t("lectio.next.pray");
+    else nextBtn.textContent = t("lectio.next.save");
     nextBtn.classList.toggle("lectio-btn-finish", currentStep === 4);
   }
 
@@ -410,23 +524,23 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     breathInhale = true;
     let n = 4;
     if (countEl) countEl.textContent = "4";
-    if (breathLabel) breathLabel.textContent = "Tarik napas";
+    if (breathLabel) breathLabel.textContent = t("lectio.breath.in");
     breathTimer = setInterval(() => {
       n -= 1;
       if (n <= 0) {
         breathInhale = !breathInhale;
         n = 4;
-        if (breathLabel) breathLabel.textContent = breathInhale ? "Tarik napas" : "Hembuskan";
+        if (breathLabel) breathLabel.textContent = breathInhale ? t("lectio.breath.in") : t("lectio.breath.out");
       }
       if (countEl) countEl.textContent = String(n);
     }, 1000);
   }
 
-  function pauseAuto() {
+  function pauseAuto(statusText) {
     autoMode = false;
     if (lectioSession) lectioSession.autoMode = false;
     syncAutoButton();
-    setStatus("Mode manual");
+    setStatus(statusText || t("lectio.status.manual"));
     setSpeaking(false);
   }
 
@@ -451,17 +565,21 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   function waitForJournal(ms) {
     clearJournalWait();
     waitBox?.classList.remove("hidden");
-    ambientEngine.start("harp");
+    try {
+      ambientEngine.start("harp");
+    } catch {
+      /* ignore */
+    }
     const total = Math.max(1, Math.round(ms / 1000));
     let left = total;
-    if (waitSec) waitSec.textContent = formatMmSs(left);
+    if (waitCaption) waitCaption.textContent = t("lectio.step3.wait", { time: formatMmSs(left) });
     if (waitFill) waitFill.style.width = "0%";
 
     return new Promise((resolve) => {
       journalWaitResolve = resolve;
       journalWaitTimer = setInterval(() => {
         left -= 1;
-        if (waitSec) waitSec.textContent = formatMmSs(left);
+        if (waitCaption) waitCaption.textContent = t("lectio.step3.wait", { time: formatMmSs(left) });
         if (waitFill) waitFill.style.width = `${Math.min(100, ((total - left) / total) * 100)}%`;
         if (left <= 0) {
           const done = journalWaitResolve;
@@ -481,6 +599,9 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     stopLectioSession();
     ambientEngine.stop();
     document.removeEventListener("keydown", onKey);
+    document.removeEventListener("rhema-subview-back", onSubviewBack);
+    window.__rhemaLectioOpenedAt = 0;
+    document.dispatchEvent(new CustomEvent("rhema-subview", { detail: { id: "lectio", open: false } }));
     modal.remove();
   }
 
@@ -489,7 +610,7 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     currentStep = step;
     if (lectioSession) lectioSession.step = step;
     sheet?.setAttribute("data-phase", String(step));
-    const phase = PHASES[step - 1];
+    const phase = lectioPhases()[step - 1];
     if (latinEl && phase) latinEl.textContent = `${phase.latin} · ${phase.idLabel}`;
 
     modal.querySelectorAll(".lectio-progress-item").forEach((d) => {
@@ -513,7 +634,8 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   function startVoiceForStep(step) {
     ambientEngine.stop();
     if (lectioSession) lectioSession.voiceGen += 1;
-    setSpeaking(true);
+    setSpeaking(false);
+    setStatus(t("lectio.status.connecting"));
     callbacks.onStartVoiceLectio?.(selectedPersona, step);
   }
 
@@ -528,9 +650,7 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     closeModal();
     document.dispatchEvent(
       new CustomEvent("rhema-alkitab-toast", {
-        detail: reflection
-          ? "Saat teduh selesai — perenungan tersimpan di jurnal."
-          : "Puji Tuhan. Saat teduh Lectio Divina selesai.",
+        detail: reflection ? t("lectio.toast.saved") : t("lectio.toast.done"),
       }),
     );
     document.dispatchEvent(new CustomEvent("rhema-lectio-journal-updated"));
@@ -548,7 +668,7 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     const next = currentStep + 1;
     goToStep(next);
     if (autoMode) startVoiceForStep(next);
-    else setStatus(PHASES[next - 1]?.hint || "");
+    else setStatus(lectioPhases()[next - 1]?.hint || "");
   }
 
   lectioSession = {
@@ -564,6 +684,7 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
     setSpeaking,
     setStatus,
     pauseAuto,
+    close: closeModal,
     voiceGen: 0,
   };
 
@@ -574,10 +695,23 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   if (autoMode && callbacks.onStartVoiceLectio) {
     setTimeout(() => {
       if (lectioSession?.active && currentStep === 1) startVoiceForStep(1);
-    }, 550);
+    }, 800);
   } else {
-    setStatus(PHASES[0].hint);
+    setStatus(lectioPhases()[0].hint);
+    if (callbacks.autoStart === false) {
+      document.dispatchEvent(
+        new CustomEvent("rhema-alkitab-toast", { detail: t("lectio.toast.manualNoVoice") }),
+      );
+    }
   }
+
+  sheet?.addEventListener("click", (e) => e.stopPropagation());
+  sheet?.addEventListener("touchend", (e) => e.stopPropagation());
+  modal.addEventListener("click", (e) => {
+    if (e.target !== modal) return;
+    if (Date.now() - Number(window.__rhemaLectioOpenedAt || 0) < 900) return;
+    closeModal();
+  });
 
   modal.querySelectorAll(".lectio-persona-chip").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -611,7 +745,11 @@ export function openLectioDivinaModal(verse, callbacks = {}) {
   function onKey(e) {
     if (e.key === "Escape") closeModal();
   }
+  function onSubviewBack(e) {
+    if (/** @type {CustomEvent} */ (e).detail === "lectio") closeModal();
+  }
   document.addEventListener("keydown", onKey);
+  document.addEventListener("rhema-subview-back", onSubviewBack);
 
   modal.querySelector("#btn-close-lectio")?.addEventListener("click", closeModal);
 
@@ -627,6 +765,7 @@ export function renderLectioJournalList() {
   if (!list) return;
 
   const entries = loadLectioJournal();
+  list.setAttribute("aria-label", t("lectio.journal.aria"));
   if (!entries.length) {
     list.innerHTML = "";
     empty?.classList.remove("hidden");
@@ -646,7 +785,7 @@ export function renderLectioJournalList() {
           <span class="lectio-journal-ref">${escapeHtml(e.reference || "—")}</span>
           <span class="lectio-journal-date">${escapeHtml(e.date || "")}</span>
         </span>
-        <span class="lectio-journal-snippet">${escapeHtml(e.reflection || e.text?.slice(0, 110) || "Tanpa catatan")}</span>
+        <span class="lectio-journal-snippet">${escapeHtml(e.reflection || e.text?.slice(0, 110) || t("lectio.journal.none"))}</span>
       </button>
     </li>`,
     )

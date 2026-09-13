@@ -9,13 +9,13 @@ Verifikasi: ID 478/500 ✓ · EN 435/500 ✓
 • Rilis Perdana Rhema AI: Pendamping ibadah & asisten persiapan khotbah pintar.
 • Fitur Suara Full Duplex: Mengobrol langsung secara natural dengan asisten AI berbasis Gemini 3.1 Flash Live Preview.
 • Sistem BYOK Aman: Gunakan API Key Gemini gratis Anda sendiri, dienkripsi 100% lokal di perangkat.
-• Dukungan Multibahasa Otomatis: Sinkronisasi instan Alkitab Terjemahan Baru (TB) untuk Indonesia dan King James Version (KJV) untuk pengguna global berdasarkan wilayah perangkat.
+• Dukungan Multibahasa Otomatis: Sinkronisasi instan Alkitab untuk Indonesia dan King James Version (KJV) untuk pengguna global berdasarkan wilayah perangkat.
 
 --- 🌍 English (en-US) — DEFAULT release notes ---
 
 • Initial Release of Rhema AI: Your intelligent devotional & sermon preparation companion.
 • Full Duplex Voice: Natural, fluid two-way audio conversations powered by Gemini 3.1 Flash Live Preview.
 • Secure BYOK Support: Use your own free Gemini API Key, encrypted 100% locally on your device.
-• Automated Bilingual Logic: Seamlessly switches between Indonesian (TB Version) and Global English (KJV Version) based on your system locale.
+• Automated Bilingual Logic: Seamlessly switches between Indonesian Bible and Global English (KJV) based on your system locale.
 
 ================================================================================

@@ -9,10 +9,16 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+import java.util.Set;
 
 @CapacitorPlugin(name = "SecureKey")
 public class SecureKeyPlugin extends Plugin {
     private static final String PREFS_FILE = "rhema_secure_keys";
+    private static final Set<String> ALLOWED_KEYS = Set.of("rhema-google-key");
+
+    private static boolean isAllowedKey(String key) {
+        return key != null && ALLOWED_KEYS.contains(key);
+    }
 
     private SharedPreferences securePrefs() throws Exception {
         Context ctx = getContext();
@@ -36,6 +42,10 @@ public class SecureKeyPlugin extends Plugin {
             call.reject("key wajib");
             return;
         }
+        if (!isAllowedKey(key)) {
+            call.reject("nama kunci tidak diizinkan");
+            return;
+        }
         try {
             securePrefs().edit().putString(key, value).apply();
             call.resolve();
@@ -49,6 +59,10 @@ public class SecureKeyPlugin extends Plugin {
         String key = call.getString("key");
         if (key == null || key.isEmpty()) {
             call.reject("key wajib");
+            return;
+        }
+        if (!isAllowedKey(key)) {
+            call.reject("nama kunci tidak diizinkan");
             return;
         }
         try {
@@ -66,6 +80,10 @@ public class SecureKeyPlugin extends Plugin {
         String key = call.getString("key");
         if (key == null || key.isEmpty()) {
             call.reject("key wajib");
+            return;
+        }
+        if (!isAllowedKey(key)) {
+            call.reject("nama kunci tidak diizinkan");
             return;
         }
         try {

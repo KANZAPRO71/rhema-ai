@@ -24,7 +24,7 @@ export function applyFontSize(size) {
 }
 
 export function initAccessibility() {
-  let saved = "normal";
+  let saved;
   try {
     saved = localStorage.getItem(STORAGE_KEY) || "normal";
   } catch {

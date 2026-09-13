@@ -24,6 +24,7 @@ import {
 } from "./alkitabClient.js";
 import { executeVoiceTool } from "./voiceToolsClient.js";
 import { getStoredGoogleKey, googleKeyConfigured } from "./geminiConstants.js";
+import { isBrowserByokStandalone } from "./platform.js";
 
 function jsonResponse(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -48,6 +49,15 @@ function parseApiPath(input) {
 
 /** @param {string} input @param {RequestInit} [init] */
 export async function handleLocalApi(input, init = {}) {
+  try {
+    return await handleLocalApiInner(input, init);
+  } catch (err) {
+    return jsonResponse({ error: err instanceof Error ? err.message : String(err) }, 500);
+  }
+}
+
+/** @param {string} input @param {RequestInit} [init] */
+async function handleLocalApiInner(input, init = {}) {
   const { pathname, searchParams } = parseApiPath(input);
   const method = (init.method || "GET").toUpperCase();
 
@@ -56,6 +66,7 @@ export async function handleLocalApi(input, init = {}) {
       profileId: searchParams.get("profile") ?? undefined,
       voiceName: searchParams.get("voiceName") ?? undefined,
       personaId: searchParams.get("personaId") ?? undefined,
+      mobileLean: isStandaloneApp(),
     });
     if (cfg.error) return jsonResponse(cfg, 401);
     return jsonResponse(cfg);
@@ -204,6 +215,7 @@ export function installAppBackend() {
 
 export function isStandaloneApp() {
   try {
+    if (isBrowserByokStandalone()) return false;
     return Boolean(window.Capacitor?.isNativePlatform?.());
   } catch {
     return false;

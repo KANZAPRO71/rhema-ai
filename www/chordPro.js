@@ -2,13 +2,7 @@
  * ChordPro-style parser & lyric/chord alignment for Kidung Jemaat.
  * Supports inline markers: [C]Mari kita puji
  */
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+import { escapeHtml } from "./markdown.js";
 
 /**
  * @param {string} text

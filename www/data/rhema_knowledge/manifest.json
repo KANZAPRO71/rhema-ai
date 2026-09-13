@@ -2,11 +2,11 @@
   "schemaVersion": "1.7.0",
   "product": "Rhema AI",
   "updated": "2026-08-16",
-  "description": "Katalog metadata pengetahuan Rhema — sumber kebenaran firman TB, tafsir, lexicon, tema, dan etika AI rohani untuk Khotbah AI dan Alkitab Voice.",
+  "description": "Katalog metadata pengetahuan Rhema — sumber kebenaran firman, tafsir, lexicon, tema, dan etika AI rohani untuk Khotbah AI dan Alkitab Voice.",
   "domains": [
     {
       "id": "scripture_tb",
-      "label": "Alkitab Terjemahan Baru (LAI)",
+      "label": "Alkitab",
       "type": "directory",
       "path": "alkitab_tb/buku",
       "indexPath": "alkitab_tb/kitab_index.json",

@@ -7,7 +7,55 @@ export const LOCALE_PROFILE_KEY = "rhema-locale-profile";
 
 /** @typedef {"indonesia"|"global"} WorshipRegion */
 /** @typedef {"tb"|"kjv"} BibleVersionPreference */
-/** @typedef {{ region: WorshipRegion, bibleVersion: BibleVersionPreference, configuredAt?: string, source?: string }} LocaleProfile */
+/** @typedef {"id"|"en"|"es"|"pt"|"ko"|"zh"|"ja"} UiLang */
+/** @typedef {{
+ *   region: WorshipRegion,
+ *   bibleVersion: BibleVersionPreference,
+ *   uiLang?: UiLang,
+ *   aiLang?: UiLang,
+ *   configuredAt?: string,
+ *   source?: string
+ * }} LocaleProfile */
+
+/** Bahasa yang bisa dipilih di wizard & pengaturan (nama native tetap). */
+export const APP_LANGUAGES = [
+  { id: "en", flag: "🇬🇧", native: "English" },
+  { id: "id", flag: "🇮🇩", native: "Bahasa Indonesia" },
+  { id: "es", flag: "🇪🇸", native: "Español" },
+  { id: "pt", flag: "🇧🇷", native: "Português" },
+  { id: "ko", flag: "🇰🇷", native: "한국어" },
+  { id: "zh", flag: "🇨🇳", native: "中文" },
+  { id: "ja", flag: "🇯🇵", native: "日本語" },
+];
+
+const UI_LANG_IDS = new Set(APP_LANGUAGES.map((l) => l.id));
+
+/** @param {string} [lang] @returns {UiLang} */
+export function normalizeUiLang(lang) {
+  const raw = String(lang || "en").toLowerCase().split("-")[0];
+  if (raw === "in") return "id";
+  if (UI_LANG_IDS.has(raw)) return /** @type {UiLang} */ (raw);
+  return "en";
+}
+
+/** @param {string} [lang] */
+export function languageNativeName(lang) {
+  const id = normalizeUiLang(lang);
+  return APP_LANGUAGES.find((l) => l.id === id)?.native || "English";
+}
+
+/** Preview bahasa wizard — sebelum profil disimpan. */
+/** @type {UiLang | null} */
+let uiLangOverride = null;
+
+/** @param {UiLang | null} lang */
+export function setUiLangOverride(lang) {
+  uiLangOverride = lang ? normalizeUiLang(lang) : null;
+}
+
+export function getUiLangOverride() {
+  return uiLangOverride;
+}
 
 export const INDONESIA_TIMEZONES = new Set([
   "Asia/Jakarta",
@@ -16,8 +64,28 @@ export const INDONESIA_TIMEZONES = new Set([
   "Asia/Jayapura",
 ]);
 
-/** @returns {{ timezone: string, locale: string }} */
+/** @type {{ timezone?: string, locale?: string, suggestGlobal?: boolean } | null} */
+let nativeLocaleHints = null;
+
+/** Terapkan hint DeviceLocale native sebelum wizard / getEffectiveUiLang. */
+export function applyNativeLocaleHints(hints) {
+  if (!hints) return;
+  nativeLocaleHints = {
+    timezone: hints.timezone || hints.timezoneId,
+    locale: hints.language || hints.locale,
+    suggestGlobal: hints.suggestGlobal,
+  };
+}
+
+/** @returns {{ timezone: string, locale: string, suggestGlobal?: boolean }} */
 export function detectDeviceSignals() {
+  if (nativeLocaleHints?.locale || nativeLocaleHints?.timezone) {
+    return {
+      timezone: nativeLocaleHints.timezone || "UTC",
+      locale: nativeLocaleHints.locale || "en",
+      suggestGlobal: nativeLocaleHints.suggestGlobal,
+    };
+  }
   let timezone = "Asia/Jakarta";
   try {
     timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || timezone;
@@ -62,17 +130,34 @@ export function isLocaleProfileConfigured() {
   return Boolean(getLocaleProfile()?.region);
 }
 
-/** @param {Partial<LocaleProfile> & { region: WorshipRegion }} profile */
+/** @param {Partial<LocaleProfile>} profile */
 export function saveLocaleProfile(profile) {
-  const region = profile.region === "global" ? "global" : "indonesia";
+  const uiLang = normalizeUiLang(
+    profile.uiLang || (profile.region === "indonesia" ? "id" : "en"),
+  );
+  const aiLang = normalizeUiLang(profile.aiLang || uiLang);
+  const region =
+    profile.region === "indonesia" || profile.region === "global"
+      ? profile.region
+      : uiLang === "id"
+        ? "indonesia"
+        : "global";
+  const bibleVersion =
+    profile.bibleVersion === "tb" || profile.bibleVersion === "kjv"
+      ? profile.bibleVersion
+      : region === "indonesia"
+        ? "tb"
+        : "kjv";
   /** @type {LocaleProfile} */
   const next = {
     region,
-    bibleVersion:
-      profile.bibleVersion || (region === "global" ? "kjv" : "tb"),
+    bibleVersion,
+    uiLang,
+    aiLang,
     configuredAt: new Date().toISOString(),
     source: profile.source || "manual",
   };
+  uiLangOverride = null;
   try {
     localStorage.setItem(LOCALE_PROFILE_KEY, JSON.stringify(next));
   } catch {
@@ -84,18 +169,51 @@ export function saveLocaleProfile(profile) {
   return next;
 }
 
-/** Profil bawaan — tetap Indonesia sampai pengguna memilih (jaga perilaku lama). */
-const LEGACY_DEFAULT_PROFILE = /** @type {LocaleProfile} */ ({
-  region: "indonesia",
-  bibleVersion: "tb",
-  source: "legacy-default",
+/** Default Inggris + KJV jika perangkat tidak terdeteksi Indonesia. */
+const DEFAULT_EN_PROFILE = /** @type {LocaleProfile} */ ({
+  region: "global",
+  bibleVersion: "kjv",
+  uiLang: "en",
+  aiLang: "en",
+  source: "default-en",
 });
+
+/** Default TB + Indonesia jika timezone/locale perangkat Indonesia. */
+function defaultProfileFromDevice() {
+  if (suggestRegion() === "indonesia") {
+    return /** @type {LocaleProfile} */ ({
+      region: "indonesia",
+      bibleVersion: "tb",
+      uiLang: "id",
+      aiLang: "id",
+      source: "default-device",
+    });
+  }
+  return DEFAULT_EN_PROFILE;
+}
 
 /** @returns {LocaleProfile} */
 export function getEffectiveProfile() {
   const saved = getLocaleProfile();
-  if (saved?.region) return saved;
-  return LEGACY_DEFAULT_PROFILE;
+  if (saved?.region) {
+    return {
+      ...saved,
+      uiLang: normalizeUiLang(
+        saved.uiLang || (saved.region === "indonesia" ? "id" : "en"),
+      ),
+      aiLang: normalizeUiLang(
+        saved.aiLang || saved.uiLang || (saved.region === "indonesia" ? "id" : "en"),
+      ),
+      bibleVersion: saved.bibleVersion === "kjv" ? "kjv" : saved.bibleVersion === "tb" ? "tb" : (saved.region === "global" ? "kjv" : "tb"),
+    };
+  }
+  return defaultProfileFromDevice();
+}
+
+/** Profil auto-deteksi lama — belum dipilih user di wizard. */
+export function isAutoBootLocaleProfile() {
+  const src = getLocaleProfile()?.source || "";
+  return src.startsWith("auto-boot");
 }
 
 /** Saran region untuk onboarding — tidak mengubah perilaku app sebelum disimpan. */
@@ -111,8 +229,6 @@ export function getSuggestedProfile() {
 export function isIndonesiaProfile() {
   return getEffectiveProfile().region === "indonesia";
 }
-
-/** @typedef {"id"|"en"|"es"|"pt"|"ko"|"zh"|"ja"} UiLang */
 
 /** @param {string} [locale] */
 export function mapDeviceLocaleToUiLang(locale) {
@@ -146,10 +262,21 @@ export function getSpeechLocale(lang = getEffectiveUiLang()) {
   return map[lang] || "en-US";
 }
 
-/** Bahasa UI efektif: region tersimpan, atau deteksi locale HP sebelum onboarding. */
+/** Bahasa UI efektif — wizard / pengaturan, ikuti perangkat jika belum disimpan. */
 export function getEffectiveUiLang() {
-  if (isLocaleProfileConfigured() && isIndonesiaProfile()) return "id";
-  return mapDeviceLocaleToUiLang();
+  if (uiLangOverride) return uiLangOverride;
+  const saved = getLocaleProfile();
+  if (saved?.uiLang) return normalizeUiLang(saved.uiLang);
+  if (saved?.region === "indonesia") return "id";
+  return defaultProfileFromDevice().uiLang;
+}
+
+/** Bahasa percakapan AI — mengikuti pilihan wizard. */
+export function getEffectiveAiLang() {
+  const saved = getLocaleProfile();
+  if (saved?.aiLang) return normalizeUiLang(saved.aiLang);
+  if (saved?.region === "indonesia") return "id";
+  return getEffectiveUiLang();
 }
 
 /** Saran region dari timezone + locale perangkat (setara deteksi Kotlin/JS di boot). */
@@ -161,15 +288,16 @@ export function getBootRegionSuggestion() {
 
 /** Struktur respons suara live — devotion / renungan (Pilar 2: Otak AI). */
 export function getLiveVoiceDevotionStructureRule() {
-  if (!isIndonesiaProfile()) {
+  const bible = getEffectiveBibleVersion() === "tb" ? "Alkitab" : "KJV";
+  if (getEffectiveAiLang() === "id") {
     return (
-      "Default live voice devotion structure: warm Greeting → KJV Scripture reading → " +
-      "Reflection → Pastoral Prayer. End prayer with: In Jesus' name, Amen."
+      `Struktur renungan suara default: Sapaan hangat → Pembacaan ayat ${bible} → ` +
+      "Refleksi teologis → Doa syafaat/karismatik. Akhiri doa: Dalam nama Tuhan Yesus, Amen."
     );
   }
   return (
-    "Struktur renungan suara default: Sapaan hangat → Pembacaan ayat TB → " +
-    "Refleksi teologis → Doa syafaat/karismatik. Akhiri doa: Dalam nama Tuhan Yesus, Amen."
+    `Default live voice devotion structure: warm Greeting → ${bible} Scripture reading → ` +
+    "Reflection → Pastoral Prayer. End prayer with: In Jesus' name, Amen."
   );
 }
 
@@ -196,20 +324,21 @@ const AI_LANG_RULES = {
 };
 
 export function getAiLanguageRule() {
-  if (isIndonesiaProfile()) return AI_LANG_RULES.id;
-  return AI_LANG_RULES[getEffectiveUiLang()] ?? AI_LANG_RULES.en;
+  return AI_LANG_RULES[getEffectiveAiLang()] ?? AI_LANG_RULES.en;
 }
 
 export function getAiLifeContextRule() {
-  return isIndonesiaProfile()
+  return getEffectiveAiLang() === "id"
     ? "Analogi selaras realita hidup Indonesia kontemporer (keluarga, kerja, perantau, kesehatan)."
     : "Use relatable everyday-life illustrations for a global English-speaking audience (work, family, anxiety, faith).";
 }
 
 export function getAlkitabChatSystemBase() {
-  return isIndonesiaProfile()
-    ? "Anda adalah Rhema AI — pendamping rohani berbasis Alkitab Terjemahan Baru (TB/LAI)."
-    : "You are Rhema AI — a Scripture companion. Primary Bible: King James Version (KJV) for global users; Indonesian TB when user asks in Indonesian.";
+  const bible = getEffectiveBibleVersion() === "tb" ? "Alkitab" : "King James Version (KJV)";
+  if (getEffectiveAiLang() === "id") {
+    return `Anda adalah Rhema AI — pendamping rohani. Alkitab utama: ${bible}.`;
+  }
+  return `You are Rhema AI — a Scripture companion. Primary Bible: ${bible}.`;
 }
 
 export function getDevotionTimezone() {
@@ -218,7 +347,11 @@ export function getDevotionTimezone() {
 }
 
 export function getUiLocale() {
-  return isIndonesiaProfile() ? "id-ID" : getSpeechLocale();
+  return getSpeechLocale(getEffectiveUiLang());
+}
+
+export function getAiSpeechLocale() {
+  return getSpeechLocale(getEffectiveAiLang());
 }
 
 export function getTimeSuffix() {
@@ -230,9 +363,9 @@ export function getTimeSuffix() {
 }
 
 export function getRegionDisplayLabel() {
-  return isIndonesiaProfile()
-    ? "🇮🇩 Indonesia (TB · Kidung Jemaat)"
-    : "🌏 Global (KJV · English worship)";
+  const p = getEffectiveProfile();
+  const bible = p.bibleVersion === "tb" ? "Alkitab" : "KJV";
+  return `${languageNativeName(p.uiLang)} · ${bible} · AI ${languageNativeName(p.aiLang)}`;
 }
 
 /** @param {Date} [now] */
@@ -261,5 +394,5 @@ export function getDayPartLabel(now = new Date()) {
 export function getPrimaryBibleLabel() {
   return getDefaultBibleVersion() === "kjv"
     ? "King James Version (KJV)"
-    : "Terjemahan Baru (TB/LAI)";
+    : "Alkitab";
 }

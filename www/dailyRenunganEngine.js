@@ -4,9 +4,23 @@
  * Deterministik per hari: user yang sama dapat variasi sama seharian, baru lagi besok.
  */
 
-/** @returns {string} YYYY-MM-DD */
+import { detectDeviceSignals, getDevotionTimezone } from "./localeProfile.js";
+
+/** @returns {string} YYYY-MM-DD di zona perangkat (bukan UTC). */
 export function todayKey() {
-  return new Date().toISOString().slice(0, 10);
+  const tz = detectDeviceSignals().timezone || getDevotionTimezone() || "Asia/Jakarta";
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: tz,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+  } catch {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  }
 }
 
 /** @returns {number} */

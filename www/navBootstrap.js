@@ -37,11 +37,14 @@
     }
     document.getElementById("modal-ambient-picker")?.classList.add("hidden");
     document.getElementById("approval-host")?.classList.remove("blocking");
+    document.getElementById("byok-onboard")?.classList.remove("active");
+    document.getElementById("region-onboard")?.classList.remove("active");
+    document.body.classList.remove("byok-onboard-open");
     document.body.style.pointerEvents = "";
     document.documentElement.style.pointerEvents = "";
     document.body.style.overflow = "";
     for (const el of document.querySelectorAll(
-      "body > .apple-modal-overlay:not(#modal-share-verse):not(#sermon-assistant-modal), body > #rhema-story-modal, body > #lectio-divina-modal",
+      "body > .apple-modal-overlay:not(#modal-share-verse):not(#sermon-assistant-modal):not(#lectio-divina-modal), body > #rhema-story-modal",
     )) {
       el.remove();
     }
@@ -104,16 +107,13 @@
 
   function navigate(name) {
     if (!name) return;
-    if (name === "voice" && Date.now() < Number(window.__rhemaInlineVoiceUntil || 0)) {
-      flashNav(name);
-      dismissOverlays();
-      return;
-    }
+    window.__rhemaInlineVoiceUntil = 0;
+    window.__rhemaInlineVoiceSession = false;
     flashNav(name);
     dismissOverlays();
 
     const fn = window.__rhemaGo;
-    if (typeof fn === "function") fn(name);
+    if (typeof fn === "function") fn(name, { force: true });
     else fallbackGo(name);
   }
 
@@ -148,10 +148,30 @@
     navigate(screen);
   }
 
+  function onHomeVerseAction(e) {
+    const target = e.target instanceof Element ? e.target : null;
+    if (!target) return;
+    const listen = target.closest("#btn-home-listen-today");
+    const explain = target.closest("#btn-home-explain-today");
+    if (!listen && !explain) return;
+    e.preventDefault();
+    window.__rhemaInlineVoiceUntil = 0;
+    window.__rhemaInlineVoiceSession = false;
+    dismissOverlays();
+    const fn = listen ? window.__rhemaListenToday : window.__rhemaExplainToday;
+    if (typeof fn === "function") {
+      fn();
+      return;
+    }
+    navigate("voice");
+  }
+
   dismissOverlays();
+  document.documentElement.setAttribute("data-rhema-boot", "0913e");
   document.addEventListener("click", onNavEvent, true);
   document.addEventListener("touchend", onNavEvent, true);
   document.addEventListener("pointerup", onNavEvent, true);
+  document.addEventListener("click", onHomeVerseAction);
 
   const bootScreen = resolveBootScreen();
   current = bootScreen;

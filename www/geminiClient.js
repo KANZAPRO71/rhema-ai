@@ -4,11 +4,13 @@
 import {
   GEMINI_IMAGE_MODEL,
   GEMINI_MODEL,
+  GEMINI_REST_MODEL,
   GEMINI_BROWSER_CHAT_MODEL,
   geminiChatModelCandidates,
   geminiGenerateContentUrl,
   geminiImageGenerateContentUrl,
   geminiModelResource,
+  geminiRestHeaders,
   getStoredGoogleKey,
   noteGeminiModelSuccess,
 } from "./geminiConstants.js";
@@ -47,7 +49,7 @@ function isRetryable(status, body) {
 
 async function streamOnce({ apiKey, model, prompt, context, images, signal, onDelta, systemInstruction }) {
   const modelId = model.replace(/^models\//, "");
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse&key=${encodeURIComponent(apiKey)}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:streamGenerateContent?alt=sse`;
   const userText = [context, prompt].filter(Boolean).join("\n\n");
   const parts = [{ text: userText }];
   for (const img of images ?? []) {
@@ -56,7 +58,7 @@ async function streamOnce({ apiKey, model, prompt, context, images, signal, onDe
 
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: geminiRestHeaders(apiKey),
     signal,
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemInstruction || buildAlkitabChatSystem() }] },
@@ -129,11 +131,11 @@ export async function streamGeminiChat(options) {
 export async function geminiGenerateJson(prompt, options = {}) {
   const key = options.apiKey || getStoredGoogleKey();
   if (!key) throw new Error("Gemini API key belum diset. Buka ⚙ Pengaturan → Simpan.");
-  const model = options.model || GEMINI_MODEL;
-  const url = `${geminiGenerateContentUrl(model)}?key=${encodeURIComponent(key)}`;
+  const model = options.model || GEMINI_REST_MODEL;
+  const url = geminiGenerateContentUrl(model);
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: geminiRestHeaders(key),
     body: JSON.stringify({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
       generationConfig: {
@@ -156,8 +158,8 @@ export function buildLiveSessionConfig(params) {
 }
 
 export async function generateDevotion(topic) {
-  const prompt = `Anda adalah Hamba Tuhan Rhema AI. Buat renungan harian Alkitab (TB/LAI) untuk topik: "${topic}".
-Gunakan ayat asli Terjemahan Baru.
+  const prompt = `Anda adalah Hamba Tuhan Rhema AI. Buat renungan harian Alkitab untuk topik: "${topic}".
+Gunakan ayat asli Alkitab.
 Field "reflection": 2-3 paragraf tafsir hidup — bahasa Indonesia sehari-hari, mudah dicerna; jelaskan makna ayat; hubungkan ke realita kehidupan Indonesia sekarang (ekonomi, keluarga, lelah kerja, media sosial, perantau, kesehatan); sertakan sudut kerinduan hati yang menyentuh; hindari jargon teologi dan gaya khotbah monoton.
 Field "practicalAction": satu langkah iman spesifik hari ini.
 Field "guidedPrayer": kerangka doa penutup yang melanjutkan refleksi — jujur, spesifik, penuh pengharapan (bukan doa template generik).
@@ -176,11 +178,11 @@ Format JSON murni:
 export async function analyzeVision(imageBase64, mimeType) {
   const key = getStoredGoogleKey();
   if (!key) throw new Error("Gemini API key belum diset.");
-  const url = `${geminiGenerateContentUrl()}?key=${encodeURIComponent(key)}`;
+  const url = geminiGenerateContentUrl();
   const systemInstruction = `Analisis foto secara rohani. JSON: {"situation":"","emotions":[],"passage":"","verseText":"","reflection":"","prayer":""}`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: geminiRestHeaders(key),
     body: JSON.stringify({
       contents: [{
         role: "user",
@@ -194,7 +196,9 @@ export async function analyzeVision(imageBase64, mimeType) {
   });
   const data = await res.json();
   if (!res.ok || data.error) throw new Error(data.error?.message || `Gemini ${res.status}`);
-  return JSON.parse(data.candidates[0].content.parts[0].text);
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("Gemini: respons vision kosong");
+  return JSON.parse(text);
 }
 
 function extractImagePart(data) {
@@ -230,10 +234,10 @@ export async function generateImage(prompt, aspectRatio = "9:16") {
   if (!cleanPrompt) throw new Error("Prompt lukisan kosong.");
 
   const modelId = GEMINI_IMAGE_MODEL;
-  const url = `${geminiImageGenerateContentUrl(modelId)}?key=${encodeURIComponent(key)}`;
+  const url = geminiImageGenerateContentUrl(modelId);
   const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: geminiRestHeaders(key),
     body: JSON.stringify({
       contents: [{
         role: "user",

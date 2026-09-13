@@ -32,7 +32,7 @@
 
     <section data-lang="id" class="active">
       <h1>Kebijakan Privasi – Rhema AI</h1>
-      <p class="meta">Terakhir diperbarui: 11 September 2026 · <code>com.devicore.rhemaai</code></p>
+      <p class="meta">Terakhir diperbarui: 13 September 2026 · <code>id.rhema.alkitabvoice</code></p>
 
       <div class="card">
         <p>Rhema AI (“Kami”) berkomitmen melindungi privasi Anda. Kebijakan ini menjelaskan bagaimana informasi dikelola saat Anda menggunakan aplikasi pendamping ibadah kami yang berbasis <strong>Bring Your Own Key (BYOK)</strong> dan model <strong>Gemini 3.1 Flash Live Preview</strong>.</p>
@@ -53,13 +53,16 @@
         <li><strong>Koneksi langsung (Direct WebSocket):</strong> Aliran audio dari mikrofon dikirim <strong>langsung</strong> dari perangkat Anda ke server Google API menggunakan protokol aman <code>wss://generativelanguage.googleapis.com</code>, memakai API Key Anda.</li>
         <li><strong>Tidak direkam oleh Rhema:</strong> Kami <strong>tidak</strong> merekam, menyimpan, atau mendengarkan percakapan suara Anda di server manapun milik kami.</li>
         <li><strong>Kebijakan Google:</strong> Pemrosesan audio tunduk pada <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Ketentuan Google Gemini API</a> dan kebijakan Google AI Studio / Google Cloud terkait akun Anda.</li>
-        <li><strong>Mikrofon hanya saat dipakai:</strong> Akses mikrofon aktif hanya ketika Anda memulai sesi suara live — bukan di latar belakang tanpa sepengetahuan Anda.</li>
+        <li><strong>Mikrofon hanya saat dipakai:</strong> Akses mikrofon diminta saat Anda menekan mulai suara — bukan saat aplikasi dibuka.</li>
+        <li><strong>Deteksi krisis:</strong> Teks chat berbahaya dipotong sebelum ke Google. Pada sesi suara, audio sudah terkirim ke Google sebelum filter di perangkat menampilkan hotline.</li>
       </ul>
 
       <h2>3. Data Lain yang Diproses di Perangkat</h2>
       <ul>
         <li><strong>Teks &amp; gambar</strong> — prompt renungan, chat, atau analisis foto dikirim ke Google Gemini saat fitur AI dipakai (memakai key Anda).</li>
-        <li><strong>Preferensi lokal</strong> — region ibadah, suara AI, highlight ayat, catatan, jurnal doa.</li>
+        <li><strong>Transkrip &amp; memori</strong> — riwayat suara, sesi chat, dan catatan “ingat bahwa…” tersimpan di perangkat (WebView) lalu dapat dikirim ulang ke Gemini pada giliran berikutnya.</li>
+        <li><strong>Jurnal doa</strong> — lokal; dikirim ke Gemini hanya jika Anda meminta AI mendoakan item tersebut.</li>
+        <li><strong>Preferensi lokal</strong> — region ibadah, suara AI, highlight ayat, catatan ayat.</li>
         <li><strong>Alkitab &amp; kidung offline</strong> — teks bundled di aplikasi; tidak dikirim ke server Rhema.</li>
       </ul>
 
@@ -83,7 +86,7 @@
         <li>Menghapus seluruh data aplikasi via <strong>Clear Data</strong> di pengaturan Android.</li>
         <li>Menghapus instalasi aplikasi — data lokal ikut terhapus.</li>
       </ul>
-      <p>Cadangan otomatis Android (Auto Backup / transfer perangkat) <strong>dimatikan</strong> agar API key dan catatan ibadah tidak tersalin ke cloud Google. Pertanyaan privasi: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
+      <p>Cadangan cloud Android dan transfer perangkat ke perangkat lain <strong>dikecualikan</strong> untuk data aplikasi (termasuk WebView dan kunci). Pertanyaan privasi: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
 
       <h2>8. Anak-anak</h2>
       <p>Rhema AI ditujukan untuk remaja dan dewasa. Persona “Sekolah Minggu” bukan aplikasi khusus anak tanpa pengawasan orang tua.</p>
@@ -92,7 +95,7 @@
       <p>Rhema AI <strong>bukan</strong> pengganti pendeta, konselor profesional, atau doa pribadi dengan Tuhan. Respons AI dapat keliru — selalu uji dengan Alkitab dan komunitas iman Anda.</p>
 
       <h2>10. Hak Cipta Konten</h2>
-      <p>Teks Alkitab (TB/LAI, KJV) dan lirik kidung milik penerbit masing-masing. Aplikasi menyediakan akses ibadah; klaim kepemilikan penuh ada pada penerbit asli.</p>
+      <p>Teks Alkitab dan lirik kidung milik penerbit masing-masing. Aplikasi menyediakan akses ibadah; klaim kepemilikan penuh ada pada penerbit asli.</p>
 
       <h2>11. Perubahan Kebijakan</h2>
       <p>Kebijakan ini dapat diperbarui. Versi terbaru tersedia di URL yang sama. Tanggal pembaruan ditampilkan di bagian atas dokumen ini.</p>
@@ -100,7 +103,7 @@
 
     <section data-lang="en">
       <h1>Privacy Policy – Rhema AI</h1>
-      <p class="meta">Last updated: September 11, 2026 · <code>com.devicore.rhemaai</code></p>
+      <p class="meta">Last updated: September 13, 2026 · <code>id.rhema.alkitabvoice</code></p>
 
       <div class="card">
         <p>Rhema AI (“We”) are committed to protecting your privacy. This policy explains how information is handled when you use our worship companion app built on <strong>Bring Your Own Key (BYOK)</strong> and the <strong>Gemini 3.1 Flash Live Preview</strong> model.</p>
@@ -121,13 +124,16 @@
         <li><strong>Direct WebSocket:</strong> Audio from your microphone is sent <strong>directly</strong> from your device to Google’s API over secure <code>wss://generativelanguage.googleapis.com</code>, using your API key.</li>
         <li><strong>Not recorded by Rhema:</strong> We do <strong>not</strong> record, store, or listen to your voice conversations on any server we operate.</li>
         <li><strong>Google policies:</strong> Audio processing is subject to the <a href="https://ai.google.dev/gemini-api/terms" rel="noopener">Google Gemini API Terms</a> and your Google AI Studio / Cloud account policies.</li>
-        <li><strong>Microphone only when in use:</strong> Microphone access is active only when you start a live voice session.</li>
+        <li><strong>Microphone only when in use:</strong> The system prompt appears when you tap Start voice — not at cold start.</li>
+        <li><strong>Crisis detection:</strong> Harmful chat text is stopped before Gemini. During live voice, audio already reaches Google before the on-device filter shows hotlines.</li>
       </ul>
 
       <h2>3. Other On-Device Data</h2>
       <ul>
         <li><strong>Text &amp; images</strong> — devotion prompts, chat, or photo analysis sent to Google Gemini when AI features are used (under your key).</li>
-        <li><strong>Local preferences</strong> — worship region, AI voice, verse highlights, notes, prayer journal.</li>
+        <li><strong>Transcripts &amp; memory</strong> — voice history, chat sessions, and “remember that…” notes stay on device and may be re-sent to Gemini on later turns.</li>
+        <li><strong>Prayer journal</strong> — local; sent to Gemini only if you ask the AI to pray those items.</li>
+        <li><strong>Local preferences</strong> — worship region, AI voice, verse highlights, notes.</li>
         <li><strong>Offline Bible &amp; hymns</strong> — bundled in the app; not sent to Rhema servers.</li>
       </ul>
 
@@ -151,7 +157,7 @@
         <li>Clear all app data via Android <strong>Clear Data</strong>.</li>
         <li>Uninstall the app — local data is removed.</li>
       </ul>
-      <p>Android Auto Backup / device transfer is <strong>disabled</strong> so your API key and worship notes are not copied to Google cloud backup. Privacy contact: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
+      <p>Android cloud backup and device-to-device transfer <strong>exclude</strong> this app’s data (including WebView storage and the encrypted API key). Privacy contact: <a href="mailto:kanzapro6@gmail.com">kanzapro6@gmail.com</a></p>
 
       <h2>8. Children</h2>
       <p>Intended for teens and adults. The “Sunday School” persona is not unsupervised children’s software.</p>
@@ -160,7 +166,7 @@
       <p>Rhema AI is <strong>not</strong> a substitute for pastoral care, professional counseling, or personal prayer. AI may err — verify with Scripture and your faith community.</p>
 
       <h2>10. Content Copyright</h2>
-      <p>Bible texts (TB/LAI, KJV) and hymn lyrics belong to their publishers. The app provides worship access; full rights remain with original publishers.</p>
+      <p>Bible texts and hymn lyrics belong to their publishers. The app provides worship access; full rights remain with original publishers.</p>
 
       <h2>11. Policy Changes</h2>
       <p>This policy may be updated. The latest version is published at the same URL. The update date appears at the top of this document.</p>

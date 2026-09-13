@@ -63,7 +63,4 @@ export function initLocaleUi() {
     applyLocaleUi();
     document.dispatchEvent(new CustomEvent("rhema-locale-home-refresh"));
   });
-  document.addEventListener("rhema-locale-ui-applied", () => {
-    document.dispatchEvent(new CustomEvent("rhema-locale-home-refresh"));
-  });
 }

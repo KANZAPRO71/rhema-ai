@@ -43,7 +43,7 @@ export async function executeVoiceTool(req, sessionMeta) {
       return {
         ...result,
         message: isIndonesiaProfile()
-          ? "Ayat tidak ditemukan di TB offline perangkat. Jangan panggil lookup_verse berulang — lanjutkan dengan referensi lain."
+          ? "Ayat tidak ditemukan di Alkitab offline perangkat. Jangan panggil lookup_verse berulang — lanjutkan dengan referensi lain."
           : "Verse not found in offline KJV on device. Do not retry lookup_verse for the same reference — continue or ask for another reference.",
       };
     }

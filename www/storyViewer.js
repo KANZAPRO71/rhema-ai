@@ -7,6 +7,7 @@ import {
   generateCustomAIDailyStory,
   getTodayAIDailyStory,
 } from "./aiStoryEngine.js";
+import { escapeHtml } from "./markdown.js";
 
 /**
  * Membuka Modal Rhema Daily Story
@@ -70,7 +71,7 @@ export async function openDailyStoryModal(customStoryData = null, callbacks = {}
           <span class="story-avatar">${blessingIcon}</span>
           <div>
             <p class="story-title">Rhema Daily Story <span class="story-ai-badge">✦ AI</span></p>
-            <p class="story-subtitle">${verseRef} · ${badge}</p>
+            <p class="story-subtitle">${escapeHtml(verseRef)} · ${escapeHtml(badge)}</p>
           </div>
         </div>
         <div class="story-header-tools">
@@ -84,8 +85,8 @@ export async function openDailyStoryModal(customStoryData = null, callbacks = {}
       <div class="story-slide active" data-slide="0">
         <div class="story-slide-content golden-card">
           <span class="story-kicker">✨ Ayat Pegangan Hari Ini</span>
-          <blockquote class="story-verse">&ldquo;${verseText}&rdquo;</blockquote>
-          <p class="story-verse-ref">${verseRef} · Terjemahan Baru</p>
+          <blockquote class="story-verse">&ldquo;${escapeHtml(verseText)}&rdquo;</blockquote>
+          <p class="story-verse-ref">${escapeHtml(verseRef)} · Alkitab</p>
         </div>
       </div>
 
@@ -93,11 +94,11 @@ export async function openDailyStoryModal(customStoryData = null, callbacks = {}
       <div class="story-slide hidden" data-slide="1">
         <div class="story-slide-content reflection-card">
           <span class="story-kicker">💡 Refleksi Cepat 30 Detik</span>
-          <h3 class="story-theme-heading">${refHeadline}</h3>
-          <p class="story-reflection-text">${refBody}</p>
+          <h3 class="story-theme-heading">${escapeHtml(refHeadline)}</h3>
+          <p class="story-reflection-text">${escapeHtml(refBody)}</p>
           <div class="story-takeaway-box">
             <span class="takeaway-icon">🎯</span>
-            <p class="takeaway-text"><strong>Inti:</strong> ${refTakeaway}</p>
+            <p class="takeaway-text"><strong>Inti:</strong> ${escapeHtml(refTakeaway)}</p>
           </div>
         </div>
       </div>
@@ -106,11 +107,11 @@ export async function openDailyStoryModal(customStoryData = null, callbacks = {}
       <div class="story-slide hidden" data-slide="2">
         <div class="story-slide-content interactive-card">
           <span class="story-kicker">🎯 Respon Hati Interaktif</span>
-          <h3 class="story-poll-title">${pollQ}</h3>
+          <h3 class="story-poll-title">${escapeHtml(pollQ)}</h3>
           <div class="story-poll-options">
             ${pollOptions.map((opt, i) => `
               <button type="button" class="story-poll-btn" data-poll-idx="${i}">
-                <span class="poll-text">${opt.text}</span>
+                <span class="poll-text">${escapeHtml(opt.text)}</span>
                 <span class="poll-percent hidden">${opt.votes}%</span>
               </button>
             `).join("")}
@@ -124,10 +125,10 @@ export async function openDailyStoryModal(customStoryData = null, callbacks = {}
           <span class="story-kicker">🙏 Doa &amp; Pengurapan Hari Ini</span>
           <div class="story-badge-hero">
             <span class="badge-icon-large">${blessingIcon}</span>
-            <h4 class="badge-title-large">${blessingTitle}</h4>
-            <p class="confession-text">&ldquo;${confession}&rdquo;</p>
+            <h4 class="badge-title-large">${escapeHtml(blessingTitle)}</h4>
+            <p class="confession-text">&ldquo;${escapeHtml(confession)}&rdquo;</p>
           </div>
-          <blockquote class="story-prayer-text">${prayer}</blockquote>
+          <blockquote class="story-prayer-text">${escapeHtml(prayer)}</blockquote>
           <div class="story-finish-wrap">
             <button type="button" class="btn-pill primary glow" id="btn-story-finish">✓ Selesai &amp; Terima Lencana</button>
           </div>

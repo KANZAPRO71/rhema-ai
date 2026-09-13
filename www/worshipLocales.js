@@ -27,19 +27,19 @@
 export const WORSHIP_LOCALES = {
   indonesia: {
     id: "indonesia",
-    label: "🇮🇩 Indonesia (TB · Kidung Jemaat)",
-    onboardSub: "TB LAI · Kidung Jemaat · renungan konteks Indonesia",
+    label: "🇮🇩 Indonesia (Kidung Jemaat)",
+    onboardSub: "Alkitab · Kidung Jemaat · renungan konteks Indonesia",
     uiLang: "id",
     aiLangCode: "id-ID",
     bibleVersion: "tb",
-    bibleLabel: "Terjemahan Baru (TB/LAI)",
+    bibleLabel: "Alkitab",
     bibleOffline: true,
     aiLanguageRule:
       "WAJIB: bahasa Indonesia sehari-hari hangat dan mudah dicerna. JANGAN berpindah ke English, Spanyol, Portugis, Korea (Hangul), Jepang, atau bahasa lain meskipun user menyebut kata asing singkat (mis. 'sí', 'ok') — tetap jawab dalam Indonesia kecuali user secara eksplisit minta ganti bahasa.",
     lifeContextRule:
       "Analogi selaras realita hidup Indonesia kontemporer — termasuk Gen Z (identitas, mental health, media sosial, karier, perantau) — tanpa mengabaikan generasi lain.",
     devotionStructure:
-      "Struktur renungan: Sapaan hangat → Pembacaan ayat TB → Refleksi teologis → Doa syafaat. Akhiri: Dalam nama Tuhan Yesus, Amen.",
+      "Struktur renungan: Sapaan hangat → Pembacaan ayat Alkitab → Refleksi teologis → Doa syafaat. Akhiri: Dalam nama Tuhan Yesus, Amen.",
     prayerClosing: "Dalam nama Tuhan Yesus, Amen.",
   },
   global: {
@@ -167,7 +167,7 @@ export function isValidWorshipRegion(regionId) {
 
 /** Label Alkitab untuk dropdown pengaturan. */
 export const BIBLE_VERSION_LABELS = {
-  tb: "TB (LAI) — Indonesia",
+  tb: "Indonesia",
   kjv: "KJV — English",
   rvr: "Reina-Valera 1960 — Español",
   jfa: "João Ferreira de Almeida — Português",

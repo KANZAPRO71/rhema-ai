@@ -52,6 +52,7 @@ export function speakViaGeminiVoice(text, options = {}) {
   void voiceTransport.voice.sendTextOrStart(t, {
     mic: false,
     preferClientContent: false,
+    inlineListen: false,
     ...(options.voiceOpts || {}),
   });
   return true;

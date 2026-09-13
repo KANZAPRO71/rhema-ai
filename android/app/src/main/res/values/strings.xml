@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Rhema AI</string>
+    <string name="title_activity_main">Rhema AI</string>
+    <string name="package_name">id.rhema.alkitabvoice</string>
+    <string name="custom_url_scheme">id.rhema.alkitabvoice</string>
+</resources>

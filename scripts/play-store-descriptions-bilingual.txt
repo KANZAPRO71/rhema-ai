@@ -21,7 +21,7 @@ Rhema AI: Renungan & Khotbah
 
 --- DESKRIPSI SINGKAT (max 80 karakter) — 77 karakter ✓ ---
 
-Asisten teduh & khotbah Alkitab TB via suara Full Duplex bertenaga Gemini AI.
+Asisten teduh & khotbah Alkitab via suara Full Duplex bertenaga Gemini AI.
 
 --- DESKRIPSI LENGKAP (max 4.000 karakter) ---
 
@@ -31,7 +31,7 @@ Rhema AI bukan sekadar aplikasi Alkitab biasa. Ini adalah pendamping ibadah dan 
 
 Mengapa Memilih Rhema AI?
 
-Renungan Suara Interaktif: Dengarkan renungan harian terstruktur mulai dari sapaan hangat, pembacaan ayat Alkitab Terjemahan Baru (TB), refleksi mendalam, hingga tuntunan doa penutup.
+Renungan Suara Interaktif: Dengarkan renungan harian terstruktur mulai dari sapaan hangat, pembacaan ayat Alkitab, refleksi mendalam, hingga tuntunan doa penutup.
 
 Asisten Persiapan Khotbah: Bingung menyusun bahan komsel atau materi khotbah? Diskusikan topik atau ayat pilihan Anda lewat suara. Rhema AI akan membantu menyusun draf kerangka khotbah yang solid dalam hitungan menit.
 
@@ -81,6 +81,6 @@ PROMO TEXT (opsional · max 170 karakter)
 
 EN: Talk to your Bible. Full-duplex Gemini Live voice, offline KJV, sermon prep — BYOK, your key, your privacy.
 
-ID: Saat teduh interaktif dengan Alkitab TB, khotbah suara AI, dan ribuan kidung — BYOK, key Anda, privasi di HP.
+ID: Saat teduh interaktif dengan Alkitab, khotbah suara AI, dan ribuan kidung — BYOK, key Anda, privasi di HP.
 
 ================================================================================

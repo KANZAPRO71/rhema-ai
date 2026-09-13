@@ -37,11 +37,11 @@ INNER_H = PHONE_H - SCREEN_INSET * 2
 LOCALES: dict[str, list[dict[str, str]]] = {
     "id": [
         {"file": "01-beranda", "title": "Beranda Ibadah", "subtitle": "Pendamping rohani harian di satu tempat"},
-        {"file": "02-alkitab", "title": "Alkitab TB Offline", "subtitle": "Baca, cari, dan renungkan Firman kapan saja"},
+        {"file": "02-alkitab", "title": "Alkitab Offline", "subtitle": "Baca, cari, dan renungkan Firman kapan saja"},
         {"file": "03-renungan", "title": "Renungan Suara", "subtitle": "Teduh interaktif Full Duplex dengan AI"},
         {"file": "04-kidung", "title": "Kidung Jemaat", "subtitle": "Ribuan lagu rohani untuk pujian"},
         {"file": "05-byok", "title": "BYOK Aman", "subtitle": "API Key Gemini dienkripsi di HP Anda"},
-        {"file": "06-pengaturan", "title": "Multibahasa & Privasi", "subtitle": "TB untuk Indonesia · KJV untuk global"},
+        {"file": "06-pengaturan", "title": "Multibahasa & Privasi", "subtitle": "Alkitab untuk Indonesia · KJV untuk global"},
     ],
     "en": [
         {"file": "01-home", "title": "Worship Home", "subtitle": "Your daily spiritual companion in one place"},
@@ -49,7 +49,7 @@ LOCALES: dict[str, list[dict[str, str]]] = {
         {"file": "03-devotion", "title": "Voice Devotion", "subtitle": "Interactive Full Duplex quiet time with AI"},
         {"file": "04-hymns", "title": "Hymn Library", "subtitle": "Thousands of worship songs to sing along"},
         {"file": "05-byok", "title": "Secure BYOK", "subtitle": "Your Gemini API key stays on your device"},
-        {"file": "06-settings", "title": "Bilingual & Privacy", "subtitle": "TB for Indonesia · KJV worldwide"},
+        {"file": "06-settings", "title": "Bilingual & Privacy", "subtitle": "Indonesian Bible · KJV worldwide"},
     ],
 }
 

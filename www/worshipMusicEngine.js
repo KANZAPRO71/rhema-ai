@@ -8,7 +8,7 @@ import { isNativeVoiceAudible } from "./nativeAudioPlayback.js";
 
 /** @typedef {"pad"|"organ"|"piano"|"guitar"} WorshipInstrumentId */
 
-const SOUND_BASE = "https://surikov.github.io/webaudiofontdata/sound/";
+const SOUND_BASE = "/vendor/webaudiofontdata/sound/";
 const PLAYER_SCRIPT = "/vendor/webaudiofont/WebAudioFontPlayer.js";
 
 const MIX = {

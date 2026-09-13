@@ -134,13 +134,13 @@ export function getTonightEpisode(dateKey = todayKey()) {
 /** @param {NightPodEpisode} episode */
 export function buildNightPodVoicePrompt(episode) {
   const tbInstruction = episode.tbText
-    ? `Bacakan teks TB persis: "${episode.tbText}" (${episode.reference || episode.scripture}).`
-    : `Bacakan ${episode.scripture} dari Alkitab TB.`;
+    ? `Bacakan teks ayat persis: "${episode.tbText}" (${episode.reference || episode.scripture}).`
+    : `Bacakan ${episode.scripture} dari Alkitab.`;
 
   return [
     `[MODE: Renungan malam pengantar tidur — SINGKAT, maksimal ${NIGHT_POD_SPEECH_MINUTES} menit bicara, ±200 kata.]`,
     "Nada: sangat tenang, lembut, lambat. Bukan podcast tanya-jawab. Jangan khotbah panjang.",
-    "Struktur: (1) ayat inti TB, (2) renungan 2-3 kalimat, (3) doa penutup singkat, selesai.",
+    "Struktur: (1) ayat inti, (2) renungan 2-3 kalimat, (3) doa penutup singkat, selesai.",
     tbInstruction,
     `Fokus renungan: ${episode.promptBase}.`,
     "Akhiri dengan 'Selamat tidur dalam damai Tuhan' lalu berhenti — jangan lanjut obrolan.",

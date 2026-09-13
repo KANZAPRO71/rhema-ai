@@ -15,13 +15,32 @@ import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
+import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 
 @CapacitorPlugin(name = "GeminiLive")
 public class GeminiLivePlugin extends Plugin {
     private static final String TAG = "RHEMA_GEMINI";
-    private final OkHttpClient client = new OkHttpClient.Builder().build();
+    private static final String ALLOWED_HOST = "generativelanguage.googleapis.com";
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .pingInterval(20, TimeUnit.SECONDS)
+            .build();
     private WebSocket webSocket;
+    private int sessionGen = 0;
+
+    private static boolean isAllowedGeminiWsUrl(String wsUrl) {
+        try {
+            URI uri = URI.create(wsUrl);
+            String scheme = uri.getScheme();
+            String host = uri.getHost();
+            if (scheme == null || host == null) return false;
+            if (!scheme.equalsIgnoreCase("wss") && !scheme.equalsIgnoreCase("https")) return false;
+            return ALLOWED_HOST.equalsIgnoreCase(host);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     @PluginMethod
     public void probeLiveKey(PluginCall call) {
@@ -30,6 +49,10 @@ public class GeminiLivePlugin extends Plugin {
         int timeoutMs = call.getInt("timeoutMs", 15000);
         if (wsUrl == null || setupJson == null || wsUrl.isEmpty() || setupJson.isEmpty()) {
             call.reject("wsUrl dan setupJson wajib");
+            return;
+        }
+        if (!isAllowedGeminiWsUrl(wsUrl)) {
+            call.reject("wsUrl tidak diizinkan");
             return;
         }
 
@@ -167,8 +190,13 @@ public class GeminiLivePlugin extends Plugin {
             call.reject("wsUrl dan setupJson wajib");
             return;
         }
+        if (!isAllowedGeminiWsUrl(wsUrl)) {
+            call.reject("wsUrl tidak diizinkan");
+            return;
+        }
         disconnectSocketQuietly();
-        if (BuildConfig.DEBUG) Log.i(TAG, "connect setupLen=" + setupJson.length());
+        final int gen = ++sessionGen;
+        if (BuildConfig.DEBUG) Log.i(TAG, "connect setupLen=" + setupJson.length() + " gen=" + gen);
         Request request = new Request.Builder()
                 .url(wsUrl)
                 .addHeader("User-Agent", "RhemaAI-Android/1.0")
@@ -179,35 +207,43 @@ public class GeminiLivePlugin extends Plugin {
                 if (BuildConfig.DEBUG) Log.i(TAG, "onOpen code=" + response.code());
                 boolean ok = socket.send(setupJson);
                 if (BuildConfig.DEBUG) Log.i(TAG, "setup sent ok=" + ok + " len=" + setupJson.length());
-                emitEvent("open", null, 0, "");
+                emitEvent("open", null, 0, "", gen);
             }
 
             @Override
             public void onMessage(WebSocket socket, ByteString bytes) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "onMessage bytes len=" + bytes.size());
-                emitEvent("message", bytes.utf8(), 0, "");
+                emitEvent("message", bytes.utf8(), 0, "", gen);
             }
 
             @Override
             public void onMessage(WebSocket socket, String text) {
                 if (BuildConfig.DEBUG) Log.i(TAG, "onMessage len=" + text.length());
-                emitEvent("message", text, 0, "");
+                emitEvent("message", text, 0, "", gen);
             }
 
             @Override
             public void onFailure(WebSocket socket, Throwable t, Response response) {
                 String msg = (t == null || t.getMessage() == null) ? "WebSocket gagal" : t.getMessage();
                 if (BuildConfig.DEBUG) Log.e(TAG, "onFailure " + msg);
-                emitEvent("error", msg, 0, "");
+                if (GeminiLivePlugin.this.webSocket == socket) {
+                    GeminiLivePlugin.this.webSocket = null;
+                }
+                emitEvent("error", msg, 0, "", gen);
             }
 
             @Override
             public void onClosed(WebSocket socket, int code, String reason) {
                 if (BuildConfig.DEBUG) Log.w(TAG, "onClosed " + code + " " + reason);
-                emitEvent("close", null, code, reason != null ? reason : "");
+                if (GeminiLivePlugin.this.webSocket == socket) {
+                    GeminiLivePlugin.this.webSocket = null;
+                }
+                emitEvent("close", null, code, reason != null ? reason : "", gen);
             }
         });
-        call.resolve();
+        JSObject ret = new JSObject();
+        ret.put("gen", gen);
+        call.resolve(ret);
     }
 
     @PluginMethod
@@ -235,9 +271,10 @@ public class GeminiLivePlugin extends Plugin {
         }
     }
 
-    private void emitEvent(String type, String data, int code, String reason) {
+    private void emitEvent(String type, String data, int code, String reason, int gen) {
         JSObject ev = new JSObject();
         ev.put("type", type);
+        ev.put("gen", gen);
         if (data != null) {
             ev.put("data", data);
         }

@@ -2,6 +2,8 @@
  * Live Biblical Personas Engine — Modul Percakapan Suara Langsung 2 Arah dengan Tokoh-tokoh Alkitab via Gemini Live Voice.
  */
 
+import { escapeAttr, escapeHtml } from "./markdown.js";
+
 export const BIBLICAL_PERSONAS = [
   {
     id: "david",
@@ -203,8 +205,8 @@ export function openBiblicalPersonasModal(callbacks = {}) {
 
     if (tEl) {
       tEl.innerHTML = p.sampleTopics.map((top) => `
-        <button type="button" class="btn-ptopic-prompt" data-prompt="${top}">
-          💬 &ldquo;${top}&rdquo;
+        <button type="button" class="btn-ptopic-prompt" data-prompt="${escapeAttr(top)}">
+          💬 &ldquo;${escapeHtml(top)}&rdquo;
         </button>
       `).join("");
 

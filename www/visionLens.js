@@ -2,7 +2,7 @@
  * AI Vision Spiritual Lens (Kamera Pewahyuan AI) — Memotret Situasi Hidup & Menghasilkan Rhema Firman Serta Doa Nubuat.
  */
 
-import { geminiGenerateContentUrl, getStoredGoogleKey, GOOGLE_KEY_STORAGE } from "./geminiConstants.js";
+import { geminiGenerateContentUrl, geminiRestHeaders, getStoredGoogleKey, GOOGLE_KEY_STORAGE } from "./geminiConstants.js";
 import { isSecureKeyStorageAvailable, secureGetItem } from "./secureKeyStorage.js";
 import { openVerseShareModal } from "./verseCardRenderer.js";
 
@@ -22,21 +22,21 @@ export async function analyzeVisionPhoto(base64Data, mimeType = "image/jpeg") {
   if (apiKey) {
     try {
       const cleanB64 = base64Data.replace(/^data:image\/[a-z]+;base64,/, "");
-      const apiUrl = `${geminiGenerateContentUrl()}?key=${encodeURIComponent(apiKey)}`;
+      const apiUrl = geminiGenerateContentUrl();
       const systemInstruction = `Anda adalah Rohaniwan & Konselor Iman Alkitabiah Rhema AI. Analisis gambar/foto ini secara empati dan rohani.
 Berikan respons dalam format JSON murni:
 {
   "situation": "Penjelasan singkat situasi hidup yang teramati pada foto",
   "emotions": ["Kata Emosi 1", "Kata Emosi 2"],
-  "passage": "Referensi Ayat Alkitab TB LAI",
-  "verseText": "Teks ayat Alkitab TB yang tepat",
+  "passage": "Referensi Ayat Alkitab",
+  "verseText": "Teks ayat Alkitab yang tepat",
   "reflection": "Renungan singkat 2-3 kalimat yang menguatkan hati",
   "prayer": "Doa pengurapan dan deklarasi kemenangan iman atas situasi di foto tersebut"
 }`;
 
       const resp = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: geminiRestHeaders(apiKey),
         body: JSON.stringify({
           contents: [
             {
@@ -102,7 +102,7 @@ export function openVisionLensModal(callbacks = {}) {
           <span class="vision-cam-icon">📸</span>
           <p class="vision-upload-title">Ambil Foto atau Unggah Gambar</p>
           <p class="vision-upload-desc">Meja kerja, keluarga, situasi sakit, pergumulan, atau pemandangan</p>
-          <button type="button" class="btn-pill primary glow" id="btn-trigger-cam">📷 Buka Kamera / Pilih Foto</button>
+          <button type="button" class="btn-pill primary glow" id="btn-trigger-cam">Pilih foto</button>
         </div>
         <div class="vision-preview-wrap hidden" id="vision-preview-ui">
           <img id="vision-preview-img" alt="Preview foto" class="vision-img-tag" />

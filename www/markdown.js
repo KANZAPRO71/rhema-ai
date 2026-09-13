@@ -1,3 +1,5 @@
+import { sanitizeHref } from "./safeUrl.js";
+
 /** Lightweight markdown → HTML (no deps). Escapes HTML first. */
 export function escapeHtml(text) {
   return String(text)
@@ -5,6 +7,11 @@ export function escapeHtml(text) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+/** Escape untuk nilai atribut HTML (data-*, value=, href=). */
+export function escapeAttr(text) {
+  return escapeHtml(text).replace(/'/g, "&#39;");
 }
 
 export function renderMarkdown(text) {
@@ -22,7 +29,15 @@ export function renderMarkdown(text) {
   src = src.replace(/^# (.+)$/gm, "<h2>$1</h2>");
   src = src.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   src = src.replace(/\*([^*]+)\*/g, "<em>$1</em>");
-  src = src.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  src = src.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, label, hrefEscaped) => {
+    const href = String(hrefEscaped)
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+    const safe = sanitizeHref(href);
+    if (!safe) return label;
+    return `<a href="${escapeHtml(safe)}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+  });
   src = src.replace(/^(?:-|\*) (.+)$/gm, "<li>$1</li>");
   src = src.replace(/(<li>[\s\S]*?<\/li>)/g, (m) => {
     if (m.startsWith("<ul>")) return m;
@@ -31,6 +46,7 @@ export function renderMarkdown(text) {
   src = src.replace(/\n{2,}/g, "</p><p>");
   src = `<p>${src}</p>`;
   src = src.replace(/<p><\/p>/g, "");
+  // eslint-disable-next-line no-control-regex -- placeholder tokens for fenced code blocks
   src = src.replace(/\x00B(\d+)\x00/g, (_, i) => blocks[Number(i)] ?? "");
   return src;
 }

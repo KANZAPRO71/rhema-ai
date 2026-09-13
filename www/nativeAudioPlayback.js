@@ -1,7 +1,10 @@
 /** Playback PCM Gemini Live — Web Audio gapless di Android WebView. */
 
+import { isBrowserByokStandalone } from "./platform.js";
+
 export function isCapacitorNative() {
   try {
+    if (isBrowserByokStandalone()) return false;
     return Boolean(window.Capacitor?.isNativePlatform?.());
   } catch {
     return false;
@@ -84,7 +87,6 @@ function ensurePlaybackCtx() {
 
 /** Panggil sync dari handler tap — sebelum await. */
 export function unlockNativeElementAudio() {
-  if (!isCapacitorNative()) return;
   try {
     const a = new Audio(SILENT_WAV);
     a.volume = 0.001;
@@ -92,11 +94,27 @@ export function unlockNativeElementAudio() {
   } catch {
     /* ignore */
   }
-  void ensurePlaybackCtx().catch(() => {});
+  if (isCapacitorNative()) void ensurePlaybackCtx().catch(() => {});
 }
 
 /** Pre-warm AudioContext saat user tap mic — hindari chunk awal hilang. */
 export async function warmupNativePlayback() {
+  if (!isCapacitorNative()) return warmupVoicePlayback();
+  unlockDone = true;
+  const ctx = await ensurePlaybackCtx();
+  if (ctx?.state === "suspended") await ctx.resume();
+  return ctx;
+}
+
+/** Unlock + AudioContext — native & preview browser localhost. */
+export async function warmupVoicePlayback() {
+  try {
+    const a = new Audio(SILENT_WAV);
+    a.volume = 0.001;
+    await a.play();
+  } catch {
+    /* ignore — gesture mungkin belum ada */
+  }
   if (!isCapacitorNative()) return null;
   unlockDone = true;
   const ctx = await ensurePlaybackCtx();
@@ -178,6 +196,18 @@ export function resetNativePlayback() {
 /** Hentikan playback native segera — dipakai saat user tap Stop. */
 export function haltNativePlayback() {
   resetNativePlayback();
+}
+
+/** Potong suara AI segera — dipakai guardrail krisis / barge-in. */
+export async function bargeInNativePlayback() {
+  haltNativePlayback();
+  try {
+    document.dispatchEvent(
+      new CustomEvent("rhema-audio-stop-all", { detail: { keepVoiceSession: false } }),
+    );
+  } catch {
+    /* ignore */
+  }
 }
 
 export async function waitNativePlaybackIdle(maxMs = 120000) {

@@ -3,6 +3,7 @@
  */
 
 import { apiUrl } from "./platform.js";
+import { todayKey } from "./dailyRenunganEngine.js";
 
 const AI_DEVOTION_CACHE_KEY = "rhema-ai-daily-devotion";
 
@@ -63,10 +64,6 @@ export const SCRIPTURE_BANK = [
   },
 ];
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 function formattedDateId() {
   return new Date().toLocaleDateString("id-ID", {
     weekday: "long",
@@ -122,7 +119,7 @@ export function normalizeDevotionContent(raw, meta = {}) {
     dateKey: meta.dateKey || raw.dateKey || todayKey(),
     formattedDate: meta.formattedDate || raw.formattedDate || formattedDateId(),
     theme: theme || "Firman Saat Teduh Hari Ini",
-    verse: { reference: verseRef || "Alkitab TB", text: verseText },
+    verse: { reference: verseRef || "Alkitab", text: verseText },
     reflection,
     practicalAction: String(raw.practicalAction || raw.action || "").trim(),
     guidedPrayer: String(raw.guidedPrayer || raw.prayer || "").trim(),
@@ -156,15 +153,22 @@ function buildDevotionFromApiResult(r, topicPrompt, formattedDate) {
  * @returns {Promise<object | null>}
  */
 async function fetchDevotionFromApi(topicPrompt) {
-  const res = await fetch(apiUrl("/api/gemini/generate-devotion"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ topic: topicPrompt }),
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (!data.success || !data.result) return null;
-  return data.result;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12_000);
+  try {
+    const res = await fetch(apiUrl("/api/gemini/generate-devotion"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ topic: topicPrompt }),
+      signal: controller.signal,
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data.success || !data.result) return null;
+    return data.result;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /**
@@ -190,7 +194,11 @@ export async function getTodayAIDevotion() {
     if (result) {
       const devotion = buildDevotionFromApiResult(result, topic.prompt, formattedDateId());
       if (devotion) {
-        localStorage.setItem(AI_DEVOTION_CACHE_KEY, JSON.stringify(devotion));
+        try {
+          localStorage.setItem(AI_DEVOTION_CACHE_KEY, JSON.stringify(devotion));
+        } catch {
+          /* ignore quota / private mode */
+        }
         return devotion;
       }
     }
@@ -200,7 +208,11 @@ export async function getTodayAIDevotion() {
 
   const base = SCRIPTURE_BANK[dayIndex % SCRIPTURE_BANK.length];
   const devotion = buildDevotionFromScripture(base, today, "local");
-  localStorage.setItem(AI_DEVOTION_CACHE_KEY, JSON.stringify(devotion));
+  try {
+    localStorage.setItem(AI_DEVOTION_CACHE_KEY, JSON.stringify(devotion));
+  } catch {
+    /* ignore quota / private mode */
+  }
   return devotion;
 }
 

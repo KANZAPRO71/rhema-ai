@@ -20,6 +20,10 @@ import {
   nativeGeminiWsSend,
 } from "./nativeGeminiWs.js";
 import { formatVoiceError } from "./byokUx.js";
+import { markGoogleKeyLiveValidated } from "./geminiConstants.js";
+import { processUserAsrText } from "./voiceAsrFilter.js";
+import { buildCrisisResponse, detectCrisisSignals } from "./crisisGuardrail.js";
+import { showCrisisHotlineModal } from "./crisisHotlineModal.js";
 
 const INPUT_RATE = 16000;
 const OUTPUT_RATE = 24000;
@@ -48,6 +52,8 @@ registerProcessor("rhema-mic-processor", RhemaMicProcessor);
 export function createGeminiLiveSession(options) {
   /** @type {WebSocket | null} */
   let ws = null;
+  /** WS error/close saat belum live — jangan emit "off" diam-diam. */
+  let connectAborted = false;
   let live = false;
   let connecting = false;
   /** @type {number} */
@@ -76,7 +82,7 @@ export function createGeminiLiveSession(options) {
   let playChain = null;
   /** @type {string} */
   let micLabel = "";
-  /** @type {string[]} */
+  /** @type {{ text: string, opts: { mic?: boolean, preferClientContent?: boolean } }[]} */
   let pendingTexts = [];
   /** @type {string} */
   let sessionProfile = "rhema-ide";
@@ -85,8 +91,13 @@ export function createGeminiLiveSession(options) {
   /** @type {ReturnType<typeof setTimeout> | null} */
   let setupWatchdog = null;
   let connectStartedAt = 0;
+  /** Incremented on each connect attempt / reset — aborts stale async start() after await. */
+  let connectGeneration = 0;
   let useNativeWs = false;
+  let nativeSocketOpen = false;
   let suppressModelOutputUntil = 0;
+  /** Sesi preconnect idle — siap terima Dengar tanpa handshake ulang. */
+  let sessionWarm = false;
 
   function clearSetupWatchdog() {
     if (setupWatchdog) {
@@ -95,12 +106,67 @@ export function createGeminiLiveSession(options) {
     }
   }
 
+  function isVoiceDebug() {
+    try {
+      return (
+        localStorage.getItem("rhema-voice-debug") === "1" ||
+        /(?:^|[?&])rhemaVoiceDebug=1/.test(location.search || "")
+      );
+    } catch {
+      return false;
+    }
+  }
+
   function voiceLog(...args) {
+    if (!isVoiceDebug()) return;
     try {
       console.log("[rhema-voice]", ...args);
     } catch {
       /* ignore */
     }
+  }
+
+  function closeAudioContexts() {
+    try {
+      void micCtx?.close();
+    } catch {
+      /* ignore */
+    }
+    micCtx = null;
+    try {
+      void playbackCtx?.close();
+    } catch {
+      /* ignore */
+    }
+    playbackCtx = null;
+    gainNode = null;
+  }
+
+  function failLiveSession(detail) {
+    connectGeneration += 1;
+    live = false;
+    connecting = false;
+    sessionInlineListen = false;
+    useNativeWs = false;
+    nativeSocketOpen = false;
+    clearSetupWatchdog();
+    pendingTexts = [];
+    pendingMicAfterFirstTurn = false;
+    stopMic();
+    stopPlayback();
+    closeAudioContexts();
+    void nativeGeminiWsDisconnect().catch(() => {});
+    try {
+      ws?.close();
+    } catch {
+      /* ignore */
+    }
+    ws = null;
+    options.emit({
+      type: "voiceStatus",
+      status: "error",
+      detail: detail || t("voice.conn.wsFail"),
+    });
   }
 
   function formatWsCloseError(code, reason) {
@@ -247,7 +313,7 @@ export function createGeminiLiveSession(options) {
 
   function isChannelOpen() {
     if (!live) return false;
-    if (useNativeWs) return true;
+    if (useNativeWs) return nativeSocketOpen;
     return ws?.readyState === WebSocket.OPEN;
   }
 
@@ -260,46 +326,55 @@ export function createGeminiLiveSession(options) {
     });
   }
 
+  function queuePendingText(text, opts = {}) {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    pendingTexts.push({ text: trimmed, opts });
+  }
+
   function sendText(text) {
-    const t = text.trim();
-    if (!t) return false;
+    const trimmed = text.trim();
+    if (!trimmed) return false;
+    if (sessionInlineListen && !hasModelTurn) {
+      return sendClientContent(trimmed);
+    }
     if (!isChannelOpen()) {
-      pendingTexts.push(t);
+      queuePendingText(trimmed, { preferClientContent: false, mic: false });
       return false;
     }
-    sendWsJson({ realtimeInput: { text: t } });
+    sendWsJson({ realtimeInput: { text: trimmed } });
     return true;
   }
 
   /** Setelah turn pertama model, Gemini 3.1 Live hanya menerima teks via realtimeInput. */
   let hasModelTurn = false;
+  /** Sesi inline listen — teks pertama via clientContent (historyConfig). */
+  let sessionInlineListen = false;
 
   function sendPromptText(text, opts = {}) {
-    const t = text.trim();
-    if (!t) return false;
+    const trimmed = text.trim();
+    if (!trimmed) return false;
     if (!isChannelOpen()) {
-      pendingTexts.push(t);
+      queuePendingText(trimmed, opts);
       return false;
     }
-    if (live) {
-      if (opts.mic === false) stopMic();
-      voiceLog("prompt", hasModelTurn ? "realtime" : "live-pre-turn", t.slice(0, 72));
-      return sendText(t);
-    }
-    if (opts.preferClientContent !== false && sendClientContent(t)) return true;
-    return sendText(t);
+    if (opts.mic === false) stopMic();
+    const useClient =
+      opts.preferClientContent === true || (sessionInlineListen && !hasModelTurn);
+    voiceLog("prompt", useClient ? "clientContent" : "realtimeInput", trimmed.slice(0, 72));
+    return useClient ? sendClientContent(trimmed) : sendText(trimmed);
   }
 
   function sendClientContent(text) {
-    const t = text.trim();
-    if (!t) return false;
+    const trimmed = text.trim();
+    if (!trimmed) return false;
     if (!isChannelOpen()) {
-      pendingTexts.push(t);
+      queuePendingText(trimmed, { preferClientContent: true, mic: false });
       return false;
     }
     sendWsJson({
       clientContent: {
-        turns: [{ role: "user", parts: [{ text: t }] }],
+        turns: [{ role: "user", parts: [{ text: trimmed }] }],
         turnComplete: true,
       },
     });
@@ -308,28 +383,99 @@ export function createGeminiLiveSession(options) {
 
   function flushPendingTexts() {
     if (!isChannelOpen()) return;
-    for (const t of pendingTexts) {
-      sendPromptText(t, { preferClientContent: false, mic: false });
+    for (const item of pendingTexts) {
+      sendPromptText(item.text, { ...item.opts, mic: item.opts?.mic ?? false });
     }
     pendingTexts = [];
   }
 
+  function recoverStaleLiveSession() {
+    if (!live) return false;
+    if (isChannelOpen()) return false;
+    voiceLog("recover stale live session");
+    live = false;
+    hasModelTurn = false;
+    connecting = false;
+    useNativeWs = false;
+    try {
+      ws?.close();
+    } catch {
+      /* ignore */
+    }
+    ws = null;
+    return true;
+  }
+
+  /** @param {number} gen */
+  function dropStaleConnect(gen) {
+    if (gen === connectGeneration) return false;
+    voiceLog("drop stale connect attempt", gen, connectGeneration);
+    if (connecting && !live) connecting = false;
+    return true;
+  }
+
+  function hardResetConnect() {
+    voiceLog("hard reset connect");
+    connectGeneration += 1;
+    live = false;
+    connecting = false;
+    hasModelTurn = false;
+    sessionInlineListen = false;
+    sessionWarm = false;
+    clearSetupWatchdog();
+    pendingMicAfterFirstTurn = false;
+    useNativeWs = false;
+    try {
+      ws?.close();
+    } catch {
+      /* ignore */
+    }
+    ws = null;
+    void nativeGeminiWsDisconnect().catch(() => {});
+  }
+
   async function sendTextOrStart(text, opts = {}) {
-    const t = text.trim();
-    if (!t) return;
-    if (live) {
-      sendPromptText(t, opts);
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    sessionWarm = false;
+    recoverStaleLiveSession();
+    if (live && isChannelOpen()) {
+      sendPromptText(trimmed, opts);
       return;
     }
-    if (connecting) {
-      pendingTexts.push(t);
-      return;
+
+    queuePendingText(trimmed, opts);
+
+    const inFlight = connecting || ws || useNativeWs;
+    if (inFlight) {
+      if (Date.now() - connectStartedAt < 12000) {
+        voiceLog("queue while connect in-flight", trimmed.slice(0, 48));
+        return;
+      }
+      voiceLog("stale connect — hard reset before restart");
+      hardResetConnect();
     }
-    pendingTexts.push(t);
-    await start({
+
+    const startOpts = {
       mic: opts.mic !== false,
       detail: opts.mic === false ? t("voice.conn.preparing") : undefined,
-    });
+      inlineListen: opts.inlineListen === true,
+    };
+    try {
+      await start(startOpts);
+      if (!live && !connecting && pendingTexts.length > 0) {
+        voiceLog("start skipped with pending text — force retry");
+        hardResetConnect();
+        await start(startOpts);
+      }
+    } catch (err) {
+      voiceLog("sendTextOrStart failed", err);
+      options.emit({
+        type: "voiceStatus",
+        status: "error",
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
   }
 
   function sendWsJson(payload) {
@@ -344,15 +490,29 @@ export function createGeminiLiveSession(options) {
   function handleWsClose(code, reason) {
     clearSetupWatchdog();
     voiceLog("ws close", code, reason);
+    const wasConnecting = connecting;
+    const wasLive = live;
+    const failedConnect = connectAborted || wasConnecting || pendingTexts.length > 0;
+    connectAborted = false;
     live = false;
     connecting = false;
+    sessionInlineListen = false;
     useNativeWs = false;
+    nativeSocketOpen = false;
+    const hadPending = pendingTexts.length > 0;
     pendingTexts = [];
     stopMic();
     stopPlayback();
+    closeAudioContexts();
     const detail = formatWsCloseError(code, reason);
     if (detail) {
       options.emit({ type: "voiceStatus", status: "error", detail });
+    } else if (failedConnect && !wasLive) {
+      options.emit({
+        type: "voiceStatus",
+        status: "error",
+        detail: t("voice.conn.timeout"),
+      });
     } else {
       options.emit({ type: "voiceStatus", status: "off" });
     }
@@ -364,29 +524,26 @@ export function createGeminiLiveSession(options) {
     setupWatchdog = setTimeout(() => {
       if (!live && connecting) {
         voiceLog("setup timeout");
-        connecting = false;
-        useNativeWs = false;
-        try {
-          ws?.close();
-        } catch {
-          /* ignore */
-        }
-        void nativeGeminiWsDisconnect().catch(() => {});
-        options.emit({
-          type: "voiceStatus",
-          status: "error",
-          detail: t("voice.conn.timeout"),
-        });
+        failLiveSession(t("voice.conn.timeout"));
       }
-    }, 18000);
+    }, 12000);
   }
 
   async function connectNativeWebSocket(config) {
     useNativeWs = true;
     armSetupWatchdog();
+    nativeSocketOpen = false;
+    const nativeOpenTimer = setTimeout(() => {
+      if (!live && connecting && useNativeWs) {
+        voiceLog("native ws open timeout");
+        failLiveSession(t("voice.conn.timeout"));
+      }
+    }, 12000);
     try {
       await nativeGeminiWsConnect(config.wsUrl, config.setup, {
         onOpen: () => {
+          clearTimeout(nativeOpenTimer);
+          nativeSocketOpen = true;
           voiceLog("native ws open");
           options.emit({ type: "voiceStatus", status: "connecting", detail: t("voice.conn.waitGemini") });
         },
@@ -398,30 +555,20 @@ export function createGeminiLiveSession(options) {
           }
         },
         onError: (message) => {
-          connecting = false;
-          clearSetupWatchdog();
-          useNativeWs = false;
+          clearTimeout(nativeOpenTimer);
           voiceLog("native ws error", message);
-          options.emit({
-            type: "voiceStatus",
-            status: "error",
-            detail: formatVoiceError(message || t("voice.conn.wsFail")),
-          });
+          failLiveSession(formatVoiceError(message || t("voice.conn.wsFail")));
         },
         onClose: (code, reason) => {
+          clearTimeout(nativeOpenTimer);
+          nativeSocketOpen = false;
           void nativeGeminiWsDisconnect().catch(() => {});
           handleWsClose(code, reason);
         },
       });
     } catch (err) {
-      connecting = false;
-      useNativeWs = false;
-      clearSetupWatchdog();
-      options.emit({
-        type: "voiceStatus",
-        status: "error",
-        detail: err instanceof Error ? err.message : String(err),
-      });
+      clearTimeout(nativeOpenTimer);
+      failLiveSession(err instanceof Error ? err.message : String(err));
     }
   }
 
@@ -438,20 +585,46 @@ export function createGeminiLiveSession(options) {
       return;
     }
 
+    /** @type {ReturnType<typeof setTimeout> | null} */
+    let openTimer = null;
+    const failConnect = (detail) => {
+      if (openTimer) {
+        clearTimeout(openTimer);
+        openTimer = null;
+      }
+      connecting = false;
+      clearSetupWatchdog();
+      try {
+        ws?.close();
+      } catch {
+        /* ignore */
+      }
+      ws = null;
+      options.emit({ type: "voiceStatus", status: "error", detail });
+    };
+
     ws = new WebSocket(config.wsUrl);
     ws.binaryType = "arraybuffer";
     armSetupWatchdog();
+    openTimer = setTimeout(() => {
+      if (!live && connecting && ws?.readyState !== WebSocket.OPEN) {
+        voiceLog("ws open timeout");
+        failConnect(t("voice.conn.timeout"));
+      }
+    }, 12000);
     ws.onopen = () => {
+      if (openTimer) {
+        clearTimeout(openTimer);
+        openTimer = null;
+      }
       voiceLog("ws open");
       options.emit({ type: "voiceStatus", status: "connecting", detail: t("voice.conn.waitGemini") });
       const payload = JSON.stringify({ setup: config.setup });
       voiceLog("setup bytes", payload.length);
-      window.setTimeout(() => {
-        if (ws?.readyState === WebSocket.OPEN) {
-          ws.send(payload);
-          voiceLog("setup sent");
-        }
-      }, 80);
+      if (ws?.readyState === WebSocket.OPEN) {
+        ws.send(payload);
+        voiceLog("setup sent");
+      }
     };
     ws.onmessage = (ev) => {
       try {
@@ -468,12 +641,20 @@ export function createGeminiLiveSession(options) {
       }
     };
     ws.onerror = () => {
-      connecting = false;
+      if (openTimer) {
+        clearTimeout(openTimer);
+        openTimer = null;
+      }
+      connectAborted = true;
       clearSetupWatchdog();
       voiceLog("ws error");
       options.emit({ type: "voiceStatus", status: "error", detail: t("voice.conn.wsFail") });
     };
     ws.onclose = (ev) => {
+      if (openTimer) {
+        clearTimeout(openTimer);
+        openTimer = null;
+      }
       handleWsClose(ev.code, ev.reason);
     };
   }
@@ -670,7 +851,7 @@ export function createGeminiLiveSession(options) {
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.connect(gainNode);
-    const startAt = Math.max(playTime, ctx.currentTime + 0.015);
+    const startAt = Math.max(playTime, ctx.currentTime + 0.008);
     src.start(startAt);
     playTime = startAt + buf.duration;
   }
@@ -707,10 +888,25 @@ export function createGeminiLiveSession(options) {
   }
 
   function handleGeminiMessage(msg) {
+    if (msg.error?.message) {
+      voiceLog("gemini error", msg.error);
+      failLiveSession(formatVoiceError(msg.error.message));
+      return;
+    }
+    if (msg.goAway) {
+      voiceLog("gemini goAway", msg.goAway);
+      failLiveSession(t("voice.conn.timeout"));
+      return;
+    }
     if (msg.setupComplete !== undefined) {
+      if (!connecting && !live) {
+        voiceLog("ignore stale setupComplete");
+        return;
+      }
       live = true;
       connecting = false;
       clearSetupWatchdog();
+      markGoogleKeyLiveValidated();
       voiceLog("live", sessionProfile);
       if (options.nativePlaybackOnly || isCapacitorNative()) {
         void warmupNativePlayback();
@@ -719,6 +915,7 @@ export function createGeminiLiveSession(options) {
         type: "voiceStatus",
         status: "live",
         profile: sessionProfile,
+        warm: sessionWarm,
         audioInputRate: inputRate,
         audioOutputRate: pcmOutputRate,
       });
@@ -726,16 +923,6 @@ export function createGeminiLiveSession(options) {
       if (wantMic) {
         pendingMicAfterFirstTurn = true;
       }
-      return;
-    }
-    if (msg.error?.message) {
-      connecting = false;
-      clearSetupWatchdog();
-      options.emit({
-        type: "voiceStatus",
-        status: "error",
-        detail: formatVoiceError(msg.error.message),
-      });
       return;
     }
     if (msg.toolCall) {
@@ -759,17 +946,25 @@ export function createGeminiLiveSession(options) {
       options.emit({ type: "voiceInterrupt" });
     }
     if (sc.inputTranscription?.text) {
-      const text = String(sc.inputTranscription.text).trim();
-      options.emit({
-        type: "voiceTranscript",
-        role: "user",
-        delta: sc.inputTranscription.text,
-        final: true,
-      });
-      if (text && options.tryHandleLocalQuery?.(text)) {
-        suppressModelOutputUntil = Date.now() + 15000;
-        stopPlayback();
-        options.emit({ type: "voiceInterrupt" });
+      const filtered = processUserAsrText(String(sc.inputTranscription.text));
+      if (filtered) {
+        options.emit({
+          type: "voiceTranscript",
+          role: "user",
+          delta: filtered,
+          final: true,
+        });
+        if (detectCrisisSignals(filtered)) {
+          const crisis = buildCrisisResponse();
+          void showCrisisHotlineModal(crisis.hotlines);
+          suppressModelOutputUntil = Date.now() + 15000;
+          stopPlayback();
+          options.emit({ type: "voiceInterrupt" });
+        } else if (options.tryHandleLocalQuery?.(filtered)) {
+          suppressModelOutputUntil = Date.now() + 15000;
+          stopPlayback();
+          options.emit({ type: "voiceInterrupt" });
+        }
       }
     }
     if (sc.outputTranscription?.text) {
@@ -808,10 +1003,26 @@ export function createGeminiLiveSession(options) {
   }
 
   async function start(opts = {}) {
-    if (connecting && Date.now() - connectStartedAt > 25000) {
+    if ((connecting || ws || useNativeWs) && !live && Date.now() - connectStartedAt > 12000) {
+      voiceLog("force reset stale voice connect");
       stop();
     }
-    if (live || connecting || ws || useNativeWs) return;
+    if (ws && ws.readyState !== WebSocket.OPEN) {
+      try {
+        ws.close();
+      } catch {
+        /* ignore */
+      }
+      ws = null;
+    }
+    if (useNativeWs && !live && !connecting) {
+      useNativeWs = false;
+    }
+    if (live || connecting || ws || useNativeWs) {
+      voiceLog("start skipped", { live, connecting, wsState: ws?.readyState, useNativeWs });
+      return;
+    }
+    const gen = ++connectGeneration;
     connectStartedAt = Date.now();
     unlockNativeElementAudio();
     if (options.nativePlaybackOnly || (isCapacitorNative() && !options.externalPlayback)) {
@@ -832,21 +1043,29 @@ export function createGeminiLiveSession(options) {
         voiceLog("sync audio unlock", err);
       }
     }
+    sessionWarm = opts.warm === true;
     wantMic = opts.mic !== false;
     pendingMicAfterFirstTurn = wantMic;
     connecting = true;
-    options.emit({
-      type: "voiceStatus",
-      status: "connecting",
-      detail: opts.detail ?? t("voice.hint.connecting"),
-    });
+    if (!sessionWarm) {
+      options.emit({
+        type: "voiceStatus",
+        status: "connecting",
+        detail: opts.detail ?? t("voice.conn.preparing"),
+      });
+    }
 
+    const configPromise = options.fetchSessionConfig();
     try {
       if (!options.externalPlayback && !options.nativePlaybackOnly) {
-        await ensurePlaybackCtx(true);
+        if (opts.mic !== false) {
+          await ensurePlaybackCtx(true);
+        } else {
+          void ensurePlaybackCtx(false);
+        }
       }
-      // Mic ditunda ke startMicPipeline setelah Gemini LIVE — jangan block koneksi.
     } catch (err) {
+      if (dropStaleConnect(gen)) return;
       connecting = false;
       stopMic();
       options.emit({ type: "voiceStatus", status: "error", detail: micErrorMessage(err) });
@@ -855,8 +1074,9 @@ export function createGeminiLiveSession(options) {
 
     let config;
     try {
-      config = await options.fetchSessionConfig();
+      config = await configPromise;
     } catch (err) {
+      if (dropStaleConnect(gen)) return;
       connecting = false;
       stopMic();
       options.emit({
@@ -866,6 +1086,7 @@ export function createGeminiLiveSession(options) {
       });
       return;
     }
+    if (dropStaleConnect(gen)) return;
     if (config.error) {
       connecting = false;
       stopMic();
@@ -877,19 +1098,39 @@ export function createGeminiLiveSession(options) {
       return;
     }
 
+    sessionInlineListen = Boolean(
+      config.inlineListen ?? config.setup?.historyConfig?.initialHistoryInClientContent,
+    );
     connectWebSocket(config);
   }
 
+  function prepareTextListen() {
+    wantMic = false;
+    pendingMicAfterFirstTurn = false;
+    sessionWarm = false;
+    stopMic();
+  }
+
+  async function startWarm() {
+    if (live || connecting) return;
+    await start({ mic: false, warm: true });
+  }
+
   function stop() {
+    connectGeneration += 1;
     live = false;
     connecting = false;
     hasModelTurn = false;
+    sessionInlineListen = false;
+    sessionWarm = false;
     clearSetupWatchdog();
     pendingTexts = [];
     pendingMicAfterFirstTurn = false;
     stopMic();
     stopPlayback();
+    closeAudioContexts();
     useNativeWs = false;
+    nativeSocketOpen = false;
     void nativeGeminiWsDisconnect().catch(() => {});
     try {
       ws?.close();
@@ -898,6 +1139,33 @@ export function createGeminiLiveSession(options) {
     }
     ws = null;
     options.emit({ type: "voiceStatus", status: "off" });
+  }
+
+  function warmupPlayback() {
+    unlockNativeElementAudio();
+    if (options.nativePlaybackOnly || isCapacitorNative()) {
+      void warmupNativePlayback();
+      return;
+    }
+    if (!options.externalPlayback) {
+      try {
+        if (!playbackCtx || playbackCtx.state === "closed") {
+          playbackCtx = new AudioContext({ latencyHint: "interactive" });
+          gainNode = playbackCtx.createGain();
+          gainNode.gain.value = 1;
+          gainNode.connect(playbackCtx.destination);
+          playTime = playbackCtx.currentTime;
+          unlockWebAudioContext(playbackCtx);
+        }
+        void playbackCtx.resume();
+      } catch (err) {
+        voiceLog("warmup playback", err);
+      }
+    }
+  }
+
+  function prefetchConfig() {
+    void options.fetchSessionConfig().catch((err) => voiceLog("prefetch config", err));
   }
 
   return {
@@ -914,6 +1182,11 @@ export function createGeminiLiveSession(options) {
     enableMic,
     interruptPlayback,
     waitForPlaybackIdle,
+    warmupPlayback,
+    prefetchConfig,
+    prepareTextListen,
+    startWarm,
+    isTextListenSession: () => live && !wantMic,
     getAnalyser: () => analyserNode,
   };
 }

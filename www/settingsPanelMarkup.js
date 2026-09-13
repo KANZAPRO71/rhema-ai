@@ -2,7 +2,7 @@
  * Panel pengaturan — Konfigurasi Gemini API Key, Pilihan Suara AI, dan Persona Rohani.
  */
 
-import { getEffectiveProfile, getRegionDisplayLabel } from "./localeProfile.js";
+import { APP_LANGUAGES, getEffectiveProfile, getRegionDisplayLabel } from "./localeProfile.js";
 import { getGoogleKeyStatusMeta } from "./geminiConstants.js";
 import { getSecurityTrustLine } from "./byokUx.js";
 import { PRIVACY_POLICY_IN_APP } from "./legalUrls.js";
@@ -14,10 +14,18 @@ export function renderSettingsPanel(opts = {}) {
   const placeholder = configured ? t("settings.keySaved") : t("settings.keyPlaceholder");
 
   const savedVoice = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-voice-name")) || "Puck";
-  const savedPersona = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-persona-id")) || "pastor";
+  const rawPersona = (typeof localStorage !== "undefined" && localStorage.getItem("rhema-persona-id")) || "pastor";
+  const savedPersona = rawPersona === "kids_storyteller" ? "pastor" : rawPersona;
   const localeProfile = getEffectiveProfile();
-  const savedRegion = localeProfile.region || "indonesia";
-  const savedBible = localeProfile.bibleVersion || (savedRegion === "global" ? "kjv" : "tb");
+  const savedUiLang = localeProfile.uiLang || "en";
+  const savedAiLang = localeProfile.aiLang || savedUiLang;
+  const savedBible = localeProfile.bibleVersion || "kjv";
+
+  const langOptions = (selected) =>
+    APP_LANGUAGES.map(
+      (l) =>
+        `<option value="${l.id}"${l.id === selected ? " selected" : ""}>${l.flag} ${l.native}</option>`,
+    ).join("");
 
   const keyMeta = getGoogleKeyStatusMeta();
   const keyStatusLine = !keyMeta.configured
@@ -56,23 +64,24 @@ export function renderSettingsPanel(opts = {}) {
     <button id="btn-close-settings-panel" type="button" class="settings-close-icon" aria-label="${t("settings.close")}">✕</button>
   </div>
   
-  <!-- Section 0: Region Ibadah -->
+  <!-- Section 0: Bahasa, Alkitab, percakapan AI -->
   <div class="settings-section">
     <div class="settings-section-title">🌏 ${t("settings.region")}</div>
     <p class="settings-hint">${t("settings.regionHint")} ${getRegionDisplayLabel()}</p>
     <div class="settings-row">
-      <label for="select-worship-region">${t("settings.regionLabel")}</label>
-      <select id="select-worship-region" class="settings-select">
-        <option value="indonesia" ${savedRegion === "indonesia" ? "selected" : ""}>${t("settings.regionIndonesia")}</option>
-        <option value="global" ${savedRegion === "global" ? "selected" : ""}>${t("settings.regionGlobal")}</option>
-      </select>
+      <label for="select-ui-lang">${t("settings.uiLangLabel")}</label>
+      <select id="select-ui-lang" class="settings-select">${langOptions(savedUiLang)}</select>
     </div>
     <div class="settings-row">
       <label for="select-bible-version">${t("settings.bibleLabel")}</label>
       <select id="select-bible-version" class="settings-select">
-        <option value="tb" ${savedBible === "tb" ? "selected" : ""}>${t("settings.bibleTb")}</option>
         <option value="kjv" ${savedBible === "kjv" ? "selected" : ""}>${t("settings.bibleKjv")}</option>
+        <option value="tb" ${savedBible === "tb" ? "selected" : ""}>${t("settings.bibleTb")}</option>
       </select>
+    </div>
+    <div class="settings-row">
+      <label for="select-ai-lang">${t("settings.aiLangLabel")}</label>
+      <select id="select-ai-lang" class="settings-select">${langOptions(savedAiLang)}</select>
     </div>
     <button type="button" id="btn-reopen-region-onboard" class="btn-pill btn-soft byok-guide-btn">${t("settings.reopenRegion")}</button>
   </div>
@@ -105,7 +114,6 @@ export function renderSettingsPanel(opts = {}) {
         <option value="worship_leader" ${savedPersona === "worship_leader" ? "selected" : ""}>${t("settings.persona.worship_leader")}</option>
         <option value="apostle_paul" ${savedPersona === "apostle_paul" ? "selected" : ""}>${t("settings.persona.apostle_paul")}</option>
         <option value="prayer_intercessor" ${savedPersona === "prayer_intercessor" ? "selected" : ""}>${t("settings.persona.prayer_intercessor")}</option>
-        <option value="kids_storyteller" ${savedPersona === "kids_storyteller" ? "selected" : ""}>${t("settings.persona.kids_storyteller")}</option>
       </select>
     </div>
   </div>

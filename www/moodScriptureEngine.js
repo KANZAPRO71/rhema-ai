@@ -4,12 +4,13 @@
  */
 
 import { isGlobalUiLang } from "./localeProfile.js";
+import { todayKey } from "./dailyRenunganEngine.js";
 import { MOOD_SCRIPTURE_EN } from "./moodScriptureI18n.js";
 import { t } from "./uiStrings.js";
 
 /** @returns {string} */
 export function moodTodayKey() {
-  return new Date().toISOString().slice(0, 10);
+  return todayKey();
 }
 
 /** @param {string} salt @param {number} poolLength */

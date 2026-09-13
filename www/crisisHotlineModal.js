@@ -1,8 +1,10 @@
 /**
  * UI darurat krisis — hotline tap-to-call (Play Store compliance).
- * Android native: AlertDialog via CrisisGuardrailPlugin; web: modal HTML fallback.
+ * Modal HTML di WebView (plugin native CrisisGuardrail tidak terdaftar).
  */
 import { isNativeCrisisGuardrailAvailable, showNativeCrisisDialog } from "./nativeCrisisGuardrail.js";
+import { sanitizeHref } from "./safeUrl.js";
+import { escapeHtml } from "./markdown.js";
 
 /** @typedef {{ id: string, label: string, number: string, note?: string, tel?: string }} CrisisHotline */
 
@@ -62,10 +64,11 @@ export async function showCrisisHotlineModal(hotlines = []) {
   const list = el.querySelector(".rhema-crisis-list");
   if (list) {
     list.innerHTML = hotlines
-      .map(
-        (h) =>
-          `<li><a href="${h.tel || "#"}" rel="noopener">${h.label}: ${h.number}${h.note ? `<small>${h.note}</small>` : ""}</a></li>`,
-      )
+      .map((h) => {
+        const tel = sanitizeHref(h.tel || "") || "#";
+        const note = h.note ? `<small>${escapeHtml(h.note)}</small>` : "";
+        return `<li><a href="${escapeHtml(tel)}" rel="noopener">${escapeHtml(h.label)}: ${escapeHtml(h.number)}${note}</a></li>`;
+      })
       .join("");
   }
   el.hidden = false;

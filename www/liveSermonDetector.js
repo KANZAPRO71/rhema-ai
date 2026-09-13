@@ -2,7 +2,7 @@
  * Live Preaching Scripture Detector Engine — Mendeteksi & menampilkan ayat Alkitab TB secara otomatis saat mendengarkan khotbah di gereja.
  */
 
-import { escapeHtml } from "./platform.js";
+import { escapeHtml } from "./markdown.js";
 
 const INDO_BIBLE_BOOKS = [
   "Kejadian", "Keluaran", "Imamat", "Bilangan", "Ulangan",
@@ -237,7 +237,7 @@ export function openLiveSermonDetectorModal(callbacks = {}) {
   function startListening() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      alert("Browser Anda belum mendukung Speech Recognition live. Gunakan tombol uji coba atau Chrome/Safari terbaru.");
+      alert("Detektor khotbah membutuhkan Web Speech API. Di aplikasi Android ini belum tersedia — pakai Chrome di komputer, atau salin ayat lewat Alkitab.");
       return;
     }
 

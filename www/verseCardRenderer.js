@@ -629,12 +629,12 @@ export function renderVerseToCanvas(
   ctx.font = "bold 40px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
   ctx.fillStyle = palette.accent;
   ctx.letterSpacing = "2px";
-  ctx.fillText(verse.reference || "Alkitab TB", width / 2, sepY + 65);
+  ctx.fillText(verse.reference || "Alkitab", width / 2, sepY + 65);
 
   ctx.font = "24px -apple-system, BlinkMacSystemFont, sans-serif";
   ctx.fillStyle = palette.subColor;
   ctx.letterSpacing = "1px";
-  ctx.fillText("Terjemahan Baru · Lembaga Alkitab Indonesia (LAI)", width / 2, sepY + 115);
+  ctx.fillText("Alkitab", width / 2, sepY + 115);
 
   // 9. Footer Watermark
   ctx.font = "700 20px -apple-system, BlinkMacSystemFont, sans-serif";

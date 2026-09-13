@@ -4,8 +4,8 @@
 
 import { registerScreenNavigator } from "./uiGuard.js";
 import { resetViewportScroll } from "./mobileScroll.js";
-import { ensureNativeMicPermission } from "./nativeMicPermission.js";
 import { consumeByokOnboardingBack, isByokOnboardingOpen } from "./byokOnboarding.js";
+import { consumeLectioBack, isLectioModalOpen } from "./lectioDivina.js";
 import { consumeRegionOnboardingBack, isRegionOnboardingOpen } from "./regionOnboarding.js";
 import { getScreenTitles } from "./uiStrings.js";
 
@@ -49,6 +49,7 @@ export function initAppShell(transport, hooks = {}) {
   }
 
   function canGoBack() {
+    if (isLectioModalOpen()) return true;
     if (isByokOnboardOpen()) return true;
     if (openSubViews.size > 0 || isSettingsOpen() || isSessionDrawerOpen()) return true;
     if (STACK_SCREENS.has(currentScreen) || OVERLAY_SCREENS.has(currentScreen)) return true;
@@ -159,7 +160,6 @@ export function initAppShell(transport, hooks = {}) {
       if (name === "doa") hooks.onDoa?.();
       if (name === "voice") {
         hooks.onVoice?.();
-        void ensureNativeMicPermission().catch(() => {});
       }
       if (name === "cloud") hooks.onCloud?.();
     }
@@ -181,6 +181,10 @@ export function initAppShell(transport, hooks = {}) {
   }
 
   function goBack() {
+    if (consumeLectioBack()) {
+      syncBackButton();
+      return;
+    }
     if (consumeRegionOnboardingBack()) {
       syncBackButton();
       return;

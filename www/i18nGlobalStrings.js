@@ -25,7 +25,7 @@ export const GLOBAL_UI_STRINGS = {
     "settings.save": "Guardar todos los ajustes",
     "settings.reopenRegion": "Repetir guía de región",
     "settings.bibleRegionNote":
-      "La devoción IA usa {bible}. TB y KJV offline; otras traducciones vía IA (pack offline fase 2).",
+      "La devoción IA usa {bible}. Alkitab y KJV offline; otras traducciones vía IA (pack offline fase 2).",
     "settings.voiceTitle": "Voz de la IA",
     "settings.personaTitle": "Persona espiritual",
     "settings.legalTitle": "Legal y privacidad",
@@ -72,7 +72,7 @@ export const GLOBAL_UI_STRINGS = {
     "settings.save": "Salvar todas as configurações",
     "settings.reopenRegion": "Repetir guia de região",
     "settings.bibleRegionNote":
-      "Devocional IA usa {bible}. TB e KJV offline; outras traduções via IA (pack offline fase 2).",
+      "Devocional IA usa {bible}. Alkitab e KJV offline; outras traduções via IA (pack offline fase 2).",
     "settings.voiceTitle": "Voz da IA",
     "settings.personaTitle": "Persona espiritual",
     "settings.legalTitle": "Legal e privacidade",
@@ -119,7 +119,7 @@ export const GLOBAL_UI_STRINGS = {
     "settings.save": "모든 설정 저장",
     "settings.reopenRegion": "지역 설정 다시 보기",
     "settings.bibleRegionNote":
-      "AI 묵상은 {bible}을 사용합니다. TB·KJV 오프라인; 기타 번역은 AI(오프라인 팩 2단계).",
+      "AI 묵상은 {bible}을 사용합니다. Alkitab·KJV 오프라인; 기타 번역은 AI(오프라인 팩 2단계).",
     "settings.voiceTitle": "AI 음성 캐릭터",
     "settings.personaTitle": "영적 페르소나",
     "settings.legalTitle": "법적 고지 및 개인정보",
@@ -164,7 +164,7 @@ export const GLOBAL_UI_STRINGS = {
     "settings.regionHint": "调整默认圣经、AI 语言与生活语境。",
     "settings.save": "保存全部设置",
     "settings.reopenRegion": "重新选择地区",
-    "settings.bibleRegionNote": "AI 灵修使用 {bible}。TB/KJV 离线；其他译本通过 AI（离线包第二阶段）。",
+    "settings.bibleRegionNote": "AI 灵修使用 {bible}。Alkitab/KJV 离线；其他译本通过 AI（离线包第二阶段）。",
     "settings.voiceTitle": "AI 语音角色",
     "settings.personaTitle": "属灵 persona",
     "settings.legalTitle": "法律与隐私",
@@ -210,7 +210,7 @@ export const GLOBAL_UI_STRINGS = {
     "settings.save": "すべての設定を保存",
     "settings.reopenRegion": "リージョン設定をやり直す",
     "settings.bibleRegionNote":
-      "AI 黙想は {bible} を使用。TB/KJV はオフライン；他訳は AI（オフラインパック第2段階）。",
+      "AI 黙想は {bible} を使用。Alkitab/KJV はオフライン；他訳は AI（オフラインパック第2段階）。",
     "settings.voiceTitle": "AI 音声キャラクター",
     "settings.personaTitle": "スピリチュアル persona",
     "settings.legalTitle": "法務とプライバシー",

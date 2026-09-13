@@ -2,8 +2,7 @@
  * Alkitab TB — terhubung ke API, voice S2S, dan mobile shell.
  */
 
-import { apiUrl } from "./platform.js";
-import { verseOfTheDay, knowledgeMeta, getCrossReferences, lookupKjvVerse } from "./alkitabClient.js";
+import { verseOfTheDay, knowledgeMeta, getCrossReferences, lookupKjvVerse, lookupVerse } from "./alkitabClient.js";
 import { openSermonAssistantModal } from "./sermonAssistant.js";
 import { buildSermonKnowledgePrompt } from "./sermonBibleContext.js";
 import { getTodayOneYearDay } from "./biblePlanData.js";
@@ -13,6 +12,9 @@ import {
   openLectioDivinaModal,
   buildLectioVoicePrompt,
   isLectioSessionActive,
+  notifyLectioVoiceError,
+  notifyLectioVoiceLive,
+  notifyLectioVoiceConnecting,
   onLectioVoiceTurnComplete,
 } from "./lectioDivina.js";
 import { initAlkitabPowerFeatures } from "./alkitabFeatures.js?v=20260911-sleep";
@@ -25,14 +27,21 @@ import {
   setPreacherPersona,
 } from "./sermonPrompts.js";
 import { initSermonLiveContinuer, markSermonEnded, markSermonStarted } from "./sermonLiveContinuer.js";
-import { unlockNativeElementAudio, warmupNativePlayback } from "./nativeAudioPlayback.js";
-import { googleKeyConfigured, isGoogleKeyLiveValidated, validateGoogleKeyForVoice } from "./geminiConstants.js";
+import { unlockNativeElementAudio, warmupNativePlayback, warmupVoicePlayback } from "./nativeAudioPlayback.js";
+import {
+  ensureGoogleKeyLoaded,
+  getStoredGoogleKey,
+  googleKeyConfigured,
+  isGoogleKeyLiveValidated,
+  validateGoogleKeyForVoice,
+} from "./geminiConstants.js";
 import { openByokOnboarding } from "./byokOnboarding.js";
 import { formatVoiceError } from "./byokUx.js";
 import { getEffectiveBibleVersion, getSpeechLocale, isGlobalUiLang } from "./localeProfile.js";
 import { t } from "./uiStrings.js";
 import { deliverVoiceOpenGreeting, deliverVoiceResumeContext, hasVoiceConversationHistory } from "./voiceGreeting.js";
-import { parseExplicitMemory, syncLocalSessionMemory } from "./memoryStore.js";
+import { enrichVoiceListenPrompt, getCachedDengarPrompt, prefetchDengarVerse } from "./voiceDengarPrompt.js";
+import { prefetchVoiceSessionSetup } from "./voiceProfiles.js";
 import { handleVoiceLocalCommand } from "./voiceLocalCommands.js";
 import {
   fetchTbSearchStatus,
@@ -47,6 +56,21 @@ import {
   renderSearchModeSelector,
 } from "./alkitabSearch.js";
 import { scrollMobileSectionIntoView } from "./mobileScroll.js";
+import { escapeHtml } from "./markdown.js";
+import {
+  initVoiceTranscriptHistory,
+  handleVoiceTranscriptStream,
+  refreshVoiceTranscriptToTop,
+  syncVoiceInteractionMemory,
+  commitVoiceHistory,
+  renderVoiceTranscriptBubble,
+  finalizeLiveAssistant,
+  finalizeLiveUser,
+  clearVoiceTranscriptHistory,
+  suppressGeminiAssistantFor,
+} from "./voiceTranscriptPanel.js";
+
+export { initVoiceTranscriptHistory };
 
 import { loadHymn } from "./laguData.js";
 import {
@@ -122,12 +146,61 @@ function wireRhemaVoiceHubButton(buttonId, transport) {
   });
 }
 
+function wireVoiceOrbTap(orb, transport) {
+  if (!orb || orb.dataset.voiceBound === "1") return;
+  orb.dataset.voiceBound = "1";
+  orb.classList.add("voice-orb-interactive");
+  orb.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (transport.voice?.isLive?.()) {
+      stopVoiceLive(transport);
+      return;
+    }
+    if (voiceStartPending || transport.voice?.isActive?.()) return;
+    startVoiceLive(transport, { switchScreen: false });
+  });
+  orb.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    orb.click();
+  });
+}
+
 function shouldKeepVoiceOnCurrentScreen() {
   return shouldBlockVoiceScreenNav() || isRenunganScreenActive() || Boolean(window.__rhemaInlineVoiceSession);
 }
 
+function isVoiceScreenActive() {
+  return Boolean(document.getElementById("screen-voice")?.classList.contains("active"));
+}
+
 /** @type {(screen: string) => void} */
 let shellGo = () => {};
+
+/** @type {import("./chatCore.js").ChatTransport | null} */
+let alkitabVoiceTransport = null;
+
+function prefetchVoiceTabAssets() {
+  void warmupVoicePlayback();
+  alkitabVoiceTransport?.voice?.warmupPlayback?.();
+  void ensureGoogleKeyLoaded().then((key) => {
+    if (!key) return;
+    const voiceName = localStorage.getItem("rhema-voice-name") || "Puck";
+    const personaId = localStorage.getItem("rhema-persona-id") || "pastor";
+    prefetchVoiceSessionSetup({
+      profileId: "alkitab-voice",
+      voiceName,
+      personaId,
+      textOnlyListen: true,
+    });
+    prefetchDengarVerse("Mazmur 23:1");
+    alkitabVoiceTransport?.voice?.prefetchConfig?.();
+    if (!alkitabVoiceTransport?.voice?.isActive?.()) {
+      void alkitabVoiceTransport?.voice?.startWarm?.();
+    }
+  });
+}
 
 /** Pindah ke tab Rhema AI — paksa dari Beranda meski inline-voice flag masih aktif. */
 function goToRhemaVoice({ force = false } = {}) {
@@ -136,16 +209,9 @@ function goToRhemaVoice({ force = false } = {}) {
     window.__rhemaInlineVoiceSession = false;
   }
   if (!force && shouldKeepVoiceOnCurrentScreen()) return false;
+  prefetchVoiceTabAssets();
   shellGo("voice");
   return true;
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function loadJson(key) {
@@ -296,18 +362,32 @@ async function renderRelatedVerses(reference) {
   }
 }
 
+function lectioVerseReady() {
+  return Boolean(
+    (currentVerse?.reference && currentVerse?.text) ||
+      (todayRhemaVerse?.reference && todayRhemaVerse?.text),
+  );
+}
+
 /** @param {boolean} hasVerse */
 function setVerseActionsState(hasVerse) {
   const actions = document.getElementById("alkitab-verse-actions");
   if (!actions) return;
   actions.classList.remove("hidden");
   syncRhemaStudioButton();
-  for (const id of ["btn-alkitab-listen", "btn-alkitab-explain", "btn-alkitab-lectio"]) {
+  for (const id of ["btn-alkitab-listen", "btn-alkitab-explain"]) {
     const btn = document.getElementById(id);
     if (!btn) continue;
     btn.disabled = !hasVerse;
     btn.setAttribute("aria-disabled", hasVerse ? "false" : "true");
     btn.classList.toggle("verse-action-disabled", !hasVerse);
+  }
+  const lectioBtn = document.getElementById("btn-alkitab-lectio");
+  if (lectioBtn) {
+    const ready = hasVerse || lectioVerseReady();
+    lectioBtn.disabled = !ready;
+    lectioBtn.setAttribute("aria-disabled", ready ? "false" : "true");
+    lectioBtn.classList.toggle("verse-action-disabled", !ready);
   }
   syncKhotbahHubState(hasVerse);
 }
@@ -333,36 +413,43 @@ export function renderVerseCard(reference, text, found, kjvText = undefined) {
   if (!card) return;
   if (!found || !text) {
     currentVerse = { reference, text: "", found: false };
-    card.innerHTML = `<p class="alkitab-verse-missing">Ayat <strong>${escapeHtml(reference)}</strong> belum ada di TB offline.</p>`;
+    card.innerHTML = `<p class="alkitab-verse-missing">Ayat <strong>${escapeHtml(reference)}</strong> belum ada di Alkitab offline.</p>`;
     setVerseActionsState(false);
     document.getElementById("alkitab-explain-banner")?.classList.add("hidden");
     document.getElementById("alkitab-related")?.classList.add("hidden");
     syncKhotbahHubState(false);
     return;
   }
-  currentVerse = { reference, text, found: true };
+  const kjvReady =
+    typeof kjvText === "string" &&
+    kjvText &&
+    kjvText !== "Memuat KJV…" &&
+    !kjvText.startsWith("Ayat belum") &&
+    !kjvText.startsWith("Gagal memuat");
+  const displayText = currentVersionMode === "kjv" && kjvReady ? kjvText : text;
+  currentVerse = { reference, text: displayText, found: true, tbText: text, kjvText: kjvReady ? kjvText : "" };
   const activeHighlight = getVerseHighlight(reference);
   const existingNote = getVerseNote(reference);
 
   const hlClass = activeHighlight ? `verse-hl-${activeHighlight}` : "";
 
-  let bodyHtml = "";
-  if (currentVersionMode === "tb") {
-    bodyHtml = `
+  const bodyHtml =
+    currentVersionMode === "tb"
+      ? `
       <blockquote class="alkitab-verse-text ${hlClass}">&ldquo;${escapeHtml(text)}&rdquo;</blockquote>
-      <cite class="alkitab-verse-ref">${escapeHtml(reference)} · Terjemahan Baru (LAI)</cite>`;
-  } else {
-    const kjv = kjvText ?? "Memuat KJV…";
-    const isMissing = kjv === "Memuat KJV…" || kjv.startsWith("Ayat belum") || kjv.startsWith("Gagal memuat");
-    bodyHtml = `
+      <cite class="alkitab-verse-ref">${escapeHtml(reference)} · Alkitab</cite>`
+      : (() => {
+          const kjv = kjvText ?? "Memuat KJV…";
+          const isMissing = kjv === "Memuat KJV…" || kjv.startsWith("Ayat belum") || kjv.startsWith("Gagal memuat");
+          if (kjvText === undefined) void loadKjvForCard(reference, text, found);
+          return `
       <blockquote class="alkitab-verse-text kjv-text ${hlClass} ${isMissing && kjv !== "Memuat KJV…" ? "kjv-missing" : ""}">&ldquo;${escapeHtml(kjv)}&rdquo;</blockquote>
       <cite class="alkitab-verse-ref">${escapeHtml(reference)} · King James Version · offline 66 kitab${isMissing && kjv !== "Memuat KJV…" ? " · tidak ditemukan" : ""}</cite>`;
-    if (kjvText === undefined) void loadKjvForCard(reference, text, found);
-  }
+        })();
 
   card.innerHTML = `
     <div class="alkitab-version-tabs" role="tablist" aria-label="Pilih terjemahan Alkitab">
-      <button type="button" class="version-tab-btn ${currentVersionMode === "tb" ? "active" : ""}" data-ver="tb">TB (LAI)</button>
+      <button type="button" class="version-tab-btn ${currentVersionMode === "tb" ? "active" : ""}" data-ver="tb">Alkitab</button>
       <button type="button" class="version-tab-btn ${currentVersionMode === "kjv" ? "active" : ""}" data-ver="kjv">KJV (English)</button>
     </div>
     
@@ -521,7 +608,7 @@ function wireAlkitabKhotbahHub(askVoiceFn) {
         e.preventDefault();
         e.stopPropagation();
         if (!currentVerse?.reference || !currentVerse?.text) {
-          showAlkitabToast("Buka ayat TB dulu untuk khotbah dari ayat ini.");
+          showAlkitabToast("Buka ayat Alkitab dulu untuk khotbah dari ayat ini.");
           return;
         }
         setPreacherPersona();
@@ -565,7 +652,7 @@ function wireAlkitabKhotbahHub(askVoiceFn) {
         e.preventDefault();
         e.stopPropagation();
         if (!currentVerse?.reference || !currentVerse?.text) {
-          showAlkitabToast("Buka ayat TB dulu untuk renungan live.");
+          showAlkitabToast("Buka ayat Alkitab dulu untuk renungan live.");
           return;
         }
         askVoiceFn(
@@ -588,8 +675,18 @@ function wireAlkitabKhotbahHub(askVoiceFn) {
 }
 
 async function fetchVerse(ref) {
-  const res = await fetch(apiUrl(`/api/alkitab/verse?ref=${encodeURIComponent(ref)}`));
-  return res.json();
+  const preferKjv = currentVersionMode === "kjv" || getEffectiveBibleVersion() === "kjv";
+  if (preferKjv) {
+    const kjv = await lookupKjvVerse(ref);
+    if (kjv?.found && kjv.text) return kjv;
+  }
+  const tb = await lookupVerse(ref);
+  if (tb?.found && tb.text) return tb;
+  if (!preferKjv) {
+    const kjv = await lookupKjvVerse(ref);
+    if (kjv?.found && kjv.text) return kjv;
+  }
+  return tb || { reference: ref, text: "", found: false };
 }
 
 async function loadVerseIntoCard(ref) {
@@ -741,23 +838,20 @@ export async function refreshHomeEmbedBadge() {
   }
 }
 
-function voiceTimeLocale() {
-  return getSpeechLocale();
-}
-
-function voiceEmptyStateHtml() {
-  return `
-    <div class="voice-empty-state" id="voice-empty-state">
-      <div class="empty-sacred-icon">🕊️</div>
-      <p class="empty-title">${escapeHtml(t("voice.empty.title"))}</p>
-      <p class="empty-desc">${escapeHtml(t("voice.empty.descClear"))}</p>
-    </div>
-  `;
-}
-
 function setAlkitabHint(text) {
   const el = document.getElementById("alkitab-hint");
   if (el) el.textContent = text;
+}
+
+/** @param {string} [detail] Sub-hint dari Gemini (jangan duplikasi judul "Menghubungkan…"). */
+function setVoiceConnectingUi(detail) {
+  setVoiceTapLabel("connecting");
+  const title = t("voice.state.connecting");
+  const sub =
+    detail && detail !== title && detail !== t("voice.hint.connecting")
+      ? detail
+      : t("voice.conn.preparing");
+  setAlkitabHint(sub);
 }
 
 /** @param {"idle" | "active" | "error" | "connecting"} mode */
@@ -814,7 +908,8 @@ function blockNavFromVoiceLongPress() {
 
 /** Tab mic bawah: sentuh singkat = buka halaman saja; tahan ~1 d = on/off live. */
 function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 300 } = {}) {
-  if (!el) return;
+  if (!el || el.dataset.voiceNavBound === "1") return;
+  el.dataset.voiceNavBound = "1";
   let timer = null;
   /** @type {ReturnType<typeof setTimeout> | null} */
   let visualTimer = null;
@@ -823,7 +918,7 @@ function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 3
   let startY = 0;
   const moveTolerance = 14;
 
-  function clearHold() {
+  function clearHold(ev) {
     if (timer) {
       clearTimeout(timer);
       timer = null;
@@ -834,6 +929,14 @@ function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 3
     }
     el.classList.remove("nav-voice-holding");
     window.__rhemaNavVoiceHoldActive = false;
+    const pid = ev?.pointerId;
+    if (pid != null) {
+      try {
+        el.releasePointerCapture?.(pid);
+      } catch {
+        /* ignore */
+      }
+    }
   }
 
   el.addEventListener(
@@ -851,7 +954,7 @@ function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 3
       el.setPointerCapture?.(e.pointerId);
       timer = window.setTimeout(() => {
         longPressFired = true;
-        clearHold();
+        clearHold(e);
         blockNavFromVoiceLongPress();
         if (transport.voice?.isActive?.() || voiceStartPending || anyInlineRenunganSessionActive()) {
           stopVoiceLive(transport);
@@ -868,7 +971,7 @@ function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 3
     "pointermove",
     (e) => {
       if (!timer) return;
-      if (Math.hypot(e.clientX - startX, e.clientY - startY) > moveTolerance) clearHold();
+      if (Math.hypot(e.clientX - startX, e.clientY - startY) > moveTolerance) clearHold(e);
     },
     true,
   );
@@ -877,7 +980,7 @@ function bindNavVoiceLongPress(el, transport, { delayMs = 900, visualDelayMs = 3
     "pointerup",
     (e) => {
       const wasLongPress = longPressFired;
-      clearHold();
+      clearHold(e);
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation?.();
@@ -925,6 +1028,7 @@ async function renderHomeTodayVerse() {
       textEl.textContent = `"${verse.text}"`;
       textEl.classList.remove("alkitab-loading");
       refEl.textContent = verse.reference || "—";
+      setVerseActionsState(Boolean(currentVerse?.text) || lectioVerseReady());
     } else if (textEl) {
       textEl.textContent = t("home.verse.unavailable");
       textEl.classList.remove("alkitab-loading");
@@ -938,234 +1042,40 @@ async function renderHomeTodayVerse() {
   }
 }
 
-const VOICE_HISTORY_STORAGE_KEY = "rhema-voice-conversation-history";
-const VOICE_MEMORY_SESSION = "rhema-voice-live";
-
-/** @returns {Array<{ id: string, role: "user" | "assistant", text: string, time: string }>} */
-function loadVoiceHistory() {
-  try {
-    const raw = localStorage.getItem(VOICE_HISTORY_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch {
-    return [];
-  }
-}
-
-/** @param {Array<{ id: string, role: "user" | "assistant", text: string, time: string }>} items */
-function saveVoiceHistory(items) {
-  try {
-    localStorage.setItem(VOICE_HISTORY_STORAGE_KEY, JSON.stringify(items.slice(-60)));
-  } catch {}
-}
-
-/** Auto-scroll hanya jika user sudah di bagian bawah — biar bisa scroll riwayat saat live. */
-function scrollVoiceTranscript(box, force = false) {
-  if (!box) return;
-  const gap = box.scrollHeight - box.scrollTop - box.clientHeight;
-  if (force || gap < 96) box.scrollTop = box.scrollHeight;
-}
-
-export function initVoiceTranscriptHistory() {
-  const box = document.getElementById("voice-transcript");
-  if (!box) return;
-  const history = loadVoiceHistory();
-  if (!history.length) return;
-
-  const empty = document.getElementById("voice-empty-state");
-  if (empty) empty.style.display = "none";
-
-  // If already populated with all items, no need to overwrite
-  const existingBubbles = box.querySelectorAll(".vt-line");
-  if (existingBubbles.length === history.length) return;
-
-  box.innerHTML = "";
-  for (const item of history) {
-    renderVoiceTranscriptBubble(item.role, item.text, item.time, item.id);
-  }
-  scrollVoiceTranscript(box, true);
-}
-
-function refreshVoiceTranscriptToTop() {
-  const box = document.getElementById("voice-transcript");
-  if (!box) return;
-  const history = loadVoiceHistory();
-  if (!history.length) return;
-
-  const empty = document.getElementById("voice-empty-state");
-  if (empty) empty.style.display = "none";
-
-  box.innerHTML = "";
-  for (const item of history) {
-    renderVoiceTranscriptBubble(item.role, item.text, item.time, item.id);
-  }
-  box.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-function renderVoiceTranscriptBubble(role, text, timeStr, id) {
-  const box = document.getElementById("voice-transcript");
-  if (!box) return null;
-  const empty = document.getElementById("voice-empty-state");
-  if (empty) empty.style.display = "none";
-
-  const isUser = role === "user";
-  const itemId = id || "vmsg-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
-  const time = timeStr || new Date().toLocaleTimeString(voiceTimeLocale(), { hour: "2-digit", minute: "2-digit" });
-
-  const line = document.createElement("div");
-  line.className = `vt-line ${isUser ? "user" : "assistant"}`;
-  line.id = itemId;
-  line.innerHTML = `
-    <div class="vt-meta-row">
-      <span class="vt-role-tag">${isUser ? t("voice.role.user") : t("voice.role.assistant")}</span>
-      <span class="vt-time-tag">${time}</span>
-    </div>
-    <div class="vt-bubble">${escapeHtml(text)}</div>
-  `;
-
-  box.appendChild(line);
-  scrollVoiceTranscript(box, false);
-  return line;
-}
-
-let liveAssistantBubble = null;
-let liveAssistantText = "";
-let liveUserBubble = null;
-let liveUserText = "";
-let assistantSilenceTimer = null;
-let suppressGeminiAssistantUntil = 0;
-
-function handleVoiceTranscriptStream(role, delta, final = false, moduleId = "") {
-  const box = document.getElementById("voice-transcript");
-  if (!box) return;
-
-  const isUser = role === "user";
-
-  // Jawaban lokal (pencipta, ingatan) — selalu tampilkan meski Gemini sedang di-suppress.
-  if (!isUser && moduleId) {
-    finalizeLiveAssistant();
-    finalizeLiveUser();
-    renderVoiceTranscriptBubble("assistant", delta || "…");
-    if (final && delta?.trim()) commitVoiceHistory("assistant", delta.trim());
-    return;
-  }
-
-  if (!isUser && Date.now() < suppressGeminiAssistantUntil) {
-    return;
-  }
-
-  if (isUser) {
-    if (!liveUserBubble) {
-      finalizeLiveAssistant();
-      const id = "vmsg-live-user";
-      liveUserBubble = renderVoiceTranscriptBubble("user", delta || "…", "", id);
-      liveUserText = delta || "";
-    } else {
-      liveUserText = delta || liveUserText;
-      const bubbleEl = liveUserBubble.querySelector(".vt-bubble");
-      if (bubbleEl) bubbleEl.textContent = liveUserText;
-      scrollVoiceTranscript(box);
-    }
-    if (final && liveUserText.trim()) {
-      commitVoiceHistory("user", liveUserText.trim());
-      if (liveUserBubble) liveUserBubble.id = "vmsg-" + Date.now();
-      liveUserBubble = null;
-      liveUserText = "";
-    }
-  } else {
-    // Assistant delta
-    if (!liveAssistantBubble) {
-      finalizeLiveUser();
-      const id = "vmsg-live-assistant";
-      liveAssistantText = delta || "";
-      liveAssistantBubble = renderVoiceTranscriptBubble("assistant", liveAssistantText || "…", "", id);
-    } else {
-      const prev = liveAssistantText;
-      if (delta && delta.startsWith(prev)) {
-        liveAssistantText = delta;
-      } else if (delta && !prev.endsWith(delta)) {
-        liveAssistantText = prev + delta;
-      }
-      const bubbleEl = liveAssistantBubble.querySelector(".vt-bubble");
-      if (bubbleEl) bubbleEl.textContent = liveAssistantText;
-    }
-    scrollVoiceTranscript(box);
-
-    if (assistantSilenceTimer) clearTimeout(assistantSilenceTimer);
-    assistantSilenceTimer = setTimeout(() => {
-      finalizeLiveAssistant();
-    }, 2200);
-
-    if (final && liveAssistantText.trim()) {
-      finalizeLiveAssistant();
-    }
-  }
-}
-
-function finalizeLiveUser() {
-  if (liveUserBubble && liveUserText.trim()) {
-    commitVoiceHistory("user", liveUserText.trim());
-    liveUserBubble.id = "vmsg-" + Date.now();
-  }
-  liveUserBubble = null;
-  liveUserText = "";
-}
-
-function finalizeLiveAssistant() {
-  if (assistantSilenceTimer) {
-    clearTimeout(assistantSilenceTimer);
-    assistantSilenceTimer = null;
-  }
-  if (liveAssistantBubble && liveAssistantText.trim()) {
-    commitVoiceHistory("assistant", liveAssistantText.trim());
-    liveAssistantBubble.id = "vmsg-" + Date.now();
-  }
-  liveAssistantBubble = null;
-  liveAssistantText = "";
-}
-
-if (typeof window !== "undefined") {
-  window.addEventListener("beforeunload", () => {
-    finalizeLiveAssistant();
-    finalizeLiveUser();
-  });
-}
-
-function commitVoiceHistory(role, text) {
-  if (!text?.trim()) return;
-  const history = loadVoiceHistory();
-  history.push({
-    id: "vmsg-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6),
-    role,
-    text: text.trim(),
-    time: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
-  });
-  saveVoiceHistory(history);
-
-  if (role === "user") {
-    const fact = parseExplicitMemory(text);
-    if (fact) {
-      document.dispatchEvent(new CustomEvent("rhema-memory-updated"));
-    }
-  }
-}
-
-function syncVoiceInteractionMemory() {
-  const history = loadVoiceHistory().slice(-10);
-  if (!history.length) return;
-  syncLocalSessionMemory(
-    localStorage,
-    VOICE_MEMORY_SESSION,
-    t("voice.memory.sessionTitle"),
-    history.map((h) => ({ role: h.role, text: h.text })),
-  );
-  document.dispatchEvent(new CustomEvent("rhema-memory-updated"));
-}
-
 /** Sapaan Shalom hanya untuk tap orb / tab Rhema AI — bukan tombol Dengar/Jelaskan. */
 let pendingOrbGreeting = false;
 let voiceStartPending = false;
+let voiceErrorLatch = false;
+/** @type {ReturnType<typeof setTimeout> | null} */
+let voiceConnectWatchdog = null;
 /** @type {ReturnType<typeof setTimeout> | null} */
 let orbGreetingTimer = null;
+
+/** @param {import("../shared/chatCore.js").ChatTransport} transport */
+function armVoiceConnectWatchdog(transport) {
+  if (voiceConnectWatchdog) clearTimeout(voiceConnectWatchdog);
+  voiceConnectWatchdog = setTimeout(() => {
+    voiceConnectWatchdog = null;
+    if (!voiceStartPending || transport.voice?.isLive?.()) return;
+    voiceStartPending = false;
+    voiceErrorLatch = true;
+    const msg = t("voice.conn.timeout");
+    setVoiceTapLabel("error", msg);
+    setAlkitabHint(msg);
+    try {
+      transport.voice?.stop?.();
+    } catch {
+      /* ignore */
+    }
+  }, 14000);
+}
+
+function clearVoiceConnectWatchdog() {
+  if (voiceConnectWatchdog) {
+    clearTimeout(voiceConnectWatchdog);
+    voiceConnectWatchdog = null;
+  }
+}
 
 function cancelOrbGreeting() {
   pendingOrbGreeting = false;
@@ -1176,15 +1086,18 @@ function cancelOrbGreeting() {
 }
 
 /** Siapkan prompt suara dari tombol tab lain — batalkan sapaan Shalom yang tertunda. */
-function prepareVoiceUserPrompt() {
+function prepareVoiceUserPrompt({ keepInline = false } = {}) {
   cancelOrbGreeting();
   window.__rhemaVoiceUserPromptPending = true;
-  window.__rhemaInlineVoiceUntil = 0;
-  window.__rhemaInlineVoiceSession = false;
+  if (!keepInline && !isLectioSessionActive()) {
+    window.__rhemaInlineVoiceUntil = 0;
+    window.__rhemaInlineVoiceSession = false;
+  }
 }
 
 function stopVoiceLive(transport) {
   voiceStartPending = false;
+  clearVoiceConnectWatchdog();
   cancelOrbGreeting();
   window.__rhemaVoiceUserPromptPending = false;
   window.__rhemaInlineVoiceUntil = 0;
@@ -1203,6 +1116,7 @@ function stopVoiceLive(transport) {
 }
 
 function startVoiceLive(transport, { switchScreen = true } = {}) {
+  voiceErrorLatch = false;
   // Percakapan Live eksplisit — jangan biarkan sesi Saat Teduh / renungan inline hijack voice.
   const hadInlineSession = anyInlineRenunganSessionActive();
   if (hadInlineSession) {
@@ -1221,7 +1135,16 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
       /* ignore */
     }
   }
-  if (transport.voice?.isActive?.() || voiceStartPending) return;
+  if (voiceStartPending) return;
+  if (transport.voice?.isTextListenSession?.()) {
+    try {
+      transport.voice.stop?.();
+    } catch {
+      /* ignore */
+    }
+  } else if (transport.voice?.isActive?.()) {
+    return;
+  }
   if (switchScreen) goToRhemaVoice({ force: isHomeScreenActive() });
   pendingOrbGreeting = true;
   markSermonEnded();
@@ -1230,7 +1153,7 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
   } catch {
     /* private mode */
   }
-    if (!googleKeyConfigured()) {
+  if (!getStoredGoogleKey()) {
     setVoiceTapLabel("error", "API key belum diset");
     setAlkitabHint(t("voice.hint.byok"));
     openByokOnboarding({ startStep: 4 });
@@ -1242,15 +1165,13 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
     pendingOrbGreeting = false;
     return;
   }
-  setVoiceTapLabel("connecting");
-  voiceStartPending = true;
   unlockNativeElementAudio();
   void warmupNativePlayback();
   void import("./nativeMicPermission.js").then((m) => m.warmupNativeMicPermission?.());
 
   const connectLive = () => {
-    if (!voiceStartPending) return;
-    setAlkitabHint(t("voice.hint.connecting"));
+    voiceStartPending = true;
+    setVoiceConnectingUi();
     transport.voice.start({ mic: true });
   };
 
@@ -1259,19 +1180,24 @@ function startVoiceLive(transport, { switchScreen = true } = {}) {
     return;
   }
 
+  setVoiceTapLabel("connecting");
   setAlkitabHint(t("voice.hint.checkingKey"));
-  void validateGoogleKeyForVoice().then((check) => {
-    if (!transport.voice) voiceStartPending = false;
-    if (!check.ok) {
-      voiceStartPending = false;
+  void validateGoogleKeyForVoice()
+    .then((check) => {
+      if (!check.ok) {
+        pendingOrbGreeting = false;
+        setVoiceTapLabel("error", "API key tidak valid");
+        setAlkitabHint(formatVoiceError(check.error) || t("byok.error.invalidVoice"));
+        openByokOnboarding({ startStep: 4 });
+        return;
+      }
+      connectLive();
+    })
+    .catch((err) => {
       pendingOrbGreeting = false;
-      setVoiceTapLabel("error", "API key tidak valid");
-      setAlkitabHint(formatVoiceError(check.error) || t("byok.error.invalidVoice"));
-      openByokOnboarding({ startStep: 4 });
-      return;
-    }
-    connectLive();
-  });
+      setVoiceTapLabel("error", t("voice.hint.sessionError"));
+      setAlkitabHint(err instanceof Error ? err.message : String(err));
+    });
 }
 
 function refreshHomePillarHighlight() {
@@ -1287,7 +1213,17 @@ function markHomePillar(pillar) {
   refreshHomePillarHighlight();
 }
 
+let homeLoadInFlight = null;
+
 export async function loadHome() {
+  if (homeLoadInFlight) return homeLoadInFlight;
+  homeLoadInFlight = loadHomeImpl().finally(() => {
+    homeLoadInFlight = null;
+  });
+  return homeLoadInFlight;
+}
+
+async function loadHomeImpl() {
   refreshHomeGreeting();
   refreshHomePillarHighlight();
   try {
@@ -1400,9 +1336,23 @@ export async function refreshActiveScreen(screen) {
   document.querySelector(`#screen-${screen} .mobile-scroll`)?.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+/** @param {string} label @param {() => void} fn */
+function safeWire(label, fn) {
+  try {
+    fn();
+  } catch (err) {
+    console.error(`[rhema] wire ${label}:`, err);
+  }
+}
+
 /** @param {import("../shared/chatCore.js").ChatTransport & { voice?: object }} transport */
 /** @param {(name: string) => void} go */
 export function initAlkitabPanel(transport, go) {
+  alkitabVoiceTransport = transport;
+  prefetchVoiceTabAssets();
+  window.__rhemaInlineVoiceUntil = 0;
+  window.__rhemaInlineVoiceSession = false;
+  window.__rhemaVoiceUserPromptPending = false;
   shellGo = go;
   navigate = (screen) => {
     if (screen === "voice" && shouldBlockVoiceScreenNav()) return;
@@ -1436,10 +1386,12 @@ export function initAlkitabPanel(transport, go) {
     if (msg) showAlkitabToast(String(msg));
   });
 
-  function askVoiceFn(text, displayText, { stayOnScreen = false } = {}) {
-    const t = text.trim();
-    if (!t) return;
+  async function askVoiceFn(text, displayText, { stayOnScreen = false } = {}) {
+    let spoken = String(text || "").trim();
+    if (!spoken) return;
 
+    voiceErrorLatch = false;
+    const isDengar = /^dengar\s*[—–-]/i.test(spoken);
     unlockNativeElementAudio();
 
     if (!googleKeyConfigured()) {
@@ -1449,43 +1401,106 @@ export function initAlkitabPanel(transport, go) {
       return;
     }
 
-    prepareVoiceUserPrompt();
+    if (!transport.voice?.sendTextOrStart) {
+      setAlkitabHint(t("voice.hint.moduleNotReady"));
+      setVoiceTapLabel("error", t("voice.hint.moduleNotReady"));
+      return;
+    }
+
+    prepareVoiceUserPrompt({ keepInline: isLectioSessionActive() });
+    pendingOrbGreeting = false;
 
     if (!stayOnScreen) {
-      goToRhemaVoice({ force: true });
+      if (isVoiceScreenActive()) prefetchVoiceTabAssets();
+      else goToRhemaVoice({ force: true });
     }
-    pendingOrbGreeting = false;
+
     finalizeLiveAssistant();
     finalizeLiveUser();
-    renderVoiceTranscriptBubble("user", displayText || t);
-    commitVoiceHistory("user", displayText || t);
+    renderVoiceTranscriptBubble("user", displayText || spoken);
+    commitVoiceHistory("user", displayText || spoken);
     if (input) input.value = "";
 
-    const keepAmbient = Boolean(window.__rhemaNightPodAmbientActive);
-    // Hentikan TTS/ambient saja — jangan reset AudioContext native sebelum sesi live mulai.
+    const keepAmbient = Boolean(window.__rhemaNightPodAmbientActive) || isLectioSessionActive();
     document.dispatchEvent(
       new CustomEvent("rhema-audio-stop-all", { detail: { keepVoiceSession: true, keepAmbient } }),
     );
     void warmupNativePlayback();
     unlockNativeElementAudio();
 
-    const local = handleVoiceLocalCommand(t, (msg) => transport.broadcast?.(msg), {
+    const local = handleVoiceLocalCommand(spoken, (msg) => transport.broadcast?.(msg), {
       userAlreadyShown: true,
     });
     if (local.handled) {
-      suppressGeminiAssistantUntil = Date.now() + 12000;
+      suppressGeminiAssistantFor();
       setAlkitabHint(t("voice.hint.done"));
       setVoiceTapLabel("active");
       return;
     }
 
-    setAlkitabHint(t("voice.hint.connecting"));
-    setVoiceTapLabel("active");
+    if (isDengar) {
+      const cached = getCachedDengarPrompt(spoken);
+      if (cached) {
+        spoken = cached;
+      } else {
+        setAlkitabHint(t("voice.conn.preparing"));
+        spoken = await enrichVoiceListenPrompt(spoken);
+      }
+      if (transport.voice?.isActive?.() && !transport.voice?.isTextListenSession?.()) {
+        try {
+          transport.voice.stop?.();
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+
+    if (transport.voice?.isLive?.()) {
+      transport.voice.interruptPlayback?.();
+      transport.voice.prepareTextListen?.();
+      setVoiceTapLabel("active");
+      setAlkitabHint(t("voice.conn.waitRhema"));
+    } else {
+      setVoiceConnectingUi();
+      voiceStartPending = true;
+      armVoiceConnectWatchdog(transport);
+    }
     transport.voiceProfile = "alkitab-voice";
-    transport.voice?.sendTextOrStart?.(t, { mic: false, preferClientContent: false });
+    void transport.voice.sendTextOrStart(spoken, {
+      mic: false,
+      preferClientContent: true,
+      inlineListen: true,
+    }).catch((err) => {
+      voiceStartPending = false;
+      voiceErrorLatch = true;
+      const detail = err instanceof Error ? err.message : String(err);
+      setVoiceTapLabel("error", detail);
+      setAlkitabHint(detail);
+      console.error("[rhema-voice] sendTextOrStart:", err);
+    });
   }
   askVoice = askVoiceFn;
   window.__rhemaPrepareVoiceUserPrompt = prepareVoiceUserPrompt;
+  window.__rhemaListenToday = () => {
+    if (!todayRhemaVerse?.reference || !todayRhemaVerse.text) {
+      showAlkitabToast(t("voice.hint.verseNotReady"));
+      void renderHomeTodayVerse();
+      return;
+    }
+    askVoiceFn(
+      `Bacakan ayat hari ini dari ${todayRhemaVerse.reference}: "${todayRhemaVerse.text}" dan berikan berkat singkat.`,
+      `Dengar — ${todayRhemaVerse.reference}`,
+    );
+    markTodayRead();
+  };
+  window.__rhemaExplainToday = () => {
+    if (!todayRhemaVerse?.reference) {
+      showAlkitabToast(t("voice.hint.verseNotReady"));
+      void renderHomeTodayVerse();
+      return;
+    }
+    askVoiceFn(`Penjelasan arti dari ayat ${todayRhemaVerse.reference}`, `Jelaskan — ${todayRhemaVerse.reference}`);
+  };
 
   try {
     initHomeWorship(transport, {
@@ -1512,23 +1527,20 @@ export function initAlkitabPanel(transport, go) {
 
   document.getElementById("btn-voice-clear")?.addEventListener("click", () => {
     if (confirm(t("voice.transcript.clearConfirm"))) {
-      saveVoiceHistory([]);
-      liveAssistantBubble = null;
-      liveAssistantText = "";
-      liveUserBubble = null;
-      liveUserText = "";
-      const box = document.getElementById("voice-transcript");
-      if (box) box.innerHTML = voiceEmptyStateHtml();
+      clearVoiceTranscriptHistory();
     }
   });
 
-  wireRhemaVoiceHubButton("btn-alkitab-voice-hero", transport);
+  safeWire("voice-hub", () => {
+    wireRhemaVoiceHubButton("btn-alkitab-voice-hero", transport);
 
-  window.__rhemaStartVoiceLive = () => {
-    goToRhemaVoice({ force: true });
-    startVoiceLive(transport, { switchScreen: false });
-  };
+    window.__rhemaStartVoiceLive = () => {
+      goToRhemaVoice({ force: true });
+      startVoiceLive(transport, { switchScreen: false });
+    };
+  });
 
+  safeWire("voice-composer", () => {
   document.getElementById("btn-voice-composer-mic")?.addEventListener("click", (e) => {
     e.preventDefault();
     if (voiceStartPending) return;
@@ -1555,14 +1567,15 @@ export function initAlkitabPanel(transport, go) {
   });
 
   bindNavVoiceLongPress(document.querySelector(".nav-item-voice"), transport);
+  wireVoiceOrbTap(voiceOrb, transport);
+  });
 
-  initVoiceSermonBar(askVoiceFn);
-  initSermonLiveContinuer(transport);
+  safeWire("sermon-bar", () => {
+    initVoiceSermonBar(askVoiceFn);
+    initSermonLiveContinuer(transport);
+  });
 
-  function shellGoVoice() {
-    goToRhemaVoice({ force: true });
-  }
-
+  safeWire("home-alkitab-buttons", () => {
   // Tiga pilar Beranda — Baca · Bicara · Berdoa
   document.getElementById("pillar-goto-read")?.addEventListener("click", () => {
     markHomePillar("read");
@@ -1596,33 +1609,7 @@ export function initAlkitabPanel(transport, go) {
     navigate("doa");
   });
 
-  // Aksi Bento Ayat Hari Ini
-  document.getElementById("btn-home-listen-today")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!todayRhemaVerse?.reference || !todayRhemaVerse.text) {
-      setAlkitabHint(t("voice.hint.verseNotReady"));
-      void renderHomeTodayVerse();
-      return;
-    }
-    askVoiceFn(
-      `Bacakan ayat hari ini dari ${todayRhemaVerse.reference}: "${todayRhemaVerse.text}" dan berikan berkat singkat.`,
-      undefined,
-      { stayOnScreen: true },
-    );
-    markTodayRead();
-  });
-
-  document.getElementById("btn-home-explain-today")?.addEventListener("click", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!todayRhemaVerse?.reference) {
-      setAlkitabHint(t("voice.hint.verseNotReady"));
-      void renderHomeTodayVerse();
-      return;
-    }
-    askVoiceFn(`Penjelasan arti dari ayat ${todayRhemaVerse.reference}`, undefined, { stayOnScreen: true });
-  });
+  /* Dengar/Jelaskan: window.__rhemaListenToday / __rhemaExplainToday via navBootstrap */
 
   document.getElementById("btn-home-open-today")?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -1704,28 +1691,91 @@ export function initAlkitabPanel(transport, go) {
     console.warn("[rhema-ai] initAlkitabPowerFeatures error:", err);
   }
   wireAlkitabKhotbahHub(askVoiceFn);
+  });
 
+  safeWire("lectio-divina", () => {
   // Tombol Lectio Divina 4 Langkah
   document.getElementById("btn-alkitab-lectio")?.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!currentVerse?.reference || !currentVerse.text) return;
-    openLectioDivinaModal(currentVerse, {
-      autoStart: true,
-      waitPlaybackIdle: async () => {
-        const idle = transport.voice?.waitForPlaybackIdle?.(120_000);
-        if (!idle) return;
-        await Promise.race([idle.catch(() => {}), new Promise((r) => setTimeout(r, 120_500))]);
-      },
-      onStartVoiceLectio: (persona, step) => {
-        const labels = { 1: "Silencio", 2: "Lectio", 3: "Meditatio", 4: "Oratio" };
-        const prompt = buildLectioVoicePrompt(currentVerse, step, persona);
-        window.__rhemaInlineVoiceUntil = Date.now() + 12 * 60 * 1000;
-        askVoiceFn(prompt, `🧘 Lectio Divina · ${labels[step] || step}`, { stayOnScreen: true });
-      },
-    });
+    e.stopImmediatePropagation?.();
+    const verse =
+      currentVerse?.reference && currentVerse.text
+        ? currentVerse
+        : todayRhemaVerse?.reference && todayRhemaVerse.text
+          ? todayRhemaVerse
+          : null;
+    if (!verse) {
+      document.dispatchEvent(new CustomEvent("rhema-alkitab-toast", { detail: t("lectio.needVerse") }));
+      return;
+    }
+    try {
+      const canVoice = Boolean(getStoredGoogleKey());
+      openLectioDivinaModal(verse, {
+        autoStart: canVoice,
+        waitPlaybackIdle: async () => {
+          const idle = transport.voice?.waitForPlaybackIdle?.(120_000);
+          if (!idle) return;
+          await Promise.race([idle.catch(() => {}), new Promise((r) => setTimeout(r, 120_500))]);
+        },
+        onStartVoiceLectio: (persona, step) => {
+          if (!getStoredGoogleKey()) {
+            notifyLectioVoiceError();
+            return;
+          }
+          const prompt = buildLectioVoicePrompt(verse, step, persona);
+          const startLectioVoice = () => {
+            try {
+              window.__rhemaInlineVoiceUntil = Date.now() + 12 * 60 * 1000;
+              window.__rhemaInlineVoiceSession = true;
+              prepareVoiceUserPrompt();
+              window.__rhemaInlineVoiceUntil = Date.now() + 12 * 60 * 1000;
+              window.__rhemaInlineVoiceSession = true;
+              unlockNativeElementAudio();
+              void warmupNativePlayback();
+              transport.voiceProfile = "alkitab-voice";
+              if (step === 1 && transport.voice?.isActive?.()) {
+                transport.voice.stop?.();
+              }
+              if (!transport.voice?.sendTextOrStart) {
+                notifyLectioVoiceError(t("voice.hint.moduleNotReady"));
+                return;
+              }
+              void transport.voice.sendTextOrStart(prompt, {
+                mic: false,
+                preferClientContent: false,
+                inlineListen: false,
+              });
+            } catch (err) {
+              console.warn("[rhema] lectio voice:", err);
+              notifyLectioVoiceError(err instanceof Error ? err.message : String(err));
+            }
+          };
+          if (isGoogleKeyLiveValidated()) {
+            startLectioVoice();
+            return;
+          }
+          void validateGoogleKeyForVoice()
+            .then((check) => {
+              if (!check.ok) {
+                notifyLectioVoiceError(formatVoiceError(check.error) || t("byok.error.invalidVoice"));
+                return;
+              }
+              startLectioVoice();
+            })
+            .catch((err) => {
+              notifyLectioVoiceError(err instanceof Error ? err.message : String(err));
+            });
+        },
+      });
+    } catch (err) {
+      console.warn("[rhema] lectio open:", err);
+      document.dispatchEvent(new CustomEvent("rhema-alkitab-toast", { detail: t("lectio.error.open") }));
+    }
+  });
   });
 
+  safeWire("voice-transport", () => {
   transport.onMessage?.((msg) => {
     const m = /** @type {{type?:string,reference?:string,text?:string,found?:boolean,status?:string,profile?:string,detail?:string,role?:string,delta?:string,final?:boolean}} */ (msg);
 
@@ -1763,7 +1813,7 @@ export function initAlkitabPanel(transport, go) {
     }
 
     if (m.type === "voiceLocalQueryHandled") {
-      suppressGeminiAssistantUntil = Date.now() + 12000;
+      suppressGeminiAssistantFor();
       finalizeLiveAssistant();
     }
 
@@ -1793,57 +1843,79 @@ export function initAlkitabPanel(transport, go) {
       voiceOrb?.classList.toggle("live", m.status === "live" || m.status === "connecting");
       voiceOrb?.classList.toggle("connecting", m.status === "connecting");
       if (m.status === "live" && m.profile === "alkitab-voice") {
+        if (m.warm) return;
         voiceStartPending = false;
+        clearVoiceConnectWatchdog();
         setVoiceTapLabel("active");
+        if (isLectioSessionActive()) notifyLectioVoiceLive();
         if (pendingOrbGreeting && !window.__rhemaVoiceUserPromptPending) {
           pendingOrbGreeting = false;
-          const resume = hasVoiceConversationHistory();
-          orbGreetingTimer = setTimeout(() => {
-            orbGreetingTimer = null;
-            if (!window.__rhemaVoiceUserPromptPending) {
-              if (resume) deliverVoiceResumeContext(transport);
-              else deliverVoiceOpenGreeting(transport);
-            }
-          }, resume ? 350 : 900);
-          setAlkitabHint(resume ? t("voice.hint.resume") : t("voice.hint.greeting"));
+          if (hasVoiceConversationHistory()) {
+            setAlkitabHint(t("voice.hint.liveSpeak"));
+            void transport.voice.enableMic?.({ deferUntilIdle: false });
+          } else {
+            orbGreetingTimer = setTimeout(() => {
+              orbGreetingTimer = null;
+              if (!window.__rhemaVoiceUserPromptPending) deliverVoiceOpenGreeting(transport);
+            }, 500);
+            setAlkitabHint(t("voice.hint.greeting"));
+          }
         } else if (isSermonModeActive()) {
           setAlkitabHint(t("voice.hint.sermonExposition"));
+        } else if (isHomeScreenActive() && window.__rhemaInlineVoiceSession) {
+          setAlkitabHint(t("lectio.speak.2"));
         } else {
           setAlkitabHint(t("voice.hint.listenFirst"));
         }
       } else if (m.status === "off") {
         voiceStartPending = false;
-        window.__rhemaInlineVoiceUntil = 0;
-        window.__rhemaInlineVoiceSession = false;
+        clearVoiceConnectWatchdog();
+        if (!isLectioSessionActive()) {
+          window.__rhemaInlineVoiceUntil = 0;
+          window.__rhemaInlineVoiceSession = false;
+        }
         window.__rhemaVoiceUserPromptPending = false;
         cancelOrbGreeting();
         finalizeLiveAssistant();
         finalizeLiveUser();
-        setVoiceTapLabel("idle");
-        setAlkitabHint(t("voice.hint.idle"));
+        if (voiceErrorLatch) {
+          voiceErrorLatch = false;
+        } else {
+          setVoiceTapLabel("idle");
+          setAlkitabHint(t("voice.hint.idle"));
+        }
         voiceOrb?.classList.remove("live", "connecting", "voice-capturing");
       } else if (m.status === "error") {
         voiceStartPending = false;
+        voiceErrorLatch = true;
+        clearVoiceConnectWatchdog();
         cancelOrbGreeting();
         const detail = formatVoiceError(m.detail) || m.detail || t("voice.hint.sessionError");
+        if (isLectioSessionActive()) notifyLectioVoiceError(detail);
         setVoiceTapLabel("error", detail);
         setAlkitabHint(detail);
         voiceOrb?.classList.remove("live", "connecting", "voice-capturing");
       } else if (m.status === "connecting") {
         voiceStartPending = true;
-        setVoiceTapLabel("connecting");
-        setAlkitabHint(m.detail || t("voice.hint.connecting"));
+        armVoiceConnectWatchdog(transport);
+        setVoiceConnectingUi(m.detail);
+        if (isLectioSessionActive()) {
+          notifyLectioVoiceConnecting(m.detail || t("lectio.status.connecting"));
+        }
       }
     }
+  });
   });
 
   document.addEventListener("rhema-locale-ui-applied", () => {
     refreshVoiceLocaleUi(transport);
   });
 
-  void loadHome();
   void loadRenungan();
   void loadAlkitabProgram();
+
+  window.__RHEMA_PANEL_READY = true;
+  document.dispatchEvent(new CustomEvent("rhema-panel-ready"));
 
   return { loadHome, loadRenungan, loadDoa, loadAlkitabProgram, openVerse };
 }

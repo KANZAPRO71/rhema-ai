@@ -5,6 +5,7 @@ import { validateGoogleKeyLiveWebSocket } from "./byokLiveValidate.js";
 import {
   isSecureKeyStorageAvailable,
   migrateLegacyKeyToSecure,
+  secureGetItem,
   secureRemoveItem,
   secureSetItem,
 } from "./secureKeyStorage.js";
@@ -17,14 +18,16 @@ export function geminiImageGenerateContentUrl(modelId = GEMINI_IMAGE_MODEL) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${id}:generateContent`;
 }
 
-/** Model tunggal untuk voice live, chat, vision, JSON, dan gambar. */
+/** Model Live / Bidi — hanya suara WebSocket. */
 export const GEMINI_MODEL = "gemini-3.1-flash-live-preview";
 
-/** @deprecated Alias — gunakan GEMINI_MODEL */
-export const GEMINI_BROWSER_CHAT_MODEL = GEMINI_MODEL;
+/** REST chat, vision, JSON — model stabil + fallback. */
+export const GEMINI_REST_MODEL = "gemini-2.5-flash";
 
-/** Tidak ada fallback — satu model untuk semua fungsi. */
-export const GEMINI_CHAT_FALLBACK_MODELS = [GEMINI_MODEL];
+/** @deprecated Alias — REST chat */
+export const GEMINI_BROWSER_CHAT_MODEL = GEMINI_REST_MODEL;
+
+export const GEMINI_CHAT_FALLBACK_MODELS = [GEMINI_REST_MODEL, "gemini-2.0-flash"];
 
 export const RHEMA_VOICE_LOCKED = {
   voiceName: "Puck",
@@ -39,11 +42,11 @@ let memoryKeyCache = null;
 let secureKeyBootstrapped = false;
 
 export function noteGeminiModelSuccess(modelId) {
-  lastGoodGeminiModel = GEMINI_MODEL;
+  lastGoodGeminiModel = modelId || GEMINI_REST_MODEL;
 }
 
 export function geminiChatModelCandidates(_preferred) {
-  return [GEMINI_MODEL];
+  return GEMINI_CHAT_FALLBACK_MODELS.slice();
 }
 
 export function resolveGeminiLiveModel() {
@@ -55,8 +58,16 @@ export function geminiModelResource(modelId = GEMINI_MODEL) {
   return id.startsWith("models/") ? id : `models/${id}`;
 }
 
-export function geminiGenerateContentUrl(modelId = GEMINI_MODEL) {
+export function geminiGenerateContentUrl(modelId = GEMINI_REST_MODEL) {
   return `https://generativelanguage.googleapis.com/v1beta/${geminiModelResource(modelId)}:generateContent`;
+}
+
+/** Header REST — jangan taruh key di query string. Live WSS tetap ?key= (syarat Bidi API). */
+export function geminiRestHeaders(apiKey) {
+  return {
+    "Content-Type": "application/json",
+    "x-goog-api-key": String(apiKey || "").trim(),
+  };
 }
 
 export function geminiLiveWsUrl(apiKey) {
@@ -85,9 +96,32 @@ export async function initGoogleKeySecureStorage() {
 
 export function getStoredGoogleKey() {
   if (memoryKeyCache) return memoryKeyCache;
+  if (isSecureKeyStorageAvailable()) return "";
   const stored = (localStorage.getItem(GOOGLE_KEY_STORAGE) || "").trim();
   if (stored) return stored;
   return getBundledGoogleKey();
+}
+
+/** Muat ulang key dari secure storage (Android) sebelum koneksi live. */
+export async function ensureGoogleKeyLoaded() {
+  if (memoryKeyCache) return memoryKeyCache;
+  if (isSecureKeyStorageAvailable()) {
+    try {
+      const secure = await secureGetItem(GOOGLE_KEY_STORAGE);
+      if (secure) {
+        memoryKeyCache = secure;
+        try {
+          localStorage.setItem(GOOGLE_KEY_FLAG, "1");
+        } catch {
+          /* ignore */
+        }
+        return secure;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  return getStoredGoogleKey();
 }
 
 export function setStoredGoogleKey(key) {
@@ -116,7 +150,16 @@ export function setStoredGoogleKey(key) {
 }
 
 export function googleKeyConfigured() {
-  return Boolean(getStoredGoogleKey()) || localStorage.getItem(GOOGLE_KEY_FLAG) === "1";
+  return Boolean(getStoredGoogleKey());
+}
+
+export function markGoogleKeyLiveValidated() {
+  try {
+    localStorage.setItem("rhema-google-key-validated-at", String(Date.now()));
+    localStorage.setItem("rhema-google-key-live-validated", "1");
+  } catch {
+    /* ignore */
+  }
 }
 
 /** True jika Live API sudah lolos handshake di perangkat ini (hindari cek ulang tiap tap). */
@@ -140,9 +183,17 @@ export async function validateGoogleKeyForVoice() {
     return { ok: false, error: "no_key" };
   }
   try {
-    const listRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`,
-    );
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12_000);
+    let listRes;
+    try {
+      listRes = await fetch("https://generativelanguage.googleapis.com/v1beta/models", {
+        signal: controller.signal,
+        headers: { "x-goog-api-key": key },
+      });
+    } finally {
+      clearTimeout(timer);
+    }
     if (!listRes.ok) {
       const data = await listRes.json().catch(() => ({}));
       const msg = data?.error?.message || `HTTP ${listRes.status}`;
@@ -151,12 +202,7 @@ export async function validateGoogleKeyForVoice() {
 
     const liveCheck = await validateGoogleKeyLiveWebSocket(key);
     if (liveCheck.ok) {
-      try {
-        localStorage.setItem("rhema-google-key-validated-at", String(Date.now()));
-        localStorage.setItem("rhema-google-key-live-validated", "1");
-      } catch {
-        /* ignore */
-      }
+      markGoogleKeyLiveValidated();
       return { ok: true, mode: "live_ws" };
     }
     return {

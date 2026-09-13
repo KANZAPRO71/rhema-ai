@@ -11,7 +11,7 @@ export function registerScreenNavigator(fn) {
 }
 
 const REMOVABLE_OVERLAY_SELECTOR =
-  "body > .apple-modal-overlay:not(#modal-share-verse):not(#sermon-assistant-modal), body > #rhema-story-modal, body > #lectio-divina-modal";
+  "body > .apple-modal-overlay:not(#modal-share-verse):not(#sermon-assistant-modal):not(#lectio-divina-modal), body > #rhema-story-modal";
 
 function hideShareModal() {
   const shareModal = document.getElementById("modal-share-verse");
@@ -31,6 +31,9 @@ export function dismissBlockingOverlays() {
   document.getElementById("modal-ambient-picker")?.classList.add("hidden");
 
   document.getElementById("approval-host")?.classList.remove("blocking");
+  document.getElementById("byok-onboard")?.classList.remove("active");
+  document.getElementById("region-onboard")?.classList.remove("active");
+  document.body.classList.remove("byok-onboard-open");
 
   for (const el of document.querySelectorAll(REMOVABLE_OVERLAY_SELECTOR)) {
     el.remove();
@@ -44,7 +47,7 @@ export function dismissBlockingOverlays() {
 function isInteractiveOpen(el) {
   return Boolean(
     el?.closest(
-      ".apple-modal-overlay.active, .mobile-modal:not(.hidden), #settings-panel:not(.hidden), .session-drawer:not(.hidden), #byok-onboard.active",
+      ".apple-modal-overlay.active, .mobile-modal:not(.hidden), #settings-panel:not(.hidden), .session-drawer:not(.hidden), #byok-onboard.active, #region-onboard.active",
     ),
   );
 }
@@ -73,6 +76,13 @@ function handleRescueClick(e) {
 
   const stuckOverlay = target.closest("body > .apple-modal-overlay.active");
   if (stuckOverlay && (target === stuckOverlay || target.classList.contains("modal-backdrop"))) {
+    if (stuckOverlay.id === "lectio-divina-modal") {
+      if (Date.now() - Number(window.__rhemaLectioOpenedAt || 0) < 900) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      return;
+    }
     if (stuckOverlay.id === "modal-share-verse") {
       hideShareModal();
       document.body.style.overflow = "";
@@ -136,6 +146,15 @@ function handleRescueClick(e) {
 
 export function initUiGuard() {
   dismissBlockingOverlays();
+
+  window.setTimeout(() => {
+    if (!window.__RHEMA_PANEL_READY) {
+      console.error(
+        "[rhema-ui-guard] Panel belum siap — initAlkitabPanel gagal sebagian. Coba refresh (Ctrl+Shift+R).",
+      );
+      dismissBlockingOverlays();
+    }
+  }, 6000);
 
   document.addEventListener("click", handleRescueClick, true);
   document.addEventListener("touchend", handleRescueClick, true);

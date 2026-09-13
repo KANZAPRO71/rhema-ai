@@ -2,7 +2,7 @@
  * Biblical Genealogy & Messianic Lineage Engine — Silsilah & Peta Relasi Tokoh Alkitab Interaktif dari Kejadian hingga Kristus.
  */
 
-import { escapeHtml } from "./platform.js";
+import { escapeHtml } from "./markdown.js";
 
 export const MESSIANIC_GENEALOGY = [
   {

@@ -30,8 +30,8 @@ function loadVoiceHistory() {
 
 /** @param {object | null} passage */
 function formatPassageBlock(passage) {
-  if (!passage?.found) return "(Bahan firman TB tidak tersedia)\n";
-  const lines = [`Referensi: ${passage.reference} (TB / LAI)`, ""];
+  if (!passage?.found) return "(Bahan firman tidak tersedia)\n";
+  const lines = [`Referensi: ${passage.reference} (Alkitab)`, ""];
   for (const v of passage.primary || []) {
     if (v.found && v.text) lines.push(`${v.reference}: "${v.text}"`);
   }
@@ -81,7 +81,7 @@ export async function buildSermonExportText(opts = {}) {
     `Tanggal: ${date}`,
     ref ? `Ayat: ${ref}` : "",
     "",
-    "=== BAHAN FIRMAN TB ===",
+    "=== BAHAN FIRMAN ===",
     formatPassageBlock(passage),
     "=== TRANSKRIP PERCAKAPAN ===",
     "",
@@ -98,7 +98,7 @@ export async function buildSermonExportText(opts = {}) {
     }
   }
 
-  lines.push("---", "Diekspor dari Rhema AI · TB/LAI offline");
+  lines.push("---", "Diekspor dari Rhema AI · Alkitab offline");
   return lines.join("\n");
 }
 

@@ -5238,6 +5238,20 @@ body.mobile-body .cloud-card {
 /* --- Lectio Divina Modal --- */
 .lectio-overlay {
   background: rgba(18, 16, 22, 0.72);
+  z-index: 12050;
+  pointer-events: auto !important;
+}
+
+.lectio-overlay .lectio-sheet,
+.lectio-overlay .lectio-btn,
+.lectio-overlay button {
+  pointer-events: auto !important;
+}
+
+#btn-alkitab-voice.voice-orb-interactive,
+.voice-orb-display.voice-orb-interactive {
+  pointer-events: auto !important;
+  cursor: pointer;
 }
 
 .lectio-sheet {
@@ -8970,7 +8984,7 @@ body.mobile-body .card-goto-voice-hub .cta-hint {
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 20050;
+  z-index: 2147483646;
   background: rgba(28, 24, 18, 0.55);
   align-items: flex-end;
   justify-content: center;
@@ -9275,6 +9289,26 @@ body.byok-onboard-open {
   margin-top: 8px;
 }
 
+.region-onboard-footer:has(#region-back[hidden]) {
+  grid-template-columns: 1fr;
+}
+
+.lang-wizard-sheet {
+  max-height: min(94dvh, 820px);
+}
+
+.lang-choice-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.lang-choice-card {
+  min-height: 72px;
+}
+
+.lang-choice-card strong {
+  font-size: 0.92rem;
+}
+
 /* --- Beranda editorial refresh (bento · glass · carousel) --- */
 .beranda-hero--editorial {
   padding: 24px 18px 22px;
@@ -9377,6 +9411,11 @@ body.byok-onboard-open {
     0 0 22px rgba(42, 106, 134, 0.28);
 }
 
+html[data-rhema-boot="0913e"] .bento-verse-badge::after {
+  content: " 13e";
+  font-weight: 700;
+}
+
 .bento-tile-verse--hero {
   background: linear-gradient(165deg, rgba(255, 252, 247, 0.72) 0%, rgba(255, 246, 232, 0.55) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.65) !important;
@@ -9423,6 +9462,12 @@ body.byok-onboard-open {
   gap: 14px;
   margin-top: 14px;
   flex-wrap: nowrap;
+  pointer-events: auto !important;
+}
+
+#home-today-actions .btn-firman-round {
+  pointer-events: auto !important;
+  cursor: pointer;
 }
 
 .btn-firman-round {

@@ -7,7 +7,7 @@ import { apiUrl } from "./platform.js";
 import { EMOTIONS } from "./homeWorshipData.js";
 import { localizedLabel } from "./worshipUiI18n.js";
 import { normalizeDevotionContent } from "./aiDevotionEngine.js";
-import { getDailyEmotionPrologVariation } from "./dailyRenunganEngine.js";
+import { getDailyEmotionPrologVariation, todayKey } from "./dailyRenunganEngine.js";
 import {
   getAiLanguageRule,
   getAiLifeContextRule,
@@ -109,10 +109,6 @@ function attachDailyEmotionProlog(content, emotionId) {
   };
 }
 
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 /**
  * @param {typeof EMOTIONS[number]} emotion
  * @param {"local" | "gemini"} source
@@ -185,7 +181,7 @@ export async function getEmotionContent(emotionId) {
   }
 
   const topicPrompt = isIndonesiaProfile()
-    ? `Ayat penghiburan Alkitab TB/LAI untuk perasaan ${labelLower}: ${raw.prompt}. Refleksi hangat ke hidup nyata Indonesia kontemporer — minimal 1–2 analogi konkret yang menyentuh (pekerjaan, keluarga, kesehatan, keuangan). Bahasa sehari-hari, bukan khotbah. Doa penghiburan spesifik dari perasaan ini, bukan template generik.`
+    ? `Ayat penghiburan Alkitab untuk perasaan ${labelLower}: ${raw.prompt}. Refleksi hangat ke hidup nyata Indonesia kontemporer — minimal 1–2 analogi konkret yang menyentuh (pekerjaan, keluarga, kesehatan, keuangan). Bahasa sehari-hari, bukan khotbah. Doa penghiburan spesifik dari perasaan ini, bukan template generik.`
     : `Comforting Scripture (${getPrimaryBibleLabel()}) for feeling ${labelLower}: ${raw.prompt}. ${getAiLanguageRule()} ${getAiLifeContextRule()} Include 1–2 concrete illustrations. Specific prayer for this feeling, not a generic template.`;
 
   try {

@@ -2,7 +2,7 @@
  * Filter & normalisasi transkripsi ASR Gemini Live.
  * Native audio model sering salah bahasa (Hangul/Spanyol) atau salah dengar (mayatn→ayat).
  */
-import { getEffectiveProfile, getUiLocale, isIndonesiaProfile } from "./localeProfile.js";
+import { getAiSpeechLocale, getEffectiveAiLang, isIndonesiaProfile } from "./localeProfile.js";
 
 /** @typedef {"latin"|"hangul"|"kana"|"han"|"cyrillic"|"arabic"|"mixed"|"empty"} DominantScript */
 
@@ -15,6 +15,16 @@ const REGION_ALLOWED_SCRIPTS = {
   korea: new Set(["hangul", "latin", "mixed", "empty"]),
   japan: new Set(["kana", "han", "latin", "mixed", "empty"]),
   china: new Set(["han", "latin", "mixed", "empty"]),
+};
+
+const AI_LANG_SCRIPTS = {
+  id: REGION_ALLOWED_SCRIPTS.indonesia,
+  en: REGION_ALLOWED_SCRIPTS.global,
+  es: REGION_ALLOWED_SCRIPTS.latam,
+  pt: REGION_ALLOWED_SCRIPTS.brazil,
+  ko: REGION_ALLOWED_SCRIPTS.korea,
+  ja: REGION_ALLOWED_SCRIPTS.japan,
+  zh: REGION_ALLOWED_SCRIPTS.china,
 };
 
 /** Kata satu-suku phantom dari noise mic / salah bahasa — bukan ucapan user Indonesia. */
@@ -191,7 +201,7 @@ export function shouldDiscardOrphanUserFragment(text) {
 /** @param {string | undefined} languageCode */
 function languageCodeMatchesRegion(languageCode) {
   if (!languageCode) return true;
-  const expected = getUiLocale().split("-")[0].toLowerCase();
+  const expected = getAiSpeechLocale().split("-")[0].toLowerCase();
   const reported = String(languageCode).split("-")[0].toLowerCase();
   if (expected === reported) return true;
   if (expected === "id" && (reported === "in" || reported === "id")) return true;
@@ -204,7 +214,7 @@ function languageCodeMatchesRegion(languageCode) {
  */
 export function normalizeUserAsrText(text) {
   let out = String(text || "").trim();
-  if (!out || !isIndonesiaProfile()) return out;
+  if (!out || getEffectiveAiLang() !== "id") return out;
   for (const [re, rep] of ID_ASR_PHRASE_FIXES) {
     out = typeof rep === "function" ? out.replace(re, rep) : out.replace(re, rep);
   }
@@ -240,8 +250,7 @@ export function shouldDiscardMisdetectedUserAsr(text, languageCode) {
   const trimmed = String(text || "").trim();
   if (!trimmed) return false;
 
-  const region = getEffectiveProfile().region || "indonesia";
-  const allowed = REGION_ALLOWED_SCRIPTS[region] || REGION_ALLOWED_SCRIPTS.global;
+  const allowed = AI_LANG_SCRIPTS[getEffectiveAiLang()] || REGION_ALLOWED_SCRIPTS.global;
   const script = detectDominantScript(trimmed);
 
   if (!allowed.has(script)) return true;
@@ -270,19 +279,17 @@ export function processUserAsrText(text, opts = {}) {
 
 /** BCP-47 hints untuk setup Gemini Live (best-effort). */
 export function getAsrLanguageCodes() {
-  const locale = getUiLocale();
+  const locale = getAiSpeechLocale();
   if (locale.toLowerCase().startsWith("id")) return ["id-ID", "id"];
   return [locale];
 }
 
 /** Kosakata bias Gemini ASR ke istilah Alkitab Indonesia. */
 export function getAsrCustomVocabulary() {
-  if (!isIndonesiaProfile()) return [];
+  if (getEffectiveAiLang() !== "id") return [];
   return [
     "ayat",
     "Alkitab",
-    "Terjemahan Baru",
-    "TB",
     "renungan",
     "doa",
     "Tuhan",

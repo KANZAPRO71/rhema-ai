@@ -2,28 +2,17 @@
  * Validasi BYOK via handshake WebSocket Gemini Live (BidiGenerateContent).
  * Memastikan key mendukung gemini-3.1-flash-live-preview, bukan hanya REST.
  */
-import {
-  GEMINI_MODEL,
-  geminiLiveWsUrl,
-  geminiModelResource,
-} from "./geminiConstants.js";
+import { geminiLiveWsUrl } from "./geminiConstants.js";
+import { buildInlineListenSetup } from "./geminiInlineSetup.js";
 import {
   isNativeGeminiWsAvailable,
   nativeGeminiWsConnect,
   nativeGeminiWsDisconnect,
 } from "./nativeGeminiWs.js";
 
-/** Setup minimal untuk probe Live API — tanpa tools berat. */
+/** Setup minimal untuk probe Live API — sama dengan sesi Dengar inline. */
 export function buildByokLiveProbeSetup() {
-  return {
-    model: geminiModelResource(GEMINI_MODEL),
-    generationConfig: {
-      responseModalities: ["AUDIO"],
-      speechConfig: {
-        voiceConfig: { prebuiltVoiceConfig: { voiceName: "Puck" } },
-      },
-    },
-  };
+  return buildInlineListenSetup();
 }
 
 /** @param {unknown} errorObj */
@@ -178,9 +167,13 @@ export async function validateGoogleKeyLiveWebSocket(apiKey) {
   const setup = buildByokLiveProbeSetup();
 
   if (isNativeGeminiWsAvailable()) {
-    const nativeResult = await validateViaNativeProbe(wsUrl, setup);
-    if (nativeResult?.ok) return { ok: true };
-    if (nativeResult && nativeResult.kind !== "network") return nativeResult;
+    const plugin = window.Capacitor?.Plugins?.GeminiLive;
+    if (plugin?.probeLiveKey) {
+      const nativeResult = await validateViaNativeProbe(wsUrl, setup);
+      if (nativeResult?.ok) return { ok: true };
+      if (nativeResult) return nativeResult;
+    }
+    return validateViaNativeConnect(wsUrl, setup);
   }
 
   return validateViaBrowserWebSocket(wsUrl, setup);

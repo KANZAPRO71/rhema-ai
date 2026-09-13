@@ -2,6 +2,7 @@
  * Cloud agents dashboard — browser parity dengan sidebar extension.
  */
 
+import { escapeAttr, escapeHtml } from "./markdown.js";
 import { apiUrl, isStandaloneByok } from "./platform.js";
 
 const POLL_MS = 30_000;
@@ -79,9 +80,9 @@ function renderAgents(agents, error) {
       </div>
       <code class="cloud-id">${escapeHtml(a.agentId)}</code>
       <div class="cloud-actions">
-        <button type="button" class="cloud-act" data-act="resume" data-id="${escapeHtml(a.agentId)}">Lanjutkan</button>
-        <button type="button" class="cloud-act" data-act="open" data-id="${escapeHtml(a.agentId)}">Cursor</button>
-        <button type="button" class="cloud-act" data-act="copy" data-id="${escapeHtml(a.agentId)}">Salin ID</button>
+        <button type="button" class="cloud-act" data-act="resume" data-id="${escapeAttr(a.agentId)}">Lanjutkan</button>
+        <button type="button" class="cloud-act" data-act="open" data-id="${escapeAttr(a.agentId)}">Cursor</button>
+        <button type="button" class="cloud-act" data-act="copy" data-id="${escapeAttr(a.agentId)}">Salin ID</button>
       </div>
     </article>`,
     )
@@ -119,14 +120,6 @@ async function resumeCloudAgent(agentId) {
     agentId,
     settings: { runtime: "cloud" },
   });
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 export async function refreshCloud() {

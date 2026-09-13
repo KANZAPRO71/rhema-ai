@@ -6,30 +6,29 @@ import {
   apiUrl,
   connectAppWebSocket,
   initNativeShell,
-  isStandaloneByok,
+  useDirectByokRuntime,
   applyNativeFeatureGates,
 } from "./platform.js";
 import { initAmbientPickerUI } from "./ambientAudio.js";
 
 import { installAppBackend } from "./appBackend.js";
 import { wireNativeBackend } from "./appTransport.js";
-import { wireAppVoiceBridge } from "./appVoiceBridge.js?v=20260911-nolive";
-import { unlockNativeElementAudio } from "./nativeAudioPlayback.js";
 import { applyBundledProviderKeys } from "./bundledProviderKeys.js";
-import { warmupNativeMicPermission } from "./nativeMicPermission.js";
 import { initByokOnboarding } from "./byokOnboarding.js";
 import { initGoogleKeySecureStorage } from "./geminiConstants.js";
 import { initRegionOnboarding } from "./regionOnboarding.js";
 import { initLocaleUi } from "./localeUi.js";
+import { initAppStability } from "./appStability.js";
+import { initNativeAppLifecycle } from "./nativeAppLifecycle.js";
+import { initCrisisHotlineModal } from "./crisisHotlineModal.js";
 
 applyBundledProviderKeys();
-if (typeof window !== "undefined" && window.Capacitor?.isNativePlatform?.()) {
-  warmupNativeMicPermission();
-}
 
 applyNativeFeatureGates();
 
-if (isStandaloneByok()) {
+console.info("[rhema] bundle 20260913-dengar13");
+
+if (useDirectByokRuntime()) {
   installAppBackend();
 }
 
@@ -41,15 +40,15 @@ initUiShell();
 
 
 
-import { initChatApp } from "./chatCore.js?v=20260911-nolive";
+import { initChatApp } from "./chatCore.js?v=20260913-dengar13";
 
 import { refreshCloud, initCloudPanel } from "./cloudPanel.js";
 
 import { initAppShell } from "./appShell.js";
 
-import { initAlkitabPanel, loadHome, loadRenungan, loadDoa, loadAlkitabProgram, initVoiceTranscriptHistory, refreshActiveScreen } from "./alkitabPanel.js?v=20260911-play";
+import { initAlkitabPanel, loadHome, loadRenungan, loadDoa, loadAlkitabProgram, initVoiceTranscriptHistory, refreshActiveScreen } from "./alkitabPanel.js?v=20260913-dengar13";
 import { initVoiceIntelligenceUI } from "./voiceIntelligenceUI.js?v=20260819-1509";
-import { initRealtimeVoiceClient } from "./realtimeVoiceClient.js?v=20260911-nolive";
+import { initRealtimeVoiceClient } from "./realtimeVoiceClient.js?v=20260913-dengar13";
 import { registerVoiceTextSpeech } from "./voiceTextSpeech.js";
 import { initGlobalVoiceBar } from "./globalVoiceBar.js?v=20260819-1509";
 
@@ -139,7 +138,7 @@ const transport = {
 
   post: (msg) => {
 
-    if (isStandaloneByok()) {
+    if (useDirectByokRuntime()) {
       queue.push(msg);
       return;
     }
@@ -162,7 +161,7 @@ const transport = {
 
   broadcast,
 
-  voiceMode: isStandaloneByok() ? "direct" : "proxy",
+  voiceMode: useDirectByokRuntime() ? "direct" : "proxy",
 
   voiceProfile: "alkitab-voice",
 
@@ -207,6 +206,14 @@ function initHeaderRefresh(getCurrentScreen) {
 
 async function boot() {
   try {
+    initAppStability();
+    initNativeAppLifecycle(() => transport);
+    initCrisisHotlineModal();
+  } catch (err) {
+    console.warn("[rhema-ai] stability/lifecycle init error:", err);
+  }
+
+  try {
     await initGoogleKeySecureStorage();
   } catch (err) {
     console.warn("[rhema-ai] initGoogleKeySecureStorage error:", err);
@@ -247,9 +254,8 @@ async function boot() {
     console.warn("[rhema-ai] initGlobalVoiceBar error:", err);
   }
 
-  if (isStandaloneByok()) {
-    const voiceBridge = transport.voiceMode === "proxy" ? wireAppVoiceBridge(transport) : null;
-    wireNativeBackend(transport, voiceBridge ?? undefined);
+  if (useDirectByokRuntime()) {
+    wireNativeBackend(transport);
     connected = true;
     flushQueue();
   } else {
@@ -274,8 +280,11 @@ async function boot() {
 
   try {
     initAlkitabPanel(transport, shell?.go || (() => {}));
+    if (!window.__RHEMA_PANEL_READY) {
+      console.error("[rhema-ai] initAlkitabPanel exited before ready — UI buttons may be dead");
+    }
   } catch (err) {
-    console.warn("[rhema-ai] initAlkitabPanel error:", err);
+    console.error("[rhema-ai] initAlkitabPanel error:", err);
   }
 
   initHeaderRefresh(shell?.getCurrentScreen);
@@ -313,7 +322,7 @@ async function boot() {
     shell.go("doa");
   } else if (bootHash === "renungan" && shell?.go) {
     shell.go("renungan");
-  } else if (shell?.go) {
+  } else if (shell?.go && shell.getCurrentScreen?.() !== "home") {
     shell.go("home", { force: true });
   }
 }

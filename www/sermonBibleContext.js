@@ -1,6 +1,7 @@
 /**
  * Bible Context Engine (browser) — fetch Rhema Knowledge untuk Khotbah AI.
  */
+import { escapeHtml } from "./markdown.js";
 import { apiUrl } from "./platform.js";
 
 /**
@@ -59,22 +60,13 @@ export function renderSermonKnowledgePanel(passage) {
 
   panel.classList.remove("hidden");
   panel.innerHTML = `
-    <div class="sermon-knowledge-head">📖 Bahan Firman TB</div>
+    <div class="sermon-knowledge-head">📖 Bahan Firman</div>
     ${intro}
     <ul class="sk-verses">${primary}</ul>
     ${tafsir}
     ${lexicon ? `<div class="sk-cross"><span>Kata kunci asli</span><ul>${lexicon}</ul></div>` : ""}
     ${cross ? `<div class="sk-cross"><span>Ayat terkait</span><ul>${cross}</ul></div>` : ""}
   `;
-}
-
-/** @param {string} s */
-function escapeHtml(s) {
-  return String(s || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 /**
@@ -99,8 +91,8 @@ export async function buildSermonKnowledgePrompt(reference, basePrompt) {
  */
 function formatPassageInjectClient(passage) {
   const lines = [
-    `[RHEMA KNOWLEDGE — KONTEKS FIRMAN TB — KHOTBAH]`,
-    `Referensi: ${passage.reference} (TB / LAI)`,
+    `[RHEMA KNOWLEDGE — KONTEKS FIRMAN — KHOTBAH]`,
+    `Referensi: ${passage.reference} (Alkitab)`,
   ];
 
   for (const block of [
@@ -137,7 +129,7 @@ function formatPassageInjectClient(passage) {
   }
 
   lines.push(
-    "WAJIB: Bacakan ayat TB persis dari blok di atas. Gunakan verify_verse jika ragu. Jangan mengarang teks ayat.",
+    "WAJIB: Bacakan ayat persis dari blok di atas. Gunakan verify_verse jika ragu. Jangan mengarang teks ayat.",
   );
   return lines.join("\n");
 }

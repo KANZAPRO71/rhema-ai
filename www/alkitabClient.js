@@ -319,7 +319,7 @@ export async function lookupVerse(reference) {
       pasal: chRange.pasalStart,
       pasalEnd: chRange.pasalEnd,
       chapterRange: true,
-      sumber: "TB offline (device)",
+      sumber: "Alkitab offline (device)",
     };
   }
   const range = await parseVerseRange(raw);
@@ -343,7 +343,7 @@ export async function lookupVerse(reference) {
         ayat: range.ayatStart,
         ayatEnd: range.ayatEnd,
         verses,
-        sumber: "TB offline (device)",
+        sumber: "Alkitab offline (device)",
       };
     }
     return {
@@ -374,7 +374,7 @@ export async function lookupVerse(reference) {
       kode,
       pasal: ref.pasal,
       ayat: ref.ayat,
-      sumber: "TB offline (device)",
+      sumber: "Alkitab offline (device)",
     };
   }
   return {
@@ -496,7 +496,7 @@ export async function verseOfTheDay(date = new Date()) {
 
 export async function verifyVerse(reference, quotedText) {
   const official = await lookupVerse(reference);
-  if (!official.found) return { valid: false, reference, reason: "Ayat tidak ditemukan di TB offline" };
+  if (!official.found) return { valid: false, reference, reason: "Ayat tidak ditemukan di Alkitab offline" };
   const norm = (s) =>
     String(s || "")
       .toLowerCase()
@@ -663,7 +663,7 @@ export async function searchTb(query, options = {}) {
   }
 
   const idx = await loadSearchIndex();
-  if (!idx) return { query: q, hits: [], mode: "offline", error: "Index TB belum tersedia di app" };
+  if (!idx) return { query: q, hits: [], mode: "offline", error: "Index Alkitab belum tersedia di app" };
 
   const tokens = [...new Set(tokenize(q))];
   const scores = new Map();

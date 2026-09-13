@@ -5,10 +5,11 @@
   if (window.__rhemaDevLocalhost) return;
   window.__rhemaDevLocalhost = true;
 
+  // Capacitor Android memakai host localhost — jangan timpa native bridge.
+  if (window.Capacitor) return;
   const host = location.hostname;
   const isLocal = host === "localhost" || host === "127.0.0.1" || host === "[::1]";
   if (!isLocal) return;
-  if (window.Capacitor?.isNativePlatform?.()) return;
 
   window.__RHEMA_DEV__ = Object.freeze({
     mode: "localhost",

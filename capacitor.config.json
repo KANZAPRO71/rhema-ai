@@ -1,6 +1,6 @@
 {
   "appId": "id.rhema.alkitabvoice",
-  "appName": "rhema ai",
+  "appName": "Rhema AI",
   "webDir": "www",
   "server": {
     "androidScheme": "https",
@@ -13,7 +13,7 @@
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
-      "launchAutoHide": false,
+      "launchAutoHide": true,
       "backgroundColor": "#f3eee6",
       "showSpinner": false,
       "androidSplashResourceName": "splash",

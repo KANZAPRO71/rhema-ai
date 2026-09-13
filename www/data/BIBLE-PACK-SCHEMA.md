@@ -41,7 +41,7 @@ www/data/alkitab_{version}/
 
 | Kode folder   | Versi              | Region   |
 |---------------|--------------------|----------|
-| alkitab_tb    | TB LAI             | indonesia (✓) |
+| alkitab_tb    | Alkitab            | indonesia (✓) |
 | alkitab_kjv   | KJV                | global (✓) |
 | alkitab_rvr   | Reina-Valera 1960  | latam    |
 | alkitab_jfa   | Almeida JFA        | brazil   |

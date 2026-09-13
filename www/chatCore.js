@@ -24,6 +24,10 @@ import {
 import { formatGeminiKeyError, pasteFromClipboard } from "./byokUx.js";
 import { t } from "./uiStrings.js";
 import { syncByokHomeBanner } from "./byokOnboarding.js";
+import { buildCrisisResponse, detectCrisisSignals } from "./crisisGuardrail.js";
+import { showCrisisHotlineModal } from "./crisisHotlineModal.js";
+import { sanitizeImageMime, sanitizeImageSrc } from "./safeUrl.js";
+import { escapeAttr, escapeHtml } from "./markdown.js";
 
 const MODES = ["agent", "plan", "ask", "debug"];
 const GOOGLE_KEY_FLAG = "rhema-ai-google-key-configured";
@@ -68,7 +72,7 @@ export function initChatApp(transport, options = {}) {
   const imageInput = document.getElementById("image-input");
   const mentionBox = document.getElementById("mention-box");
   const settingsBtn = document.getElementById("btn-settings");
-  const settingsPanel = document.getElementById("settings-panel");
+  let settingsPanel = document.getElementById("settings-panel");
   const sessionDrawer = document.getElementById("session-drawer");
   const sessionListEl = document.getElementById("session-list");
   const approvalHost = document.getElementById("approval-host");
@@ -204,14 +208,22 @@ export function initChatApp(transport, options = {}) {
     function saveAllSettings() {
       const voiceSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-voice-name"));
       const personaSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-persona-id"));
-      const regionSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-worship-region"));
+      const uiLangSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-ui-lang"));
+      const aiLangSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-ai-lang"));
       const bibleSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-bible-version"));
       const input = document.getElementById("byok-google");
 
-      if (regionSelect) {
-        const region = regionSelect.value === "global" ? "global" : "indonesia";
-        const bibleVersion = bibleSelect?.value === "kjv" ? "kjv" : "tb";
-        saveLocaleProfile({ region, bibleVersion, source: "settings" });
+      if (uiLangSelect || aiLangSelect || bibleSelect) {
+        const uiLang = uiLangSelect?.value || "en";
+        const aiLang = aiLangSelect?.value || uiLang;
+        const bibleVersion = bibleSelect?.value === "tb" ? "tb" : "kjv";
+        saveLocaleProfile({
+          region: uiLang === "id" ? "indonesia" : "global",
+          uiLang,
+          aiLang,
+          bibleVersion,
+          source: "settings",
+        });
       }
 
       if (voiceSelect) {
@@ -237,12 +249,19 @@ export function initChatApp(transport, options = {}) {
     document.getElementById("btn-reopen-region-onboard")?.addEventListener("click", () => {
       openRegionOnboarding();
     });
-    document.getElementById("select-worship-region")?.addEventListener("change", (e) => {
-      const region = /** @type {HTMLSelectElement} */ (e.target).value;
+    document.getElementById("select-ui-lang")?.addEventListener("change", (e) => {
+      const uiLang = /** @type {HTMLSelectElement} */ (e.target).value;
       const bibleSelectEl = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-bible-version"));
+      const aiSelectEl = /** @type {HTMLSelectElement|null} */ (document.getElementById("select-ai-lang"));
       if (bibleSelectEl && !bibleSelectEl.dataset.userTouched) {
-        bibleSelectEl.value = region === "global" ? "kjv" : "tb";
+        bibleSelectEl.value = uiLang === "id" ? "tb" : "kjv";
       }
+      if (aiSelectEl && !aiSelectEl.dataset.userTouched) {
+        aiSelectEl.value = uiLang;
+      }
+    });
+    document.getElementById("select-ai-lang")?.addEventListener("change", (e) => {
+      /** @type {HTMLSelectElement} */ (e.target).dataset.userTouched = "1";
     });
     document.getElementById("select-bible-version")?.addEventListener("change", (e) => {
       /** @type {HTMLSelectElement} */ (e.target).dataset.userTouched = "1";
@@ -575,10 +594,6 @@ export function initChatApp(transport, options = {}) {
     toggleSessions(false);
   }
 
-  function escapeHtml(t) {
-    return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-
   function renderPassiveContext(snapshot) {
     const bar = document.getElementById("context-bar");
     if (!bar) return;
@@ -634,13 +649,24 @@ export function initChatApp(transport, options = {}) {
     }
     bar.innerHTML = "";
     pendingImages.forEach((img, i) => {
+      const src = sanitizeImageSrc(img);
+      if (!src) return;
       const chip = document.createElement("div");
       chip.className = "image-chip";
-      chip.innerHTML = `<img src="data:${img.mimeType};base64,${img.data}" alt="" /><span>${img.name || "image"}</span><button type="button" data-i="${i}">×</button>`;
-      chip.querySelector("button")?.addEventListener("click", () => {
+      const pic = document.createElement("img");
+      pic.src = src;
+      pic.alt = "";
+      const label = document.createElement("span");
+      label.textContent = img.name || "image";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.i = String(i);
+      btn.textContent = "×";
+      btn.addEventListener("click", () => {
         pendingImages.splice(i, 1);
         renderImagePreview();
       });
+      chip.append(pic, label, btn);
       bar.appendChild(chip);
     });
   }
@@ -651,7 +677,17 @@ export function initChatApp(transport, options = {}) {
     wrap.className = "msg user";
     wrap.innerHTML = `<div class="msg-head"><span class="msg-role">${t("chat.role.user")}</span><span class="msg-actions"><button type="button" class="msg-act" data-act="edit">${t("chat.action.edit")}</button><button type="button" class="msg-act" data-act="regen">${t("chat.action.regen")}</button></span></div><div class="msg-body"></div>`;
     if (images?.length) {
-      wrap.innerHTML += `<div class="msg-images">${images.map((img) => `<img src="data:${img.mimeType};base64,${img.data}" alt="" />`).join("")}</div>`;
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "msg-images";
+      for (const img of images) {
+        const src = sanitizeImageSrc(img);
+        if (!src) continue;
+        const pic = document.createElement("img");
+        pic.src = src;
+        pic.alt = "";
+        imgWrap.appendChild(pic);
+      }
+      if (imgWrap.childNodes.length) wrap.appendChild(imgWrap);
     }
     wrap.querySelector(".msg-body").textContent = text;
     wrap.querySelector('[data-act="edit"]')?.addEventListener("click", () => {
@@ -989,7 +1025,7 @@ export function initChatApp(transport, options = {}) {
       el.className = `msg voice-live ${role}${moduleId ? " voice-module" : ""}`;
       const at = new Date().toISOString();
       const modTag = moduleId ? ` · mod:${moduleId}` : "";
-      el.innerHTML = `<div class="role">${role === "user" ? t("chat.role.user") : t("chat.role.rhemaLive")}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${at}">${formatVoiceBubbleMeta(at)}${modTag}</div>`;
+      el.innerHTML = `<div class="role">${role === "user" ? t("chat.role.user") : t("chat.role.rhemaLive")}</div><div class="body"></div><div class="msg-meta voice-meta" data-at="${escapeAttr(at)}">${escapeHtml(formatVoiceBubbleMeta(at))}${moduleId ? ` · mod:${escapeHtml(moduleId)}` : ""}</div>`;
       messagesEl.appendChild(el);
     }
 
@@ -1027,7 +1063,9 @@ export function initChatApp(transport, options = {}) {
           currentSession = sessions[0] || currentSession;
         }
         if (data.rules?.length && $("active-rules")) {
-          $("active-rules").innerHTML = data.rules.map((r) => `<option value="${r}">${r}</option>`).join("");
+          $("active-rules").innerHTML = data.rules
+            .map((r) => `<option value="${escapeAttr(r)}">${escapeHtml(r)}</option>`)
+            .join("");
         }
         if (data.detectedCloudRepo && $("cloud-repo-url") && !($("cloud-repo-url").value || "").trim()) {
           $("cloud-repo-url").placeholder = data.detectedCloudRepo;
@@ -1274,7 +1312,7 @@ export function initChatApp(transport, options = {}) {
     const err = state.errorHistory?.[state.errorHistory.length - 1];
     const phase = state.phase || "idle";
     const mode = state.mode || "fix";
-    el.innerHTML = `<strong>Agentic Loop</strong> · ${mode} · ${phase} · iter ${state.iteration}/${state.maxIterations}${err ? ` · ${err.count} err` : ""}${state.message ? ` — ${state.message}` : ""}`;
+    el.innerHTML = `<strong>Agentic Loop</strong> · ${escapeHtml(mode)} · ${escapeHtml(phase)} · iter ${state.iteration}/${state.maxIterations}${err ? ` · ${err.count} err` : ""}${state.message ? ` — ${escapeHtml(state.message)}` : ""}`;
     if (state.phase === "done") el.classList.remove("hidden");
     if (state.phase === "failed" || state.phase === "cancelled") el.classList.remove("hidden");
   }
@@ -1349,6 +1387,14 @@ export function initChatApp(transport, options = {}) {
     pendingImages = [];
     renderImagePreview();
 
+    if (detectCrisisSignals(text)) {
+      appendUser(text, images);
+      const crisis = buildCrisisResponse();
+      appendCreatorReply(crisis.spokenReply);
+      void showCrisisHotlineModal(crisis.hotlines);
+      return;
+    }
+
     if (isCreatorQuery(text)) {
       appendUser(text, images);
       appendCreatorReply(buildCreatorReply(false));
@@ -1409,11 +1455,16 @@ export function initChatApp(transport, options = {}) {
 
   function readFileAsBase64(file) {
     return new Promise((resolve, reject) => {
+      const mime = sanitizeImageMime(file.type || "image/png");
+      if (!mime) {
+        reject(new Error("Tipe gambar tidak didukung"));
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         const result = String(reader.result || "");
         const base64 = result.includes(",") ? result.split(",")[1] : result;
-        resolve({ data: base64, mimeType: file.type || "image/png", name: file.name });
+        resolve({ data: base64, mimeType: mime, name: file.name });
       };
       reader.onerror = reject;
       reader.readAsDataURL(file);

@@ -26,28 +26,40 @@ release/
 *.dex
 *.class
 
-# Decompiled / extracted APK junk (root-level)
-decompiled/
-META-INF/
-okhttp3/
-org/
-kotlin/
-kotlinx/
-assets/
-res/
-tools/
-AndroidManifest.xml
-resources.arsc
-DebugProbesKt.bin
-classes*.dex
+# Decompiled / extracted APK junk (repo root only — jangan tahan android/app/src)
+/decompiled/
+/META-INF/
+/okhttp3/
+/org/
+/kotlin/
+/kotlinx/
+/assets/
+/res/
+/tools/
+/AndroidManifest.xml
+/resources.arsc
+/DebugProbesKt.bin
+/classes*.dex
 *.properties
 !android/gradle.properties
 !android/gradle/wrapper/gradle-wrapper.properties
 !android/keystore.properties.example
 
+# Extract / restore dumps
+_cap_gen/
+_extract_localhost/
+_git_restore/
+_apk_extract_playstore/
+android/app/build_old_*/
+
 # Scripts cache & scrape HTML
 scripts/lyric_cache/
+scripts/__pycache__/
 scripts/*.html
+scripts/*.jar
+
+# APK extract dumps
+_devi_apk_extract/
 
 # Nested legal-site git repo
 legal-site/

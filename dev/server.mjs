@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WWW = path.resolve(__dirname, "../www");
 const PORT = Number(process.env.PORT) || 3000;
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 
 const MIME = {
   ".html": "text/html; charset=utf-8",
@@ -81,10 +81,10 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  const url = `http://${HOST}:${PORT}`;
   console.log("");
   console.log("  Rhema AI — dev localhost");
-  console.log(`  ${url}`);
+  console.log(`  http://localhost:${PORT}`);
+  console.log(`  http://127.0.0.1:${PORT}`);
   console.log("  Ctrl+C untuk stop");
   console.log("");
 });

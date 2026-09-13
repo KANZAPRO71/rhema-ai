@@ -25,7 +25,7 @@
 | Field | Indonesia (id-ID) | English (en-US) default |
 |-------|-------------------|-------------------------|
 | **Title** (30) | Rhema AI: Renungan & Khotbah | Rhema AI: Audio Devotion |
-| **Short** (80) | Asisten teduh & khotbah Alkitab TB via suara Full Duplex bertenaga Gemini AI. | Your Full Duplex voice companion for KJV Bible devotions & sermon outlines. |
+| **Short** (80) | Asisten teduh & khotbah Alkitab via suara Full Duplex bertenaga Gemini AI. | Your Full Duplex voice companion for KJV Bible devotions & sermon outlines. |
 
 **File lengkap:** `scripts/play-store-descriptions-bilingual.txt`
 
@@ -41,7 +41,7 @@
 • Rilis Perdana Rhema AI: Pendamping ibadah & asisten persiapan khotbah pintar.
 • Fitur Suara Full Duplex: Mengobrol langsung secara natural dengan asisten AI berbasis Gemini 3.1 Flash Live Preview.
 • Sistem BYOK Aman: Gunakan API Key Gemini gratis Anda sendiri, dienkripsi 100% lokal di perangkat.
-• Dukungan Multibahasa Otomatis: Sinkronisasi instan Alkitab Terjemahan Baru (TB) untuk Indonesia dan King James Version (KJV) untuk pengguna global berdasarkan wilayah perangkat.
+• Dukungan Multibahasa Otomatis: Sinkronisasi instan Alkitab untuk Indonesia dan King James Version (KJV) untuk pengguna global berdasarkan wilayah perangkat.
 ```
 
 ### English (435/500)
@@ -50,7 +50,7 @@
 • Initial Release of Rhema AI: Your intelligent devotional & sermon preparation companion.
 • Full Duplex Voice: Natural, fluid two-way audio conversations powered by Gemini 3.1 Flash Live Preview.
 • Secure BYOK Support: Use your own free Gemini API Key, encrypted 100% locally on your device.
-• Automated Bilingual Logic: Seamlessly switches between Indonesian (TB Version) and Global English (KJV Version) based on your system locale.
+• Automated Bilingual Logic: Seamlessly switches between Indonesian Bible and Global English (KJV) based on your system locale.
 ```
 
 ---
@@ -59,7 +59,7 @@
 
 ```powershell
 cd "d:\Rhema AI"
-npm run android:release:keystore
+npm run android:release
 ```
 
 Output: `android/app/build/outputs/bundle/release/app-release.aab`
@@ -70,9 +70,11 @@ Output: `android/app/build/outputs/bundle/release/app-release.aab`
 
 | Data | Koleksi | Shared | Purpose |
 |------|---------|--------|---------|
-| Microphone | Saat voice live | Google (user API key) | App functionality |
-| API key | On device only | Tidak ke server Rhema | App functionality |
-| Notes/highlights | Local | Tidak | App functionality |
+| Microphone / audio | Saat voice live | Google (user API key) | App functionality |
+| Chat / renungan / transkrip | Saat AI dipakai | Google (user API key) | App functionality |
+| Photos | Saat Vision Lens | Google (user API key) | App functionality |
+| API key | On device only (EncryptedSharedPreferences) | Tidak ke server Rhema | App functionality |
+| Notes / highlights / jurnal | Local WebView | Tidak ke Rhema; jurnal bisa ke Google jika user minta didoakan | App functionality |
 
 Encryption in transit: **Yes** (HTTPS/WSS)  
 Users can delete data: **Yes** (Clear data / uninstall / hapus key di Settings)
@@ -82,7 +84,7 @@ Users can delete data: **Yes** (Clear data / uninstall / hapus key di Settings)
 ## Hak cipta (catatan reviewer)
 
 - **KJV:** Public Domain — aman global
-- **TB/LAI:** Offline study tool interface; BYOK ke Google untuk AI — bukan penerbit Alkitab
+- **Alkitab:** Offline study tool interface; BYOK ke Google untuk AI — bukan penerbit Alkitab
 
 ---
 
@@ -90,7 +92,7 @@ Users can delete data: **Yes** (Clear data / uninstall / hapus key di Settings)
 
 | Pilar | Implementasi |
 |-------|--------------|
-| UI | `www/uiStrings.js` + `data-i18n` + `values/` / `values-in/strings.xml` |
+| UI | `www/uiStrings.js` + `data-i18n` (folder `values-in` tidak dipakai) |
 | Auto region boot | `LocaleManager.java` → `DeviceLocale` plugin → `bootstrapAutoRegionIfNeeded()` |
 | AI prompt | `voiceProfiles.js` + `localeProfile.js` → WebSocket `systemInstruction` |
 | Key security | `SecureKeyPlugin.java` (EncryptedSharedPreferences) |

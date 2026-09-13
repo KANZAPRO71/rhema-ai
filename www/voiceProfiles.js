@@ -16,6 +16,10 @@ import {
   getPrimaryBibleLabel,
   isIndonesiaProfile,
 } from "./localeProfile.js";
+import { getCrisisSystemRule } from "./crisisGuardrail.js";
+import { buildInlineListenSetup } from "./geminiInlineSetup.js";
+
+export { buildInlineListenSetup };
 
 const GEMINI_LIVE_INPUT_RATE = 16000;
 const GEMINI_LIVE_OUTPUT_RATE = 24000;
@@ -50,13 +54,13 @@ function buildAlkitabVoiceInstructions() {
     ].join(" ");
   }
   return [
-    "Anda adalah pendamping rohani berbasis Alkitab (Terjemahan Baru / LAI).",
+    "Anda adalah pendamping rohani berbasis Alkitab.",
     "Berbicara tenang, hormat, dan singkat — seperti konseling suara live.",
     getAiLanguageRule(),
     getAiLifeContextRule(),
     "PENTING: 'terjemahkan' ayat = jelaskan arti dalam Indonesia, bukan ke Inggris kecuali diminta eksplisit.",
-    "Jangan mengarang kutipan ayat TB — gunakan tool lookup.",
-    "Gunakan tool lookup_passage, search_tb, verify_verse untuk kedalaman firman TB.",
+    "Jangan mengarang kutipan ayat Alkitab — gunakan tool lookup.",
+    "Gunakan tool lookup_passage, search_tb, verify_verse untuk kedalaman firman.",
     getLiveVoiceDevotionStructureRule(),
     "Pertanyaan jam/tanggal/waktu: jawab dari konteks waktu sesi atau tool get_session_metadata — jangan menolak.",
     RHEMA_CREATOR_META,
@@ -68,7 +72,7 @@ function buildAlkitabVoiceContextHint() {
   if (!isIndonesiaProfile()) {
     return `Use King James Version (KJV) offline on device. Hymn lookup (Kidung Jemaat / Buku Ende) available for Indonesian worship context when user asks.`;
   }
-  return "Gunakan Terjemahan Baru (TB) LAI. Pujian: Kidung Jemaat (KJ) dan Buku Ende (BE) — tool lookup_hymn.";
+  return "Gunakan Alkitab. Pujian: Kidung Jemaat (KJ) dan Buku Ende (BE) — tool lookup_hymn.";
 }
 
 const PERSONAS_ID = {
@@ -79,7 +83,7 @@ const PERSONAS_ID = {
   },
   preacher: {
     instruction:
-      "Anda adalah pengkhotbah Rhema AI. Saat diminta khotbah: sampaikan LENGKAP ~5 menit — pembukaan, bacaan TB, 3 poin, aplikasi, doa penutup. " +
+      "Anda adalah pengkhotbah Rhema AI. Saat diminta khotbah: sampaikan LENGKAP ~5 menit — pembukaan, bacaan Alkitab, 3 poin, aplikasi, doa penutup. " +
       RHEMA_ADDRESS_RULE,
   },
   theologian: {
@@ -129,7 +133,7 @@ const PERSONAS_EN = {
 const ALKITAB_TOOLS = [
   {
     name: "lookup_verse",
-    description: "Lookup offline Bible verse (TB for Indonesia, KJV for global). Example: John 3:16",
+    description: "Lookup offline Bible verse (Indonesian Bible or KJV for global). Example: John 3:16",
     parameters: {
       type: "object",
       properties: { reference: { type: "string" } },
@@ -150,7 +154,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "lookup_passage",
-    description: "Pasal TB dengan konteks, tafsir, cross-ref. Contoh: Yohanes 3:16",
+    description: "Pasal Alkitab dengan konteks, tafsir, cross-ref. Contoh: Yohanes 3:16",
     parameters: {
       type: "object",
       properties: {
@@ -162,7 +166,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "verify_verse",
-    description: "Verifikasi kutipan ayat TB sebelum diucapkan.",
+    description: "Verifikasi kutipan ayat Alkitab sebelum diucapkan.",
     parameters: {
       type: "object",
       properties: {
@@ -174,7 +178,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "lookup_book_intro",
-    description: "Pengantar kitab TB. Contoh: Yohanes, Mazmur",
+    description: "Pengantar kitab. Contoh: Yohanes, Mazmur",
     parameters: {
       type: "object",
       properties: { book: { type: "string" } },
@@ -183,7 +187,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "lookup_tafsir",
-    description: "Tafsir literatur untuk ayat TB.",
+    description: "Tafsir literatur untuk ayat Alkitab.",
     parameters: {
       type: "object",
       properties: { reference: { type: "string" } },
@@ -192,7 +196,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "lookup_lexicon",
-    description: "Kata asli Yunani/Ibrani untuk ayat TB.",
+    description: "Kata asli Yunani/Ibrani untuk ayat Alkitab.",
     parameters: {
       type: "object",
       properties: { reference: { type: "string" } },
@@ -210,7 +214,7 @@ const ALKITAB_TOOLS = [
   },
   {
     name: "search_tb",
-    description: "Cari ayat/tema TB offline — semantic TF-IDF.",
+    description: "Cari ayat/tema Alkitab offline — semantic TF-IDF.",
     parameters: {
       type: "object",
       properties: {
@@ -240,8 +244,9 @@ export function resolveVoiceProfile(id) {
 }
 
 export function resolvePersonaInstruction(personaId) {
+  const id = personaId === "kids_storyteller" ? "pastor" : personaId;
   const personas = isIndonesiaProfile() ? PERSONAS_ID : PERSONAS_EN;
-  return personas[personaId]?.instruction || personas.pastor.instruction;
+  return personas[id]?.instruction || personas.pastor.instruction;
 }
 
 function voiceToolsForProfile(profileId) {
@@ -256,15 +261,21 @@ function voiceToolsForProfile(profileId) {
 }
 
 export function buildGeminiLiveSetup(options = {}) {
+  const voiceName = options.voiceName || RHEMA_VOICE_LOCKED.voiceName;
+  // Dengar ayat — setup minimal (~230 B), respons ~1–2 dtk seperti sebelumnya.
+  if (options.textOnlyListen) {
+    return buildInlineListenSetup({ voiceName });
+  }
+
   const profileId = options.profileId === "alkitab-voice" ? "alkitab-voice" : "rhema-ide";
   const profile = resolveVoiceProfile(profileId);
   const personaInstruction =
     profileId === "alkitab-voice" ? resolvePersonaInstruction(options.personaId) + "\n\n" : "";
   const extra = profile.contextHint ? `\n\n${profile.contextHint}` : "";
   const timeCtx = `\n\n${buildLiveSessionTimeContext()}`;
-  const instructions = personaInstruction + profile.instructions + extra + timeCtx;
+  const crisisRule = `\n\n${getCrisisSystemRule(isIndonesiaProfile())}`;
+  const instructions = personaInstruction + profile.instructions + extra + timeCtx + crisisRule;
   const modelId = resolveGeminiLiveModel();
-  const voiceName = options.voiceName || RHEMA_VOICE_LOCKED.voiceName;
 
   const setup = {
     model: geminiModelResource(modelId),
@@ -277,6 +288,7 @@ export function buildGeminiLiveSetup(options = {}) {
     systemInstruction: { parts: [{ text: instructions }] },
     inputAudioTranscription: {},
     outputAudioTranscription: {},
+    historyConfig: { initialHistoryInClientContent: true },
     tools: [{ functionDeclarations: voiceToolsForProfile(profileId) }],
   };
 
@@ -303,7 +315,7 @@ export function buildGeminiLiveSetup(options = {}) {
           },
           {
             name: "lookup_verse",
-            description: "Lookup ayat TB offline.",
+            description: "Lookup ayat Alkitab offline.",
             parameters: {
               type: "object",
               properties: { reference: { type: "string" } },
@@ -318,22 +330,60 @@ export function buildGeminiLiveSetup(options = {}) {
   return setup;
 }
 
+/** @type {{ key: string, setup: object } | null} */
+let cachedVoiceSetup = null;
+
+function voiceSetupCacheKey(options) {
+  const mode = options.textOnlyListen ? "dengar" : options.mobileLean ? "lean" : "full";
+  return [
+    options.profileId,
+    options.personaId || "pastor",
+    options.voiceName || RHEMA_VOICE_LOCKED.voiceName,
+    mode,
+    isIndonesiaProfile() ? "id" : "en",
+  ].join("|");
+}
+
+function resolveGeminiLiveSetupCached(options) {
+  const cacheKey = voiceSetupCacheKey(options);
+  if (cachedVoiceSetup?.key === cacheKey) return cachedVoiceSetup.setup;
+  const setup = buildGeminiLiveSetup(options);
+  cachedVoiceSetup = { key: cacheKey, setup };
+  return setup;
+}
+
+/** Pre-build setup di memori saat tab Voice dibuka — percepat handshake berikutnya. */
+export function prefetchVoiceSessionSetup(options = {}) {
+  const profileId = options.profileId === "alkitab-voice" ? "alkitab-voice" : "rhema-ide";
+  return resolveGeminiLiveSetupCached({
+    profileId,
+    voiceName: options.voiceName || RHEMA_VOICE_LOCKED.voiceName,
+    personaId: options.personaId || "pastor",
+    mobileLean: options.mobileLean !== false,
+    textOnlyListen: options.textOnlyListen === true,
+  });
+}
+
 export function buildSessionConfigResponse(options) {
   const profileId = options.profileId === "alkitab-voice" ? "alkitab-voice" : "rhema-ide";
   const voiceName = options.voiceName || RHEMA_VOICE_LOCKED.voiceName;
   const model = resolveGeminiLiveModel();
+  const setup = resolveGeminiLiveSetupCached({
+    profileId,
+    voiceName,
+    personaId: options.personaId,
+    mobileLean: options.mobileLean,
+    textOnlyListen: options.textOnlyListen,
+  });
+  const usesClientHistory = Boolean(setup.historyConfig?.initialHistoryInClientContent);
   return {
     wsUrl: geminiLiveWsUrl(options.apiKey),
-    setup: buildGeminiLiveSetup({
-      profileId,
-      voiceName,
-      personaId: options.personaId,
-      mobileLean: options.mobileLean,
-    }),
+    setup,
     model,
     profile: profileId,
     voiceName,
     voiceLocked: true,
+    inlineListen: Boolean(options.inlineListen) || usesClientHistory,
     audioInputRate: GEMINI_LIVE_INPUT_RATE,
     audioOutputRate: GEMINI_LIVE_OUTPUT_RATE,
   };

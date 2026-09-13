@@ -22,22 +22,23 @@ export async function ensureNativeMicPermission() {
 
   try {
     await plugin.ensure();
-  } catch (err) {
+  } catch (initialErr) {
+    let micErr = initialErr;
     if (cap.nativePromise) {
       try {
         await cap.nativePromise("MicPermission", "ensure", {});
         return;
-      } catch (err2) {
-        err = err2;
+      } catch (fallbackErr) {
+        micErr = fallbackErr;
       }
     }
-    const msg = err instanceof Error ? err.message : String(err);
+    const msg = micErr instanceof Error ? micErr.message : String(micErr);
     if (/ditolak|denied/i.test(msg)) {
       throw new Error(
         "Izin mikrofon ditolak. Buka Pengaturan → Aplikasi → Rhema AI → Mikrofon → Izinkan.",
       );
     }
-    throw err instanceof Error ? err : new Error(msg);
+    throw micErr instanceof Error ? micErr : new Error(msg);
   }
 }
 

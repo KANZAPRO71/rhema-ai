@@ -10,6 +10,7 @@ import {
   buildNightPodVoicePrompt,
   resolveNightPodSession,
 } from "./nightPodEngine.js";
+import { escapeHtml } from "./markdown.js";
 
 export { NIGHT_POD_SLEEP_POOL as NIGHT_POD_EPISODES, buildNightPodVoicePrompt };
 
@@ -59,14 +60,6 @@ export function endNightPodAmbient() {
   nightPodPreviewOnly = false;
   ambientEngine.setVolume(DEFAULT_AMBIENT_VOLUME);
   ambientEngine.stop();
-}
-
-function escapeHtml(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 export function scheduleNightPodSpeechCap() {
@@ -148,7 +141,7 @@ function buildModalHtml(featured, episodes, defaultIdx, weeklyLabel, selectedMin
       </div>
 
       <div class="night-pod-sheet-body">
-      <div class="night-pod-tonight-chip">${weeklyLabel}</div>
+      <div class="night-pod-tonight-chip">${escapeHtml(weeklyLabel)}</div>
 
       <div class="night-pod-display">
         <div class="night-pod-glow-disc">
@@ -186,7 +179,7 @@ function buildModalHtml(featured, episodes, defaultIdx, weeklyLabel, selectedMin
             <button type="button" class="pod-time-btn ${mins === selectedMinutes ? "active" : ""}" data-time="${mins}">${mins} Menit</button>
           `).join("")}
         </div>
-        <p class="pod-timer-note">Suara AI dibatasi ±${NIGHT_POD_SPEECH_MINUTES} menit · teks ayat dari TB offline.</p>
+        <p class="pod-timer-note">Suara AI dibatasi ±${NIGHT_POD_SPEECH_MINUTES} menit · teks ayat dari Alkitab offline.</p>
       </div>
       </div>
 
@@ -211,7 +204,7 @@ export async function openNightDevotionalPodModal(callbacks = {}) {
   modal.className = "apple-modal-overlay active";
   modal.innerHTML = `
     <div class="apple-modal-sheet night-pod-sheet night-pod-sheet--loading">
-      <p class="night-pod-loading">Memuat ayat TB &amp; renungan malam…</p>
+      <p class="night-pod-loading">Memuat ayat &amp; renungan malam…</p>
     </div>
   `;
   document.body.appendChild(modal);

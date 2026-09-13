@@ -28,4 +28,13 @@ export function initNativeAppLifecycle(getTransport) {
     const reason = /** @type {{ reason?: string }} */ (ev.detail)?.reason || "background";
     pauseLive(reason);
   });
+
+  try {
+    const App = window.Capacitor?.Plugins?.App;
+    App?.addListener?.("appStateChange", (state) => {
+      if (state && state.isActive === false) pauseLive("appStateChange");
+    });
+  } catch {
+    /* plugin opsional */
+  }
 }

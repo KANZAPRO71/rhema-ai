@@ -11,18 +11,10 @@ import { getDailyMoodScripture } from "./moodScriptureEngine.js";
 import { t } from "./uiStrings.js";
 import { formatMoodSummaryDate, localizedMoodChips } from "./worshipUiI18n.js";
 import { SLEEP_STORY_EN } from "./sleepStoryI18n.js";
+import { escapeAttr, escapeHtml } from "./markdown.js";
 
 /** @type {{ onOpenVerse?: (ref: string) => void, onAskVoice?: (text: string) => void }} */
 let moodFeatureCallbacks = {};
-
-/** @param {string} s */
-function escapeHtml(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 // ==========================================
 // 1. MOOD / SUASANA HATI — rotasi harian via moodScriptureEngine.js
@@ -102,7 +94,7 @@ function renderMoodSummary(activeLabel = "") {
     <span class="mood-summary-chip">${escapeHtml(t("mood.summary.feelings", { count: String(chips.length) }))}</span>
     <span class="mood-summary-chip">${escapeHtml(t("mood.summary.rotation"))}</span>
     <span class="mood-summary-chip mood-summary-chip--today">${escapeHtml(today)}</span>
-    ${activeLabel ? `<span class="mood-summary-chip mood-summary-chip--active">${activeLabel}</span>` : ""}
+    ${activeLabel ? `<span class="mood-summary-chip mood-summary-chip--active">${escapeHtml(activeLabel)}</span>` : ""}
   `;
 }
 
@@ -116,9 +108,9 @@ function initMoodChips(onOpenVerse, onAskVoice) {
   const chips = localizedMoodChips();
   container.innerHTML = chips
     .map(
-      (m) => `<button type="button" class="mood-squircle tone-${m.id}" data-mood="${m.id}">
+      (m) => `<button type="button" class="mood-squircle tone-${escapeHtml(m.id)}" data-mood="${escapeAttr(m.id)}">
       <span class="mood-squircle-emoji">${m.emoji}</span>
-      <span class="mood-squircle-label">${m.label}</span>
+      <span class="mood-squircle-label">${escapeHtml(m.label)}</span>
     </button>`,
     )
     .join("");
@@ -135,12 +127,12 @@ function initMoodChips(onOpenVerse, onAskVoice) {
 
       resultBox.innerHTML = `
         <div class="mood-res-head">
-          <span class="mood-res-title">${item.emoji} ${item.title}</span>
-          <span class="mood-res-badge">${item.verse}</span>
+          <span class="mood-res-title">${item.emoji} ${escapeHtml(item.title)}</span>
+          <span class="mood-res-badge">${escapeHtml(item.verse)}</span>
         </div>
         <p class="mood-res-daily-note">${escapeHtml(t("mood.result.daily", { n: String(item.variationIndex + 1), total: String(item.poolSize) }))}</p>
-        <p class="mood-res-text">"${item.text}"</p>
-        <p class="mood-res-devotion">💡 <em>${item.devotion}</em></p>
+        <p class="mood-res-text">"${escapeHtml(item.text)}"</p>
+        <p class="mood-res-devotion">💡 <em>${escapeHtml(item.devotion)}</em></p>
         <div class="mood-res-actions">
           <button type="button" class="btn-pill primary" id="btn-mood-read-verse">${escapeHtml(t("mood.btn.open"))}</button>
           <button type="button" class="btn-pill btn-soft" id="btn-mood-listen-audio">${escapeHtml(t("mood.btn.listen"))}</button>
@@ -244,7 +236,7 @@ function initSleepStories(onAskVoice) {
   list.innerHTML = getLocalizedSleepStories().map((s) => {
     const ambientLabel = sleepAmbientLabel(s);
     return `
-      <article class="sleep-visual-card" data-id="${s.id}">
+      <article class="sleep-visual-card" data-id="${escapeAttr(s.id)}">
         <div class="sleep-visual-meta">
           <span class="sleep-visual-duration">🌙 ${escapeHtml(s.duration)}</span>
           <span class="sleep-visual-ambient">🌿 ${escapeHtml(ambientLabel)}</span>
@@ -263,7 +255,7 @@ function initSleepStories(onAskVoice) {
       if (!story) return;
 
       // Jalankan musik latar ambient
-      try { ambientEngine.play(story.bgSound || "water", 0.22); } catch {}
+      try { ambientEngine.play(story.bgSound || "water", 0.22); } catch { /* autoplay blocked */ }
 
       player.innerHTML = `
         <div class="sleep-player-card sleep-player-inner">

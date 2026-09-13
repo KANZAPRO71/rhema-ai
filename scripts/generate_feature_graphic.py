@@ -30,7 +30,7 @@ COPY: dict[str, dict[str, str]] = {
     "id": {
         "file": "feature-graphic-1024x500-id.png",
         "subtitle": "Renungan & Khotbah",
-        "tagline": "Pendamping ibadah suara · Alkitab TB · Gemini BYOK",
+        "tagline": "Pendamping ibadah suara · Alkitab · Gemini BYOK",
         "underline_w": 320,
     },
     "en": {

@@ -1,11 +1,11 @@
 {
   "versi": "TB",
-  "nama": "Alkitab Terjemahan Baru",
-  "penerbit": "Lembaga Alkitab Indonesia (LAI)",
+  "nama": "Alkitab",
+  "penerbit": "",
   "tahun": 1974,
-  "catatan": "Teks resmi TB — Alkitab yang dipakai jutaan orang Indonesia (gereja Protestan/Katolik). Sumber fetch: alkitab.mobi (YLSA/SABDA). DEVI dilarang mengarang ayat.",
+  "catatan": "Alkitab yang dipakai jutaan orang Indonesia (gereja Protestan/Katolik). DEVI dilarang mengarang ayat.",
   "etika": [
-    "Kutip ayat HANYA dari teks TB yang disediakan sistem — bukan ingatan model.",
+    "Kutip ayat HANYA dari teks Alkitab yang disediakan sistem — bukan ingatan model.",
     "Jika ayat tidak ditemukan: bilang jujur, jangan nebak.",
     "Tafsir: rendah hati, bukan pengganti pendeta/guru rohani.",
     "Hormati semua agama; netral SARA; tidak menyesatkan."

@@ -1,6 +1,7 @@
 /**
  * Pencarian semantic TB — tema, TF-IDF, anchor/full embedding via API.
  */
+import { escapeAttr, escapeHtml } from "./markdown.js";
 import { apiUrl } from "./platform.js";
 
 const SEARCH_MODE_KEY = "rhema-alkitab-search-mode";
@@ -94,7 +95,7 @@ export function renderSearchHistory(container, onPick) {
   container.innerHTML = items
     .map(
       (q) =>
-        `<button type="button" class="alkitab-quick-btn search-history-chip" data-q="${esc(q)}" title="Terakhir dicari">${esc(q)}</button>`,
+        `<button type="button" class="alkitab-quick-btn search-history-chip" data-q="${escapeAttr(q)}" title="Terakhir dicari">${escapeHtml(q)}</button>`,
     )
     .join("");
   container.querySelectorAll("[data-q]").forEach((btn) => {
@@ -158,15 +159,6 @@ export async function searchTbBrowser(query, opts = {}) {
   return res.json();
 }
 
-/** @param {string} s */
-function esc(s) {
-  return String(s || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
 /** @param {object} result */
 export function normalizeSearchResult(result) {
   if (!result || typeof result !== "object") {
@@ -218,7 +210,7 @@ export function renderAlkitabSearchResults(container, result, handlers) {
         : normalized.indexReady
           ? "TF-IDF"
           : normalized.mode === "semantic"
-            ? "Indeks TB"
+            ? "Indeks Alkitab"
             : "";
   const note = normalized.note ?? "";
 
@@ -229,7 +221,7 @@ export function renderAlkitabSearchResults(container, result, handlers) {
         <span class="search-results-title">Hasil pencarian</span>
         <button type="button" class="btn-search-close" id="btn-close-search-results" aria-label="Tutup">✕</button>
       </div>
-      <p class="search-results-empty">${handlers.emptyHint || `Tidak ada ayat TB untuk <strong>${esc(normalized.query)}</strong>.`}</p>
+      <p class="search-results-empty">${handlers.emptyHint || `Tidak ada ayat untuk <strong>${escapeHtml(normalized.query)}</strong>.`}</p>
     `;
     container.querySelector("#btn-close-search-results")?.addEventListener("click", () => hideSearchResults(container));
     return;
@@ -242,9 +234,9 @@ export function renderAlkitabSearchResults(container, result, handlers) {
           ${themes
             .map(
               (t) =>
-                `<li><strong>${esc(t.label)}</strong> — ${t.refs
+                `<li><strong>${escapeHtml(t.label)}</strong> — ${t.refs
                   .slice(0, 4)
-                  .map((r) => `<button type="button" class="search-ref-link" data-ref="${esc(r)}">${esc(r)}</button>`)
+                  .map((r) => `<button type="button" class="search-ref-link" data-ref="${escapeAttr(r)}">${escapeHtml(r)}</button>`)
                   .join(" · ")}</li>`,
             )
             .join("")}
@@ -254,15 +246,15 @@ export function renderAlkitabSearchResults(container, result, handlers) {
 
   const semanticHtml = semantic.length
     ? `<div class="search-semantic-block">
-        <span class="search-section-label">Semantic TB</span>
+        <span class="search-section-label">Semantic</span>
         <ul class="search-semantic-list">
           ${semantic
             .slice(0, 6)
             .map(
               (h) =>
-                `<li><button type="button" class="search-verse-btn" data-ref="${esc(h.reference)}">
-                  <span class="search-verse-ref">${esc(h.reference)}</span>
-                  <span class="search-verse-preview">${esc(h.preview || h.verse?.text?.slice(0, 80) || "")}${(h.preview || h.verse?.text || "").length > 80 ? "…" : ""}</span>
+                `<li><button type="button" class="search-verse-btn" data-ref="${escapeAttr(h.reference)}">
+                  <span class="search-verse-ref">${escapeHtml(h.reference)}</span>
+                  <span class="search-verse-preview">${escapeHtml(h.preview || h.verse?.text?.slice(0, 80) || "")}${(h.preview || h.verse?.text || "").length > 80 ? "…" : ""}</span>
                 </button></li>`,
             )
             .join("")}
@@ -275,9 +267,9 @@ export function renderAlkitabSearchResults(container, result, handlers) {
         ${verses
           .map(
             (v) =>
-              `<li><button type="button" class="search-verse-btn" data-ref="${esc(v.reference)}">
-                <span class="search-verse-ref">${esc(v.reference)}</span>
-                <span class="search-verse-preview">${esc((v.text || "").slice(0, 100))}${(v.text || "").length > 100 ? "…" : ""}</span>
+              `<li><button type="button" class="search-verse-btn" data-ref="${escapeAttr(v.reference)}">
+                <span class="search-verse-ref">${escapeHtml(v.reference)}</span>
+                <span class="search-verse-preview">${escapeHtml((v.text || "").slice(0, 100))}${(v.text || "").length > 100 ? "…" : ""}</span>
               </button></li>`,
           )
           .join("")}
@@ -287,13 +279,13 @@ export function renderAlkitabSearchResults(container, result, handlers) {
   container.classList.remove("hidden");
   container.innerHTML = `
     <div class="search-results-head">
-      <span class="search-results-title">Hasil: ${esc(normalized.query)}</span>
+      <span class="search-results-title">Hasil: ${escapeHtml(normalized.query)}</span>
       <button type="button" class="btn-search-close" id="btn-close-search-results" aria-label="Tutup">✕</button>
     </div>
-    ${note ? `<p class="search-results-note">${esc(note)}${modeBadge ? ` · <span class="search-mode-badge">${esc(modeBadge)}</span>` : ""}</p>` : modeBadge ? `<p class="search-results-note"><span class="search-mode-badge">${esc(modeBadge)}</span></p>` : ""}
+    ${note ? `<p class="search-results-note">${escapeHtml(note)}${modeBadge ? ` · <span class="search-mode-badge">${escapeHtml(modeBadge)}</span>` : ""}</p>` : modeBadge ? `<p class="search-results-note"><span class="search-mode-badge">${escapeHtml(modeBadge)}</span></p>` : ""}
     ${themeHtml}
     ${semanticHtml}
-    ${verseHtml ? `<div class="search-verse-block"><span class="search-section-label">Ayat TB</span>${verseHtml}</div>` : ""}
+    ${verseHtml ? `<div class="search-verse-block"><span class="search-section-label">Ayat</span>${verseHtml}</div>` : ""}
   `;
 
   container.querySelector("#btn-close-search-results")?.addEventListener("click", () => hideSearchResults(container));
@@ -317,5 +309,5 @@ export function hideSearchResults(container) {
 export function showSearchLoading(container, query) {
   if (!container) return;
   container.classList.remove("hidden");
-  container.innerHTML = `<p class="alkitab-loading search-loading">Mencari "${esc(query)}"…</p>`;
+  container.innerHTML = `<p class="alkitab-loading search-loading">Mencari "${escapeHtml(query)}"…</p>`;
 }
